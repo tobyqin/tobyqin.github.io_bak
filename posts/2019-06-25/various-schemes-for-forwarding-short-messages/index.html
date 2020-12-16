@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="不知道你有没有使用多个手机号，或者手机不想带但又不希望错过短信的情况，有兴趣可以进来看一看。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="转发短信的各种方案">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="不知道你有没有使用多个手机号，或者手机不想带但又不希望错过短信的情况，有兴趣可以进来看一看。">
+<meta property="article:published_time" content="2019-06-25T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.464Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="SMS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>转发短信的各种方案 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          转发短信的各种方案
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-25 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-25T00:00:00Z">2019-06-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/thoughts/" itemprop="url" rel="index">
+                    <span itemprop="name">Thoughts</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>不知道你有没有使用多个手机号，或者手机不想带但又不希望错过短信的情况，有兴趣可以进来看一看。</p>
+<a id="more"></a>
+
+<h2 id="将手机A的短信自动转发到手机B"><a href="#将手机A的短信自动转发到手机B" class="headerlink" title="将手机A的短信自动转发到手机B"></a>将手机A的短信自动转发到手机B</h2><p>手机A和手机B大致分两种类型：安卓和苹果。所以交叉组合有4种情况。</p>
+<h3 id="1-安卓转发苹果"><a href="#1-安卓转发苹果" class="headerlink" title="1. 安卓转发苹果"></a>1. 安卓转发苹果</h3><p>方案1：</p>
+<p>装一个绿芽短信让它运行在后台，通过微信就可以远程接收和回复短信，这是目前最简单的方案，不需要翻墙，唯一担心小厂跑路。不过看上去不会那么容易死，毕竟它不是纯免费的，有转发额度，需要适当付费。这个方案在知乎和各大网站都被强烈推荐，不太像水军，我试用了一下感觉良好，而且这个软件已经活了三四年了。</p>
+<p>方案2：</p>
+<p>装一个IFTTT，短信可以转发为邮件，Telegram，pushover等等渠道，这些渠道应该是靠得住的，不过IFTTT和这些渠道都是要科学上网的，也就是说这个你还需要一个常年稳定可靠不变的梯子。而且这种方案只能收短信，不能回短信。</p>
+<p>方案3：</p>
+<p>装一个Tasker，Tasker是安卓阵营的一个神器，相当于macOS上的Automator或者方案2的IFTTT，帮你监听手机上的任何事件然后执行你想要的任务。有了Tasker之后的操作和IFTTT差不多，不过整个过程都是在手机本地运行的，比如转发短信或者发送邮件调用推送api，干啥都行。这个方案需要动手能力和编程思维，而且Tasker是否足够稳定不能确定。</p>
+<p>值得一提的是，苹果上有一个叫Bark的软件非常棒，安装后会根据设备给你一个http的链接，你只要GET这个链接（允许带参数）就可以往设备推送消息。有了这个软件往iOS设备推送消息不要太简单。</p>
+<h3 id="2-安卓转发安卓"><a href="#2-安卓转发安卓" class="headerlink" title="2. 安卓转发安卓"></a>2. 安卓转发安卓</h3><p>大致方案和安卓苹果差不多，如果不关心手机型号的话。如果家里的安卓机和携带的安卓机是一样的，可以借助手机厂商的云备份服务来自动同步短信，例如两个手机登录同一个魅族账号，同一个小米账号，同一个华为账号等等。</p>
+<p>当然，安卓手机大多是双卡双待的，理论上不太会有这种需求，除非你人在国外或者你是黄牛？</p>
+<h3 id="3-苹果转发安卓"><a href="#3-苹果转发安卓" class="headerlink" title="3. 苹果转发安卓"></a>3. 苹果转发安卓</h3><p>对不起，这条路你走不通，至少我没走通。</p>
+<h3 id="4-苹果转发苹果"><a href="#4-苹果转发苹果" class="headerlink" title="4. 苹果转发苹果"></a>4. 苹果转发苹果</h3><p>两个手机都登录同一个iCloud账号就可以了，在iMessage里可以看到转发消息的选项，通过另外一个苹果手机还可以远程回复。</p>
+<p>除了两大主流阵营，还有非主流的诺基亚塞班或者MTK山寨机，咸鱼买一个一两百块，设置自动转发，不过要消耗短信费用，一次一毛。下单前确保有这样的功能。对安全和隐私比较看重的可以试试。</p>
+<p>手机待机转发有一个最致命的问题，就是充电问题。如果一直插着充电器不知道电池会不会爆掉，不充电又不知道什么时候死掉，照顾这样一个设备还真有点麻烦。网上有同学说买个智能插座定时充放电，但智能插座怎么知道手机饿了？用Tasker可以监控啊，感觉解决一个问题的同时带来了N个问题，宅男的快乐你很难理解。</p>
+<h2 id="通过设备转发短信"><a href="#通过设备转发短信" class="headerlink" title="通过设备转发短信"></a>通过设备转发短信</h2><p>这里说的设备就不是手机了，比如树莓派，路由器，或者专门的转发设备。</p>
+<h3 id="1-树莓派"><a href="#1-树莓派" class="headerlink" title="1. 树莓派"></a>1. 树莓派</h3><p>树莓派是宅男和极客们喜欢的东西，不过你需要额外买一个读卡器来读取sim卡，然后再写一段代码来处理短信事件和推送过程。树莓派常年开机或者定时开关机问题都不大，毕竟是被无数人论证过的产品，可靠性比大多数手机和电脑都强很多。不过你应该懂的，这一套方案是花不少时间和精力的。树莓派本身可以当成一个微型的Linux服务器跑很多程序和服务，转发短信只能算其中一种吧。</p>
+<h3 id="2-路由器"><a href="#2-路由器" class="headerlink" title="2. 路由器"></a>2. 路由器</h3><p>普通的路由器当然是不可能有这样的功能的啦，能转发短信的路由器肯定都是能刷机的，比如网件，华硕或者斐com之类的，能刷机的路由器基本上就可以把路由器当成树莓派啦，本身也是Linux系统，接个USB跑个程序也是小case，而且路由器7x24小时在线，稳定性更佳。相对于树莓派，路由器也是科技宅们喜爱的玩具，不过宅的level可能更高。</p>
+<p>关于怎么用树莓派和路由器来实现转发，GitHub上有很多现成方案，这里就不展开说了，大致思路就是获取消息后调用各种的API，最常用的如Telegram，pushover，SMTP等待。</p>
+<h3 id="3-专业设备"><a href="#3-专业设备" class="headerlink" title="3. 专业设备"></a>3. 专业设备</h3><p>有市场就有需求啦，淘宝一搜就知道世界原来那么大。比如上文提到的绿芽就有转发机卖，一百多块不贵。还有云手机服务，按月收费，还有真人代发代收，五花八门，可信度未知。</p>
+<p>不过我到想起来前些年还有阿里小号或者电信小号这样的app，按月交费然后给你分配一张虚拟卡。当时还用来打车叫外卖薅羊毛，如果这种小号还可用，也不失为一种短信接收的好方法。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>新款苹果设备也支持双卡双待了，携号转网也越来越近了，在国内应该不太有转发短信这种需求了吧。</p>
+<p>不过在国外的朋友，还是很希望能收到国内手机号的短信的，以上方案对于远在异乡的人，其实都不太靠谱，你敢充电器插着手机然后安心出国吗？</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/" title="转发短信的各种方案">https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sms/" rel="tag"># SMS</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-06-02/qin-lang-chuanmd/" rel="prev" title="秦浪传">
+      <i class="fa fa-chevron-left"></i> 秦浪传
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-08-13/macbook%E5%92%8Cvmware-tools/" rel="next" title="MacBook和Vmware Tools">
+      MacBook和Vmware Tools <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#将手机A的短信自动转发到手机B"><span class="nav-number">1.</span> <span class="nav-text">将手机A的短信自动转发到手机B</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过设备转发短信"><span class="nav-number">2.</span> <span class="nav-text">通过设备转发短信</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">3.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-06-25/various-schemes-for-forwarding-short-messages/";
+    this.page.identifier = "posts/2019-06-25/various-schemes-for-forwarding-short-messages/";
+    this.page.title = "转发短信的各种方案";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="从事测试开发那么长一段时间，一直不知道怎么去评价和衡量这个职业的目标是什么，超高的自动化测试覆盖率？或者超稳定超包容的自动化测试框架？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试左移和开发赋能">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="从事测试开发那么长一段时间，一直不知道怎么去评价和衡量这个职业的目标是什么，超高的自动化测试覆盖率？或者超稳定超包容的自动化测试框架？">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-04/9f969a88cfae418fba23c10adc025b3a636807279198182687.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-04/c8b20f490f1b40b28fe91e2fe48059fb636807279425994169.gif">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-04/ca89b059129e418aaa383c8b1d83c69b636807279625728401.gif">
+<meta property="article:published_time" content="2019-03-27T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.424Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="automation">
+<meta property="article:tag" content="testing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/2019-04/9f969a88cfae418fba23c10adc025b3a636807279198182687.jpg">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>测试左移和开发赋能 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          测试左移和开发赋能
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-27 00:00:00" itemprop="dateCreated datePublished" datetime="2019-03-27T00:00:00Z">2019-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>从事测试开发那么长一段时间，一直不知道怎么去评价和衡量这个职业的目标是什么，超高的自动化测试覆盖率？或者超稳定超包容的自动化测试框架？</p>
+<a id="more"></a>
+
+<p>怎么才算得上是一个优秀的测试开发人员？上周有机会去听了阿里2天的公开课，好像明白了一些，拿来跟大家分享一下。</p>
+<h2 id="内建质量"><a href="#内建质量" class="headerlink" title="内建质量"></a>内建质量</h2><p>在微软有一句名言：“质量是设计出来，而不是测出来的。” 当然，这是理想情况，如果产品经理都这么优秀，这个世界早就和平了。</p>
+<p>今天我们不说产品经理，我们从测试和开发的角度看，怎么内建质量。</p>
+<h3 id="让测试内建质量"><a href="#让测试内建质量" class="headerlink" title="让测试内建质量"></a>让测试内建质量</h3><p>为了内建质量，测试同学就要尽可能早地干预开发写bug，让bug死在摇篮里。换句话说就是让开发不要写出可以避免的bug：</p>
+<ol>
+<li>产品，开发，测试应该同时参与需求评审会议，澄清需求，达成共识</li>
+<li>将关键测试点作为需求的一部分，让开发同学交付需求时完成自测</li>
+</ol>
+<h3 id="让开发内建质量"><a href="#让开发内建质量" class="headerlink" title="让开发内建质量"></a>让开发内建质量</h3><p>从开发的角度看，要提高代码的质量可以有很多种方式：</p>
+<ol>
+<li>提高自测意识，借助单元测试或者质量分析工具</li>
+<li>真正理解需求和技术架构，进行Code Review或者结对编程</li>
+<li>评估代码质量或者bug数量，跟绩效挂钩</li>
+</ol>
+<p>排除开发的自身能力问题，80%的bug都是需求理解不准确的问题，如果开发不愿背这个锅，那就甩给产品经理吧。</p>
+<p>由此可见，如果测试不想看见这些bug，那么你就要帮产品表达需求，帮开发理解需求。</p>
+<h2 id="测试左移"><a href="#测试左移" class="headerlink" title="测试左移"></a>测试左移</h2><p>上面我们说内建质量其实已经涉及到了测试左移，例如让QA在参与需求研讨时提出问题，列出测试点其实已经开始在进行测试了。</p>
+<p>为什么我们要测试左移呢？因为发现问题的时间越晚，修复的成本就越高。</p>
+<p><img src="https://tobyqin.github.io/images/2019-04/9f969a88cfae418fba23c10adc025b3a636807279198182687.jpg" alt="img"></p>
+<p>图中橙色线条代表了传统测试发现缺陷的时间，大多数bug都是在功能测试和集成测试时发现的，最后导致的结果就是发布前加班加点，祈祷不要有bug漏到生产环境。</p>
+<p>如果我们能把测试活动向左移动，那么就意味着修复成本大幅下降。</p>
+<p><img src="https://tobyqin.github.io/images/2019-04/c8b20f490f1b40b28fe91e2fe48059fb636807279425994169.gif" alt="img"></p>
+<p>但是谈何容易？想要把大部分测试点放在单元测试环境完成，非常依赖成熟的开发环境和极其资深的开发人员。</p>
+<p>在阿里是这样实践的，让测试给开发赋能。</p>
+<h2 id="开发赋能"><a href="#开发赋能" class="headerlink" title="开发赋能"></a>开发赋能</h2><p>从字面上解释就是，测试同学给开发赋于一定的能力，让他们有能力去完成测试，比如：</p>
+<ol>
+<li>降低测试门槛</li>
+<li>使用测试工具（自动化）</li>
+<li>获取测试数据</li>
+<li>培养测试意识</li>
+</ol>
+<p>举个例子，开发同学在完成需求代码后，可以点击一个按钮得到测试数据，再点击一个按钮验证测试覆盖点，喝杯咖啡后就可以看到测试报告。</p>
+<p>从上面这个例子看，开发同学其实他并不需要懂测试数据的设计，自动化测试的开发，测试报告的编排，但是他依然可以快速完成需求测试（门槛低），只要他养成习惯（培养意识）。</p>
+<p>那么你就会说，这对测试的同学要求是不是很高啊？对啊，回到开篇的问题，如何评判一个测试人员的能力？在我看来就是评判他给开发和团队赋能的能力。在阿里是这样，在微软和谷歌也是这样。</p>
+<p>一个优秀的测试人员将测试左移时，并不会将负担转移给开发。相反地，而是帮开发写出更高质量的代码，更高效率地交付需求。</p>
+<p>那么测试能左移到什么程度呢？比如让开发在Coding时就发现问题，或者还没Coding就发现问题，那应该是极好的。</p>
+<p><img src="https://tobyqin.github.io/images/2019-04/ca89b059129e418aaa383c8b1d83c69b636807279625728401.gif" alt="img"></p>
+<p>怎么做到呢？刚才已经说过了，测试即需求，把bug扼杀在摇篮里。</p>
+<h2 id="实践方法"><a href="#实践方法" class="headerlink" title="实践方法"></a>实践方法</h2><p>想实践测试左移可以有很多种方法，每个组织需要根据实践情况进行裁剪和调整。</p>
+<ol>
+<li>参与需求评审，帮助开发理解需求</li>
+<li>参与架构、设计分析，提早预防问题</li>
+<li>践行BDD，TDD</li>
+<li>单元测试提案，接口测试提案</li>
+<li>提供模拟数据能力，测试工具</li>
+<li>制定提测标准，拒绝低质量代码</li>
+<li>回归测试自动化</li>
+<li>静态代码分析，单元测试覆盖率</li>
+</ol>
+<p>测试左移的概念给整个测试角色带来了巨大的转变。软件测试不仅仅是“发现bug”，而是致力于“尽可能早的检测和预防bug”。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>培训课件： <a href="/files/阿里Devops体系和实践.svg">阿里Devops体系和实践.svg</a></li>
+<li>参考文章：<a href="https://blog.parasoft.com/what-is-the-shift-left-approach-to-software-testing" target="_blank" rel="noopener">What is shift-left testing?</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/" rel="bookmark">在Mac OSX 上配置 Appium + Android 自动化测试环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2017-12-12/connect-adb-via-wifi/" rel="bookmark">使用ADB无线连接Android真机进行调试</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/" title="测试左移和开发赋能">https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/automation/" rel="tag"># automation</a>
+              <a href="/tags/testing/" rel="tag"># testing</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-03-09/little-improvement/" rel="prev" title="微不足道的改进">
+      <i class="fa fa-chevron-left"></i> 微不足道的改进
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-04-20/docker-in-one-day/" rel="next" title="Docker一篇通">
+      Docker一篇通 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内建质量"><span class="nav-number">1.</span> <span class="nav-text">内建质量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试左移"><span class="nav-number">2.</span> <span class="nav-text">测试左移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发赋能"><span class="nav-number">3.</span> <span class="nav-text">开发赋能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实践方法"><span class="nav-number">4.</span> <span class="nav-text">实践方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-03-27/shift-test-to-left/";
+    this.page.identifier = "posts/2019-03-27/shift-test-to-left/";
+    this.page.title = "测试左移和开发赋能";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

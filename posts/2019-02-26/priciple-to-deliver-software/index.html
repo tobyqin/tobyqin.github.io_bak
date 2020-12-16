@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="《持续交付-发布可靠软件的系统方法》，部分读书笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软件交付的原则">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="《持续交付-发布可靠软件的系统方法》，部分读书笔记。">
+<meta property="article:published_time" content="2019-02-26T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.436Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="devops">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>软件交付的原则 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          软件交付的原则
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-26T00:00:00Z">2019-02-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>《持续交付-发布可靠软件的系统方法》，部分读书笔记。</p>
+<a id="more"></a>
+
+<h2 id="为软件发布创建一个可重复且可靠的过程"><a href="#为软件发布创建一个可重复且可靠的过程" class="headerlink" title="为软件发布创建一个可重复且可靠的过程"></a>为软件发布创建一个可重复且可靠的过程</h2><p>让软件发布成为一件容易的事情，这是在你开始写一个软件开始前就要想办法达到的目标。只要软件发布简单到点击一个按钮甚至不需要点击按钮就能发布，你才会有动力去持续完善这个软件。</p>
+<p>所以一般我在开始开发一个软件时就会考虑它的部署过程，会用到哪些资源，如果更新版本等等问题。</p>
+<h2 id="将几乎所有事情都自动化"><a href="#将几乎所有事情都自动化" class="headerlink" title="将几乎所有事情都自动化"></a>将几乎所有事情都自动化</h2><p>有些工作是不能自动化的，比如分析业务逻辑，设计软件结构，编写测试等等。</p>
+<p>但是能自动化的就尽可能让计算机来帮助你完成，比如发布软件涉及的各个环节，运行自动化测试，生成各种报告和指标。</p>
+<p>重复的事情计算机往往比人更可靠，有时候你觉得它花的时间更多，但是它不用睡觉，你不行。</p>
+<h2 id="把所有东西都纳入版本控制"><a href="#把所有东西都纳入版本控制" class="headerlink" title="把所有东西都纳入版本控制"></a>把所有东西都纳入版本控制</h2><p>人都是健忘的，我们除了需要把代码纳入版本控制系统，应该还将跟项目有关的其他东西也纳入版本管理：</p>
+<ul>
+<li>需求文档，测试用例，自动化测试脚本</li>
+<li>机器配置，网络配置， 部署脚本</li>
+<li>数据库创建，升级，回滚脚本等等</li>
+<li>依赖配置，库文件，工具链，参考文档等等</li>
+</ul>
+<p>要具体到当前发布的是哪个版本，用了哪些对应版本号的依赖和库，当时的需求和测试时什么样子的。</p>
+<h2 id="提前并频繁做让你感到痛苦的事情"><a href="#提前并频繁做让你感到痛苦的事情" class="headerlink" title="提前并频繁做让你感到痛苦的事情"></a>提前并频繁做让你感到痛苦的事情</h2><p>这是最通用的原则，也是最有启发性的。可以说我们说的一切都可以归结到这一点上。反复做痛苦的事情会有两种可能的结果：</p>
+<ol>
+<li>你麻木不仁了，周而复始继续痛苦</li>
+<li>你揭竿而起了，把这个痛苦干掉了</li>
+</ol>
+<p>提前并频繁去做，我相信你会选择第二种结果。</p>
+<h2 id="内建质量"><a href="#内建质量" class="headerlink" title="内建质量"></a>内建质量</h2><p>“内建质量”是精益运动的先驱戴明提出的名言之一。从而得出两个结论：</p>
+<ul>
+<li>测试不是一个阶段，也不应该在开发结束后才开始。</li>
+<li>测试不纯粹或者主要是测试人员的领域。</li>
+</ul>
+<p>交付团队里的每个人都应该对产品的质量负责，所以在需求调研，分析，开发过程中其实已经对质量造成影响。只有保证每个环节的质量，才能确保整体的质量。</p>
+<h2 id="“Done”意味着“已发布”"><a href="#“Done”意味着“已发布”" class="headerlink" title="“Done”意味着“已发布”"></a>“Done”意味着“已发布”</h2><p>经常听开发说需求终于做完（Done）了，但真的做完了吗？对于敏捷团队来说，“Done”意味着功能已经部署到生产环境了，已交付给用户了才算完成。</p>
+<p>一件事情没有完成80%的说法，要么完成了，要么就是没完成。从这一原则得出一个有趣的推论，一个事情完成与否，并不是一个人能控制得了的，他需要所有人参与，包括开发，测试，运维，支持等等。</p>
+<h2 id="交付过程是每个成员的责任"><a href="#交付过程是每个成员的责任" class="headerlink" title="交付过程是每个成员的责任"></a>交付过程是每个成员的责任</h2><p>无论项目成功还是失败，其结果都是属于这个团队的。但现实中开发总是把困难交给测试，测试又把困难交给运维，当问题出现时，人们会花费大量时间来修复，也会用同等时间来互相指责推卸责任。</p>
+<p>为了更加快速且可靠地交付软件，我们应该鼓励所有参与整个过程的人进行更好的协作。</p>
+<h2 id="持续改进"><a href="#持续改进" class="headerlink" title="持续改进"></a>持续改进</h2><p>软件的首次发布只是生命周期里的第一个阶段，随着不断演进，更多的发布和需求会接踵而来。所以你的交付过程也要随之不断演进。</p>
+<p>召开回顾会议是一个很好的实践，反思过去一段时间内什么做的好，继续保持，做的不好，记录并改进。每个改进点都应该有一个人负责跟踪，确保能被执行，下一次会议向大家汇报结果。</p>
+<p>自动化的开发，测试以及发布过程对交付软件的速度，质量和成本有着深远的影响。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-03-09/little-improvement/" rel="bookmark">微不足道的改进</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-04-20/docker-in-one-day/" rel="bookmark">Docker一篇通</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-11-23/jenkin-on-mac/" rel="bookmark">在Mac上部署Jenkins</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-01-01/thanks-we-are-busy/" rel="bookmark">谢谢，我们很忙</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/" title="软件交付的原则">https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/devops/" rel="tag"># devops</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-25/tampermonkey-user-script-with-vuejs/" rel="prev" title="使用VueJS开发油猴（TamperMonkey）脚本">
+      <i class="fa fa-chevron-left"></i> 使用VueJS开发油猴（TamperMonkey）脚本
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-03-09/little-improvement/" rel="next" title="微不足道的改进">
+      微不足道的改进 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为软件发布创建一个可重复且可靠的过程"><span class="nav-number">1.</span> <span class="nav-text">为软件发布创建一个可重复且可靠的过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#将几乎所有事情都自动化"><span class="nav-number">2.</span> <span class="nav-text">将几乎所有事情都自动化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#把所有东西都纳入版本控制"><span class="nav-number">3.</span> <span class="nav-text">把所有东西都纳入版本控制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提前并频繁做让你感到痛苦的事情"><span class="nav-number">4.</span> <span class="nav-text">提前并频繁做让你感到痛苦的事情</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内建质量"><span class="nav-number">5.</span> <span class="nav-text">内建质量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#“Done”意味着“已发布”"><span class="nav-number">6.</span> <span class="nav-text">“Done”意味着“已发布”</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#交付过程是每个成员的责任"><span class="nav-number">7.</span> <span class="nav-text">交付过程是每个成员的责任</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持续改进"><span class="nav-number">8.</span> <span class="nav-text">持续改进</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-02-26/priciple-to-deliver-software/";
+    this.page.identifier = "posts/2019-02-26/priciple-to-deliver-software/";
+    this.page.title = "软件交付的原则";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

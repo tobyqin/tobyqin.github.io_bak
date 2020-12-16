@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="N1买了又一段时间了，最开始卖家刷的是yyf电视系统，用的不是很满意。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="斐讯N1的折腾之路">
+<meta property="og:url" content="https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="N1买了又一段时间了，最开始卖家刷的是yyf电视系统，用的不是很满意。">
+<meta property="og:image" content="https://tobyqin.github.io/images/2020-02/2019-01-23_14-50-16.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2020-02/2019-01-23_14-57-02.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200209151347103.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200209151648670.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200209151755721.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200209154517563.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200209160349534.png">
+<meta property="article:published_time" content="2020-02-09T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.460Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="N1">
+<meta property="article:tag" content="Armbian">
+<meta property="article:tag" content="Docker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/2020-02/2019-01-23_14-50-16.jpg">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>斐讯N1的折腾之路 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          斐讯N1的折腾之路
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-09 00:00:00" itemprop="dateCreated datePublished" datetime="2020-02-09T00:00:00Z">2020-02-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>N1买了又一段时间了，最开始卖家刷的是yyf电视系统，用的不是很满意。</p>
+<a id="more"></a>
+
+<p>后来自己又重新刷了wepad的电视系统，播放和界面各方面都挺满意的，可是投屏的时候总掉线，然后就丢一边吃灰了。目前用天猫盒子投屏，虽然平时有广告也有点卡，但是投屏很稳定，从来没掉过，稳定性压倒一切啊。</p>
+<h2 id="刷成Armbian"><a href="#刷成Armbian" class="headerlink" title="刷成Armbian"></a>刷成Armbian</h2><p>很早就想废物利用把这个盒子刷成Armbian，当个小型Linux服务器用用，网上资料比较乱所以一直没行动。这两天把它搞定了。</p>
+<h3 id="第一步：降级解锁bootloader"><a href="#第一步：降级解锁bootloader" class="headerlink" title="第一步：降级解锁bootloader"></a>第一步：降级解锁bootloader</h3><p>这一步一般你的盒子如果已经刷过别的系统，就已经做掉了，除非你是全新的N1并且还带着原生的系统，否则就不需要了。</p>
+<p>怎么降级： <a href="https://www.right.com.cn/forum/thread-340279-1-1.html" target="_blank" rel="noopener">https://www.right.com.cn/forum/thread-340279-1-1.html</a></p>
+<p>刷电视盒子的固件一般都是需要双公头的USB线的，找不用的USB线自己剪一下然后接起来就可以，不一定要去网上买。</p>
+<h3 id="第二步：准备启动U盘"><a href="#第二步：准备启动U盘" class="headerlink" title="第二步：准备启动U盘"></a>第二步：准备启动U盘</h3><p>大致思路：准备一个大于8G的U盘，准备可以刷镜像进U盘的工具，刷镜像，修改dtb。</p>
+<ol>
+<li>准备一个U盘，不一定需要USB3.0，因为N1是USB2.0的接口。</li>
+<li>刷U盘的工具叫USB Image Tool，需要Windows系统。</li>
+<li>镜像在恩山论坛可以下各种版本的，最稳定的据说是 5.77</li>
+</ol>
+<p><img src="https://tobyqin.github.io/images/2020-02/2019-01-23_14-50-16.jpg" alt="usb"></p>
+<p>刷机图如上，打开USB Image Tool，选择你的U盘，点击Restore后选择镜像，等待结束即可。</p>
+<blockquote>
+<p>USB Image Tool下载：<a href="https://cnone.lty.fun/home/工具库/N1" target="_blank" rel="noopener">N1工具库</a></p>
+</blockquote>
+<p>其实，刷U盘镜像还有很多工具可以用，比如单文件版<code>rufus</code>，或者用Linux下的<code>dd</code>命令，MacOSX应该也有功能类似的软件。如果觉得U盘空间太小，还可以用<code>etcher</code>把Armbian写到移动硬盘上。</p>
+<blockquote>
+<p>Armbian镜像网盘下载：<a href="https://pan.baidu.com/s/1-7AmPhRkP1LKtqb6X7s9IA" target="_blank" rel="noopener">https://pan.baidu.com/s/1-7AmPhRkP1LKtqb6X7s9IA</a> 提取码: sjp9 </p>
+</blockquote>
+<p><strong>修改dtb</strong></p>
+<p>这一步一般是必要的，但看情况。<code>dtb</code>文件可以理解成驱动文件，Armbian默认会有一套驱动文件，但不完全适配N1，导致硬件不正常或者负载过高。所以论坛上就有大神对N1的<code>dtb</code>进行了优化，你只需要下载并加载他们的<code>dtb</code>即可。</p>
+<p>大致方法如下：</p>
+<ol>
+<li>U盘烧录镜像完毕后，Boot分区（U盘的根目录）允许访问。</li>
+<li>将下载好的<code>dtb</code>放入到U盘的<code>dtb</code>目录。</li>
+<li>U盘根目录有一个<code>nEnv.ini</code>文件，里面写了使用哪个<code>dtb</code></li>
+<li>修改<code>nEnv.ini</code>指向刚才拷贝进来的<code>dtb</code>。</li>
+</ol>
+<p><img src="https://tobyqin.github.io/images/2020-02/2019-01-23_14-57-02.jpg" alt="uEnv.ini"></p>
+<p>Armbian 5.77 的<code>dtb</code>可以用恩山论坛大神提供的，据说稳定性不错：</p>
+<ul>
+<li><a href="https://www.right.com.cn/forum/thread-510423-1-1.html" target="_blank" rel="noopener">https://www.right.com.cn/forum/thread-510423-1-1.html</a></li>
+</ul>
+<p>修改后的<code>eEnv.ini</code>长这样，注意看第一行。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">dtb_name&#x3D;&#x2F;dtb&#x2F;meson-gxl-s905d-phicomm-n1-xiangsm.dtb</span><br><span class="line">bootargs&#x3D;root&#x3D;LABEL&#x3D;ROOTFS rootflags&#x3D;data&#x3D;writeback rw console&#x3D;ttyAML0,115200n8 console&#x3D;tty0 no_console_suspend consoleblank&#x3D;0 fsck.fix&#x3D;yes fsck.repair&#x3D;yes net.ifnames&#x3D;0</span><br></pre></td></tr></table></figure>
+
+<p>如果你下载的镜像作者已经说了不需要改<code>dtb</code>和<code>nEnv.ini</code>，那么这一步就不需要做了。驱动不正确的后果就是某些硬件工作不正常，所以还是需要谨慎对待。</p>
+<p>另外<code>uEnv.ini</code>文件<strong>不能用Windows记事本编辑</strong>，因为它的换行符在Linux下也会识别错误，需要用Notepad++或者VsCode等软件来处理。</p>
+<p>到此为止，你的U盘准备好了。刷其他系统的思路大致是一样的，搞定U盘就搞定了大半。</p>
+<p><strong>特别提醒</strong></p>
+<p>在没完成从U盘启动的工作前，不要在N1通电的情况下提前插入U盘，Android系统会修改U盘文件的权限，导致Armbian后期出现各种诡异的问题。</p>
+<h3 id="第三步：从U盘启动N1"><a href="#第三步：从U盘启动N1" class="headerlink" title="第三步：从U盘启动N1"></a>第三步：从U盘启动N1</h3><p>确保你的N1刷了可以从U盘启动的系统，没有的话回到第一步，去刷wepad的固件。</p>
+<p>之后在局域网内任意一台电脑上通过adb去让N1从U盘启动。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">adb connect &lt;N1的IP，从路由器看&gt;</span><br><span class="line">adb shell reboot update</span><br></pre></td></tr></table></figure>
+<p>命令敲完，N1黑屏后就可以拔掉电源，然后把U盘插到靠近HDMI的USB口，再接上电源就可以进入Armbian系统。用<code>root</code>和密码<code>1234</code>登录。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"> ____  ___   ___  ____</span><br><span class="line">&#x2F; ___|&#x2F; _ \ &#x2F; _ \| ___|</span><br><span class="line">\___ \ (_) | | | |___ \</span><br><span class="line"> ___) \__, | |_| |___) |</span><br><span class="line">|____&#x2F;  &#x2F;_&#x2F; \___&#x2F;|____&#x2F;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Welcome to ARMBIAN 5.77 user-built Debian GNU&#x2F;Linux 9 (stretch) 5.0.2-aml-s905</span><br><span class="line">System load:   0.01 0.01 0.00  	Up time:       17:03 hours</span><br><span class="line">Memory usage:  11 % of 1838MB 	IP:            169.254.5.171 192.168.1.116</span><br><span class="line">CPU temp:      35°C</span><br><span class="line">Usage of &#x2F;:    31% of 6.9G   	storage&#x2F;:      44% of 128M</span><br></pre></td></tr></table></figure>
+
+<p>这时候可以用<code>ls -l</code>命令确认一下U盘的目录权限没有被安卓修改，都是<code>root</code>就是对的，如果有错那么你要回去重新刷一下U盘了。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@aml:~# ls -l /</span><br><span class="line">total 84</span><br><span class="line">drwxr-xr-x   2 root root  4096 Apr  1  2019 bin</span><br><span class="line">drwxr-xr-x   6 root root 16384 Jan  1  1970 boot</span><br><span class="line">drwxr-xr-x  17 root root  4100 Oct 22 21:46 dev</span><br><span class="line">drwxr-xr-x  87 root root  4096 Oct 23 02:01 etc</span><br><span class="line">drwxr-xr-x   2 root root  4096 Feb  3  2019 home</span><br><span class="line">drwxr-xr-x  17 root root  4096 Apr  1  2019 lib</span><br><span class="line">drwx------   2 root root 16384 Oct 22 20:17 lost+found</span><br><span class="line">drwxr-xr-x   2 root root  4096 Oct 22 20:18 media</span><br><span class="line">drwxr-xr-x   2 root root  4096 Oct 22 20:18 mnt</span><br><span class="line">drwxr-xr-x   2 root root  4096 Apr  1  2019 opt</span><br><span class="line">dr-xr-xr-x 137 root root     0 Jan  1  1970 proc</span><br><span class="line">drwx------   5 root root  4096 Oct 23 10:12 root</span><br><span class="line">drwxr-xr-x  20 root root   700 Oct 23 11:04 run</span><br><span class="line">drwxr-xr-x   2 root root  4096 Apr  1  2019 sbin</span><br><span class="line">drwxrwxr-x   2 root root  4096 Apr  1  2019 selinux</span><br><span class="line">drwxr-xr-x   2 root root  4096 Apr  1  2019 srv</span><br><span class="line">dr-xr-xr-x  12 root root     0 Jan  1  1970 sys</span><br><span class="line">drwxrwxrwt   7 root root   160 Oct 23 12:00 tmp</span><br><span class="line">drwxr-xr-x  10 root root  4096 Apr  1  2019 usr</span><br><span class="line">drwxr-xr-x  12 root root  4096 Apr  1  2019 var</span><br></pre></td></tr></table></figure>
+
+<p>如果U盘一直插在盒子上，以后启动就默认进入Armbian系统。U盘拔掉后启动的就是电视系统，想再次进入Armbian只需要重复这一步骤即可。</p>
+<h3 id="第四步：将Armbian刷到盒子里"><a href="#第四步：将Armbian刷到盒子里" class="headerlink" title="第四步：将Armbian刷到盒子里"></a>第四步：将Armbian刷到盒子里</h3><p>首先说，这一步不是必要的。在U盘运行Armbian和在盒子里运行性能是差不多的，除非你：</p>
+<ol>
+<li>要腾出U盘做的别的事情</li>
+<li>使用盒子上的USB口，比如连接额外的硬盘</li>
+</ol>
+<p>将系统刷入盒子（emmc：可以理解成N1自带的硬盘）很简单，只需要一行命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nand-sata-install</span><br></pre></td></tr></table></figure>
+
+<p>这行命令敲完之后，再敲一下 <code>halt</code>关机，然后拔掉U盘。以后通电就进入Armbian，就再也不用U盘了。</p>
+<p><strong>备注</strong></p>
+<p>不要使用<code>/root/install.sh</code>，据说有bug，用这个脚本的话刷emmc后第一次可以成功启动，再以后启动就会失败。还是据说，修复的方式就是插上前面的U盘去启动Armbian，用<code>nand-sata-install</code> 重新将系统刷入emmc（完全覆盖）即可。我没试过，写在这备忘。</p>
+<p>U盘的Armbian功能并没有缩减，除非你运行的软件一定要系统跑在emmc，否则没必要刷到盒子里。</p>
+<h2 id="Armbian的基本配置"><a href="#Armbian的基本配置" class="headerlink" title="Armbian的基本配置"></a>Armbian的基本配置</h2><p>第一步肯定是联网了，如果你已经插了网线应该自动连上网了。但如果需要Wifi的话，使用<code>umtui</code>命令即可。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nmtui</span><br></pre></td></tr></table></figure>
+
+<p>这个命令敲完会出来一个简单的ui，用键盘方向键就可以选择和配置你的网路。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200209151347103.png" alt="image-20200209151347103"></p>
+<p>其实Armbian还是很易用的，你登录的时候它就提醒你了可以用<code>armbian-config</code>去配置Armbian。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200209151648670.png" alt="image-20200209151648670"></p>
+<p>敲一下这个命令，你就会发现另外一片天地。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">armbian-config</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tobyqin.github.io/images/image-20200209151755721.png" alt="image-20200209151755721"></p>
+<p>在这里你可以配置很多东西：</p>
+<ol>
+<li>最基本的网络，Wifi，蓝牙，热点等</li>
+<li>中文显示 <code>Personal / Locales</code></li>
+<li>时区  <code>Personal / Timezone</code></li>
+<li>软件源镜像 <code>Personal / Mirror</code></li>
+</ol>
+<p>这里也不是万能的，有两个小问题需要注意。</p>
+<p>一，需要在ssh中输入中文的话，还需要修改 <code>/etc/environment</code> 下的 <code>LC_ALL</code>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">root@aml:~# cat &#x2F;etc&#x2F;environment</span><br><span class="line">ARCH&#x3D;arm64</span><br><span class="line">LC_ALL&#x3D;”en_US.utf-8″</span><br></pre></td></tr></table></figure>
+
+<p>二，需要彻底换软件源的话，还需要修改 <code>/etc/apt/sources/list</code>，替换内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">deb http://httpredir.debian.org/debian stretch main contrib non-free</span></span><br><span class="line"><span class="meta">#</span><span class="bash">deb-src http://httpredir.debian.org/debian stretch main contrib non-free</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">deb http://httpredir.debian.org/debian stretch-updates main contrib non-free</span></span><br><span class="line"><span class="meta">#</span><span class="bash">deb-src http://httpredir.debian.org/debian stretch-updates main contrib non-free</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">deb http://httpredir.debian.org/debian stretch-backports main contrib non-free</span></span><br><span class="line"><span class="meta">#</span><span class="bash">deb-src http://httpredir.debian.org/debian stretch-backports main contrib non-free</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">deb http://security.debian.org/ stretch/updates main contrib non-free</span></span><br><span class="line"><span class="meta">#</span><span class="bash">deb-src http://security.debian.org/ stretch/updates main contrib non-free</span></span><br><span class="line"></span><br><span class="line">deb http://mirrors.ustc.edu.cn/debian stretch main contrib non-free</span><br><span class="line">deb http://mirrors.ustc.edu.cn/debian stretch-updates main contrib non-free</span><br><span class="line">deb http://mirrors.ustc.edu.cn/debian stretch-backports main contrib non-free</span><br><span class="line">deb http://mirrors.ustc.edu.cn/debian-security/ stretch/updates main contrib non-free</span><br></pre></td></tr></table></figure>
+
+<p>修改完之后，执行更新命令更新索引。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get upgrade -y</span><br></pre></td></tr></table></figure>
+
+<p>前面从<code>armbian-config</code>里更新的镜像源应该是<code>/etc/apt/sources.list.d/armbian.list</code>里的。</p>
+<p>如果需要在vim下使用右键粘贴，需要修改一下模式。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vim /usr/share/vim/vim80/defaults.vim</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 查找 <span class="built_in">set</span> mouse</span></span><br><span class="line">if has('mouse')</span><br><span class="line">  set mouse=a</span><br><span class="line">endif</span><br><span class="line"> </span><br><span class="line"><span class="meta">#</span><span class="bash"> 将值从<span class="string">"a"</span>改成<span class="string">"r"</span></span></span><br><span class="line">if has('mouse')</span><br><span class="line">  set mouse=r</span><br><span class="line">endif</span><br></pre></td></tr></table></figure>
+
+<p>如果需要启用BBR，可以在<code>/etc/sysctl.conf</code>末尾加上两行：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">net.core.default_qdisc&#x3D;fq</span><br><span class="line">net.ipv4.tcp_congestion_control&#x3D;bbr</span><br></pre></td></tr></table></figure>
+
+<p>然后执行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sysctl -p</span><br></pre></td></tr></table></figure>
+
+<h2 id="Armbian-的后续"><a href="#Armbian-的后续" class="headerlink" title="Armbian 的后续"></a>Armbian 的后续</h2><p>到此为止，你的N1已经是一个可以独立运行的小型Linux主机，连上Wifi后找个插座就可以7x24小时运行了。它的性能如何呢？</p>
+<blockquote>
+<p>ARM64主流架构，真64位linux系统，docker随便玩。</p>
+<p>（Armbian输出：Linux aml 5.0.2-aml-s905 #5.77 SMP PREEMPT Mon Apr 1 17:41:33 MSK 2019 aarch64 GNU/Linux）</p>
+<p>真千兆有线网口，2.4/5G双频wifi，可以作热点。</p>
+<p>自带8G的emmc存储，Linux系统可以直接刷到盒子里，不用额外插SD卡，I/O性能好。</p>
+<p>CPU 4核，2G内存。</p>
+</blockquote>
+<p>其实还是蛮强的，用下面几个命令可以查看它的具体参数：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@aml:~# cat /proc/cpuinfo</span><br><span class="line">...</span><br><span class="line">root@aml:~# cat /proc/meminfo</span><br><span class="line">...</span><br><span class="line">root@aml:~# free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           1.8G        200M        867M         20M        770M        1.5G</span><br><span class="line">Swap:          919M        4.5M        914M</span><br><span class="line"></span><br><span class="line">root@aml:~# df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">udev            469M     0  469M   0% /dev</span><br><span class="line">tmpfs           184M   22M  163M  12% /run</span><br><span class="line">/dev/sda2       6.9G  2.1G  4.8G  31% /</span><br><span class="line">tmpfs           920M     0  920M   0% /dev/shm</span><br><span class="line">tmpfs           5.0M  4.0K  5.0M   1% /run/lock</span><br><span class="line">tmpfs           920M     0  920M   0% /sys/fs/cgroup</span><br><span class="line">tmpfs           920M   16K  920M   1% /tmp</span><br><span class="line">/dev/sda1       128M   56M   73M  44% /boot</span><br><span class="line">/dev/zram0       49M   14M   32M  30% /var/log</span><br><span class="line">tmpfs           184M     0  184M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h3><p>在Armbian上安装软件也是非常简单的：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">apt-get install cockpit</span><br></pre></td></tr></table></figure>
+
+<p>Cockpit是一个Linux服务器的Web管理程序，简单易用。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200209154517563.png" alt="image-20200209154517563"></p>
+<h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>装个Docker也是手到擒来的事情：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com -o get-docker.sh</span><br><span class="line">sh get-docker.sh --mirror Aliyun</span><br></pre></td></tr></table></figure>
+
+<p>注意上面的命令用了阿里云的加速服务。Docker安装完成后Docker镜像的拉取也要加速一下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">mkdir -p /etc/docker</span><br><span class="line">vi /etc/docker/daemon.json</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">"registry-mirrors": ["https://加速镜像地址"]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>我们来安装个Portainer。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker volume create portainer_data</span><br><span class="line">docker run -d -p 9000:9000 --name portainer \</span><br><span class="line">-v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">-v portainer_data:/data portainer/portainer:linux-arm64</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tobyqin.github.io/images/image-20200209160349534.png" alt="image-20200209160349534"></p>
+<p>让Portainer开机自动运行：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker update --restart=always portainer</span><br></pre></td></tr></table></figure>
+
+<p>注意，Armbian下的软件都是Arm架构的，包括Docker镜像，所以在安装前需要甄别一下。</p>
+<h3 id="安装LAMP"><a href="#安装LAMP" class="headerlink" title="安装LAMP"></a>安装LAMP</h3><p>LNMP是Linux+Nginx+MySQL+PHP组合缩写，可以认为是Linux Web服务器的黄金套件。</p>
+<ul>
+<li>官网：<a href="https://lnmp.org/" target="_blank" rel="noopener">https://lnmp.org/</a></li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">root@aml:~/lnmp1.6<span class="comment"># wget http://soft.vpser.net/lnmp/lnmp1.6.tar.gz -cO lnmp1.6.tar.gz &amp;&amp; tar zxf lnmp1.6.tar.gz &amp;&amp; cd lnmp1.6 &amp;&amp; ./install.sh lnmp</span></span><br><span class="line">...</span><br><span class="line">============================== Check install ==============================</span><br><span class="line">Checking ...</span><br><span class="line">Nginx: OK</span><br><span class="line">MySQL: OK</span><br><span class="line">PHP: OK</span><br><span class="line">PHP-FPM: OK</span><br><span class="line">Clean Web Server src directory...</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|          LNMP V1.6 <span class="keyword">for</span> Debian Linux Server, Written by Licess          |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|           For more information please visit https://lnmp.org           |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|    lnmp status manage: lnmp &#123;start|stop|reload|restart|<span class="built_in">kill</span>|status&#125;    |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|  phpMyAdmin: http://IP/phpmyadmin/                                     |</span><br><span class="line">|  phpinfo: http://IP/phpinfo.php                                        |</span><br><span class="line">|  Prober:  http://IP/p.php                                              |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|  Add VirtualHost: lnmp vhost add                                       |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line">|  Default directory: /home/wwwroot/default                              |</span><br><span class="line">+------------------------------------------------------------------------+</span><br><span class="line"></span><br><span class="line">+-------------------------------------------+</span><br><span class="line">|    Manager <span class="keyword">for</span> LNMP, Written by Licess    |</span><br><span class="line">+-------------------------------------------+</span><br><span class="line">|              https://lnmp.org             |</span><br><span class="line">+-------------------------------------------+</span><br><span class="line">nginx (pid 1340) is running...</span><br><span class="line">php-fpm is runing!</span><br><span class="line">● mysql.service - LSB: start and stop MySQL</span><br><span class="line">   Loaded: loaded (/etc/init.d/mysql; generated; vendor preset: enabled)</span><br><span class="line">   Active: active (running) since Sun 2020-02-09 22:58:55 CST; 3s ago</span><br><span class="line">     Docs: man:systemd-sysv-generator(8)</span><br><span class="line">      CPU: 16ms</span><br><span class="line">   CGroup: /system.slice/mysql.service</span><br><span class="line">           ├─1380 /bin/sh /usr/<span class="built_in">local</span>/mysql/bin/mysqld_safe --datadir=/usr/<span class="built_in">local</span>/mysql/var --pid-file=/usr/<span class="built_in">local</span>/mysql/var/aml.pid</span><br><span class="line">           └─1880 /usr/<span class="built_in">local</span>/mysql/bin/mysqld --basedir=/usr/<span class="built_in">local</span>/mysql --datadir=/usr/<span class="built_in">local</span>/mysql/var --plugin-dir=/usr/<span class="built_in">local</span>/mysql/lib/plugin --user=mysql --<span class="built_in">log</span>-error=aml.err --open-files-limit=65535 --pid-file=/usr/<span class="built_in">local</span>/mysql/var/aml.pid --socket=/tmp/mysql.sock --port=3306</span><br><span class="line">           </span><br><span class="line">Feb 09 22:58:36 aml systemd[1]: Starting LSB: start and stop MySQL...</span><br><span class="line">Feb 09 22:58:37 aml mysql[1367]: Starting MySQL</span><br><span class="line">Feb 09 22:58:55 aml mysql[1367]: ...................</span><br><span class="line">Feb 09 22:58:55 aml systemd[1]: Started LSB: start and stop MySQL.</span><br><span class="line">State      Recv-Q Send-Q Local Address:Port               Peer Address:Port              </span><br><span class="line">LISTEN     0      50           *:3306                     *:*                  </span><br><span class="line">LISTEN     0      128          *:80                       *:*                  </span><br><span class="line">LISTEN     0      128          *:80                       *:*                  </span><br><span class="line">LISTEN     0      128          *:80                       *:*                  </span><br><span class="line">LISTEN     0      128          *:80                       *:*                  </span><br><span class="line">LISTEN     0      128          *:22                       *:*                  </span><br><span class="line">LISTEN     0      128         :::9090                    :::*                  </span><br><span class="line">LISTEN     0      128         :::9000                    :::*                  </span><br><span class="line">LISTEN     0      128         :::22                      :::*                  </span><br><span class="line">Install lnmp takes 180 minutes.</span><br><span class="line">Install lnmp V1.6 completed! enjoy it.</span><br></pre></td></tr></table></figure>
+
+<p>可能N1性能和LNMP期望值不一样，安装花了3个小时。</p>
+<h3 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h3><p>如果想从外网访问你的N1服务器，就需要使用内网穿透技术了，之前我有写过<a href="/posts/2019-02-22/reverse-proxy-and-intranet-through/">反向代理和内网穿透</a>，换汤不换药，我们需要frp。</p>
+<ul>
+<li>官网：<a href="https://github.com/fatedier/frp" target="_blank" rel="noopener">https://github.com/fatedier/frp</a></li>
+</ul>
+<p>大致思路：</p>
+<ol>
+<li>下载和frp服务器对应的客户端版本，使用arm64架构</li>
+<li>准备frp的配置文件手动测试成功</li>
+<li>创建frp自启服务，让frp长期在后台运行</li>
+</ol>
+<p>前面两步需要比较多的调试时间，但操作都比较简单，有机会我再补充。创建自启服务的内容备忘一下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vi /lib/systemd/system/frpc.service</span><br><span class="line"></span><br><span class="line">[Unit]</span><br><span class="line">Description=Frp Client Service</span><br><span class="line">After=network.target</span><br><span class="line"> </span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=nobody</span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartSec=5s</span><br><span class="line">ExecStart=/usr/local/frp_0.27.0/frpc -c /usr/local/frp_0.27.0/frpc.ini</span><br><span class="line">ExecReload=/usr/local/frp_0.27.0/frpc reload -c /usr/local/frp_0.27.0/frpc.ini</span><br><span class="line"> </span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">systemctl start frpc # 启动客户端</span><br><span class="line">systemctl status frpc # 检查状态</span><br><span class="line">systemctl enable frpc # 开机自启</span><br></pre></td></tr></table></figure>
+
+<h3 id="更多玩法"><a href="#更多玩法" class="headerlink" title="更多玩法"></a>更多玩法</h3><ol>
+<li><a href="https://www.right.com.cn/forum/thread-1347921-1-1.html" target="_blank" rel="noopener">Armbian下Docker安装OpenWrt做旁路由</a></li>
+<li><a href="https://www.right.com.cn/forum/thread-343169-1-1.html" target="_blank" rel="noopener">Armbian下Docker做Web 服务器</a></li>
+<li><a href="https://yuerblog.cc/2019/10/23/%e6%96%90%e8%ae%afn1-%e5%88%a9%e7%94%a8redsocksss%e5%ae%9e%e7%8e%b0%e5%85%a8%e5%b1%80%e7%bf%bb%e5%a2%99/" target="_blank" rel="noopener">Armbian下的全局科学上网</a></li>
+<li><a href="https://luotianyi.vc/2936.html" target="_blank" rel="noopener">Armbian下的宝塔面板配置</a></li>
+<li><a href="https://instar.me/archives/398960e0.html" target="_blank" rel="noopener">https://instar.me/archives/398960e0.html</a></li>
+</ol>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a href="https://luotianyi.vc/1306.html" target="_blank" rel="noopener">https://luotianyi.vc/1306.html</a></li>
+<li><a href="https://luotianyi.vc/1389.html" target="_blank" rel="noopener">https://luotianyi.vc/1389.html</a></li>
+<li><a href="https://yuerblog.cc/2019/10/23/%e6%96%90%e8%ae%afn1-%e5%ae%8c%e7%be%8e%e5%88%b7%e6%9c%baarmbian%e6%95%99%e7%a8%8b/" target="_blank" rel="noopener">N1 完美刷Armbian教程</a></li>
+<li><a href="https://www.right.com.cn/forum/thread-510423-1-1.html" target="_blank" rel="noopener">Armbian 5.77 刷机指南</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-05-06/jianguoyun-command-line/" rel="bookmark">用命令行在Linux同步坚果云</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-09/linux-new-user-missed-home-directory/" rel="bookmark">Linux新建用户没有用户目录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-09/linux-view-system-information/" rel="bookmark">Linux查看系统信息的命令</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-12/history-command-in-linux/" rel="bookmark">Linux中的history命令</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-12/linux-task-manager/" rel="bookmark">Linux中的任务管理器</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/" title="斐讯N1的折腾之路">https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># Linux</a>
+              <a href="/tags/n1/" rel="tag"># N1</a>
+              <a href="/tags/armbian/" rel="tag"># Armbian</a>
+              <a href="/tags/docker/" rel="tag"># Docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2020-02-09/frp-server-for-free/" rel="prev" title="免费的FRP服务器">
+      <i class="fa fa-chevron-left"></i> 免费的FRP服务器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2020-02-10/the-platform-api-free-translation/" rel="next" title="各平台免费翻译API">
+      各平台免费翻译API <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#刷成Armbian"><span class="nav-number">1.</span> <span class="nav-text">刷成Armbian</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Armbian的基本配置"><span class="nav-number">2.</span> <span class="nav-text">Armbian的基本配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Armbian-的后续"><span class="nav-number">3.</span> <span class="nav-text">Armbian 的后续</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">4.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/";
+    this.page.identifier = "posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/";
+    this.page.title = "斐讯N1的折腾之路";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Pypi的发布实践。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="上传并发布你自己发明的轮子 - Python PyPI 实践">
+<meta property="og:url" content="https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="Pypi的发布实践。">
+<meta property="og:image" content="https://tobyqin.github.io/images/pypi_manage.png">
+<meta property="article:published_time" content="2017-03-09T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.436Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="PyPI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/pypi_manage.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>上传并发布你自己发明的轮子 - Python PyPI 实践 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          上传并发布你自己发明的轮子 - Python PyPI 实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-09T00:00:00Z">2017-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Pypi的发布实践。</p>
+<a id="more"></a>
+
+<p>本文仅讨论上传相关的步骤，关于如何给写一个<code>setup.py</code> 请参阅官方文档：</p>
+<ul>
+<li><a href="https://docs.python.org/2/distutils/setupscript.html" target="_blank" rel="noopener">https://docs.python.org/2/distutils/setupscript.html</a></li>
+</ul>
+<h2 id="上传前的注意事项"><a href="#上传前的注意事项" class="headerlink" title="上传前的注意事项"></a>上传前的注意事项</h2><ul>
+<li>假设你的包已经开发完成，并且根目录必须要有一个<a href="https://github.com/pypa/sampleproject/blob/master/setup.py" target="_blank" rel="noopener">setup.py</a>。</li>
+<li>最好有一个<a href="https://github.com/pypa/sampleproject/blob/master/README.rst" target="_blank" rel="noopener">README.rst</a> 用来描述你的轮子，虽然这不是必须的，但文档就像内裤，你最好还是要有的。</li>
+<li>如果你需要打包代码文件夹以外的文件，比如版权信息等等，你还需要写一个 <a href="https://github.com/pypa/sampleproject/blob/master/MANIFEST.in" target="_blank" rel="noopener">MANIFEST.in</a>。</li>
+</ul>
+<h2 id="关于setup-py的补充说明"><a href="#关于setup-py的补充说明" class="headerlink" title="关于setup.py的补充说明"></a>关于<code>setup.py</code>的补充说明</h2><ul>
+<li><code>name</code> 必须是唯一的，允许使用数字和字母，推荐使用中划线（-）而不是下划线（_），因为pip安装只支持中划线，比如<code>pip install my-pkg</code>，为了不给自己找麻烦请听话。</li>
+<li><code>version</code>推荐遵循<a href="https://packaging.python.org/distributing/#semantic-versioning-preferred" target="_blank" rel="noopener">语义化版本号</a>规则，简单说就像这样：1.2.0</li>
+<li>作者姓名和邮箱地址不一定要和你的PyPI账号一致。</li>
+</ul>
+<h2 id="测试本地打包命令"><a href="#测试本地打包命令" class="headerlink" title="测试本地打包命令"></a>测试本地打包命令</h2><p>如果上面的都没问题，在本地目录执行以下命令应该能成功在dist目录下生成*.tar.gz的包文件。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">python setup.py sdist</span><br></pre></td></tr></table></figure>
+
+<h2 id="上传并发布包文件到PyPI"><a href="#上传并发布包文件到PyPI" class="headerlink" title="上传并发布包文件到PyPI"></a>上传并发布包文件到PyPI</h2><h3 id="创建-PyPI账号"><a href="#创建-PyPI账号" class="headerlink" title="创建 PyPI账号"></a>创建 PyPI账号</h3><p>非常简单，直接通过官网注册 <a href="https://pypi.python.org/pypi?%3Aaction=register_form，" target="_blank" rel="noopener">https://pypi.python.org/pypi?%3Aaction=register_form，</a> 但是需要验证邮件并确认激活。</p>
+<h3 id="创建用户验证文件-pypirc"><a href="#创建用户验证文件-pypirc" class="headerlink" title="创建用户验证文件 ~/.pypirc"></a>创建用户验证文件 <code>~/.pypirc</code></h3><p>在自己的用户目录下新建一个空白文件命名为<code>.pypirc</code>，内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[distutils]</span><br><span class="line">index-servers&#x3D;pypi</span><br><span class="line"></span><br><span class="line">[pypi]</span><br><span class="line">repository &#x3D; https:&#x2F;&#x2F;upload.pypi.org&#x2F;legacy&#x2F;</span><br><span class="line">username &#x3D; &lt;username&gt;</span><br><span class="line">password &#x3D; &lt;password&gt;</span><br></pre></td></tr></table></figure>
+
+<p>用户名和密码就是上一步骤所创建的，直接明文输入。如果你觉得明文密码不安全也可以留空，在后面的上传过程中会提示你手动输入。</p>
+<h3 id="注册你的包"><a href="#注册你的包" class="headerlink" title="注册你的包"></a>注册你的包</h3><p>你需要到PyPI注册并验证你的包，之后才能开始真正上传，注册的方式有以下几种。</p>
+<ol>
+<li>使用命令<code>python setup.py register</code>，最简单但官网不推荐，因为使用的是HTTP未加密，有可能会被攻击人嗅探到你的密码。</li>
+<li>通过<a href="https://pypi.python.org/pypi?%3Aaction=submit_form" target="_blank" rel="noopener">PyPI网站提交表单</a>完成注册验证。</li>
+<li>安装 <code>pip install twine</code> 然后在通过命令 <code>twine register dist/mypkg.whl</code> 完成注册。</li>
+</ol>
+<h3 id="上传并完成发布"><a href="#上传并完成发布" class="headerlink" title="上传并完成发布"></a>上传并完成发布</h3><p>你可以任选以下两种方式之一发布你的轮子。</p>
+<ol>
+<li>使用命令：<code>python setup.py sdist upload</code>，还是和上面一样，最简单但是有安全隐患。</li>
+<li>使用 <a href="https://packaging.python.org/key_projects/#twine" target="_blank" rel="noopener">twine</a>： <code>twine upload dist/*</code></li>
+</ol>
+<h3 id="管理你的包"><a href="#管理你的包" class="headerlink" title="管理你的包"></a>管理你的包</h3><p>如果你的包已经上传成功，那么当你登录PyPI网站后应该能在右侧导航栏看到管理入口。</p>
+<p><img src="https://tobyqin.github.io/images/pypi_manage.png" alt="pypi_manage"></p>
+<p>点击包名进去后你可以对你的包进行管理，当然你也可以从这里删除这个包。</p>
+<h3 id="让别人使用你的包"><a href="#让别人使用你的包" class="headerlink" title="让别人使用你的包"></a>让别人使用你的包</h3><p>包发布完成后，其他人只需要使用pip就可以安装你的包文件。比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install package-name</span><br></pre></td></tr></table></figure>
+
+<p>如果你更新了包，别人可以可以通过<code>--update</code>参数来更新：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install package-name --update</span><br></pre></td></tr></table></figure>
+
+<h2 id="可能遇到的错误"><a href="#可能遇到的错误" class="headerlink" title="可能遇到的错误"></a>可能遇到的错误</h2><h3 id="Upload-failed-403-Invalid-or-non-existent-authentication-information"><a href="#Upload-failed-403-Invalid-or-non-existent-authentication-information" class="headerlink" title="Upload failed (403): Invalid or non-existent authentication information."></a>Upload failed (403): Invalid or non-existent authentication information.</h3><p>错误的用户验证信息，你需要创建一个用户验证文件 <code>~/.pypirc</code>。请参阅上文。</p>
+<h3 id="Upload-failed-403-You-are-not-allowed-to-edit-‘xxx’-package-information"><a href="#Upload-failed-403-You-are-not-allowed-to-edit-‘xxx’-package-information" class="headerlink" title="Upload failed (403): You are not allowed to edit ‘xxx’ package information"></a>Upload failed (403): You are not allowed to edit ‘xxx’ package information</h3><p>你需要先注册你的包才可以开始上传，运行注册命令：<code>python setup.py register</code></p>
+<h3 id="Server-response-401-Incomplete-registration-check-your-email"><a href="#Server-response-401-Incomplete-registration-check-your-email" class="headerlink" title="Server response (401): Incomplete registration; check your email"></a>Server response (401): Incomplete registration; check your email</h3><p>你的PyPI账户还没完成邮箱验证，你需要去注册邮箱找到一封验证邮件完成验证后再重试失败的步骤。</p>
+<h3 id="Server-response-400-Invalid-classifier-“Topic-Software-Development-Utilities”"><a href="#Server-response-400-Invalid-classifier-“Topic-Software-Development-Utilities”" class="headerlink" title="Server response (400): Invalid classifier “Topic :: Software Development :: Utilities”"></a>Server response (400): Invalid classifier “Topic :: Software Development :: Utilities”</h3><p>你的setup.py文件中的<strong>classifier</strong>信息有误，请按<a href="https://pypi.python.org/pypi?%3Aaction=browse" target="_blank" rel="noopener">官网</a>的正确分类书写<strong>classifier</strong>.</p>
+<h3 id="error-No-dist-file-created-in-earlier-command"><a href="#error-No-dist-file-created-in-earlier-command" class="headerlink" title="error: No dist file created in earlier command"></a>error: No dist file created in earlier command</h3><p>你还没打包就开始了上传命令，建议打包和上传的操作放在一起做，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">python setup sdist upload</span><br></pre></td></tr></table></figure>
+
+<h3 id="error-Upload-failed-499-Client-Disconnected"><a href="#error-Upload-failed-499-Client-Disconnected" class="headerlink" title="error: Upload failed (499): Client Disconnected"></a>error: Upload failed (499): Client Disconnected</h3><p>这应该是网络问题，多重试几次。</p>
+<h3 id="Upload-failed-400-File-already-exists"><a href="#Upload-failed-400-File-already-exists" class="headerlink" title="Upload failed (400): File already exists"></a>Upload failed (400): File already exists</h3><p>文件已经存在了，你每一次上次都应该更新版本号。</p>
+<h3 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h3><ul>
+<li><a href="https://packaging.python.org/distributing/" target="_blank" rel="noopener">https://packaging.python.org/distributing/</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-10-08/use-logging-in-python/" rel="bookmark">Python中的logging模块</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/" title="上传并发布你自己发明的轮子 - Python PyPI 实践">https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/pypi/" rel="tag"># PyPI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2017-02-06/move-on-to-python-3/" rel="prev" title="Move on to Python 3">
+      <i class="fa fa-chevron-left"></i> Move on to Python 3
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2017-03-09/git-diff-tip/" rel="next" title="理解 Git Diff 命令">
+      理解 Git Diff 命令 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#上传前的注意事项"><span class="nav-number">1.</span> <span class="nav-text">上传前的注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于setup-py的补充说明"><span class="nav-number">2.</span> <span class="nav-text">关于setup.py的补充说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试本地打包命令"><span class="nav-number">3.</span> <span class="nav-text">测试本地打包命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#上传并发布包文件到PyPI"><span class="nav-number">4.</span> <span class="nav-text">上传并发布包文件到PyPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可能遇到的错误"><span class="nav-number">5.</span> <span class="nav-text">可能遇到的错误</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2017-03-09/upload-your-pypi-package/";
+    this.page.identifier = "posts/2017-03-09/upload-your-pypi-package/";
+    this.page.title = "上传并发布你自己发明的轮子 - Python PyPI 实践";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

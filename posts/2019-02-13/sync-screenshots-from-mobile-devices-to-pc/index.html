@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="我发现手机端的测试怎么截图报bug是个不可忽视的小问题，传统的做法真的很烦。在这里我提供一些思路给大家。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从手机截图报Bug扯到工具论">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="我发现手机端的测试怎么截图报bug是个不可忽视的小问题，传统的做法真的很烦。在这里我提供一些思路给大家。">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/201901051013491325.JPG">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/201901051004382311.JPG">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/4abeb57ffe.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/201901141355323283.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/bee265372c.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/201901051016009569.jpg">
+<meta property="article:published_time" content="2019-02-13T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.460Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="tips">
+<meta property="article:tag" content="mobile">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/2019-02/201901051013491325.JPG">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>从手机截图报Bug扯到工具论 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从手机截图报Bug扯到工具论
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-13 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-13T00:00:00Z">2019-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我发现手机端的测试怎么截图报bug是个不可忽视的小问题，传统的做法真的很烦。在这里我提供一些思路给大家。</p>
+<a id="more"></a>
+
+<h2 id="自动同步截图文件夹"><a href="#自动同步截图文件夹" class="headerlink" title="自动同步截图文件夹"></a>自动同步截图文件夹</h2><p>这是一个看上去很不错的思路，现成有个工具可以达到这个目的：坚果云。</p>
+<p>在手机端安装一个坚果云，配置好要同步的截图目录，每次截图后它会帮你自动同步。在电脑端安装客户端后直接就能看到新同步的文件，也可以直接在网页端刷新就能预览。</p>
+<p>这个方案的问题：</p>
+<ol>
+<li>多台手机将登录同一个账号（实际情况必然如此，便于测试多台设备）</li>
+<li>多台手机同步的截图目录会混在一起（N到1）， 图片很混乱</li>
+<li>老设备很久以前的截图也会同步进来，数据量更大更混乱，你还不想删</li>
+<li>同步的App在后台很有可能也很容易被杀掉</li>
+</ol>
+<p>所以这个方案适合新手机或者只用一台手机测试的情况，不是特别推荐。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/201901051013491325.JPG" alt=""></p>
+<h2 id="手动分享新图片"><a href="#手动分享新图片" class="headerlink" title="手动分享新图片"></a>手动分享新图片</h2><p>这是目前大家私人手机上很常用的方式，在测试机就不太合适了。</p>
+<p>比如你不会在测试机登录自己的微信QQ，就算有公共的账号，在电脑上也只能登录一个实例，你用了其他人就用不了了。N台设备需要N个账号，明显不合适。</p>
+<p>所以这个方案的关键是，找到一个合适的<strong>可以多设备登录，分享后能在网页端预览内容的App</strong>，并且还不能是公开分享，我的建议还是坚果云。</p>
+<p>在手机端登录坚果云后，截图后直接分享到坚果云的某个目录，电脑上网页端刷新一下就可以看到截图，整个流程很顺畅。很多手机还可以在分享前编辑一下图片，这时候你还能用涂鸦工具标注bug区域等等。</p>
+<p>再退一步，也可以考虑用邮箱来代替这样的App，截图，分享到邮件，填收件人，不算太爽还凑合，还有延迟可能比较高。</p>
+<p>这个方案我用下来没有太大问题，支持安卓和苹果设备。唯一的问题是弄一个公共账号，不难。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/201901051004382311.JPG" alt=""></p>
+<h2 id="集成截图工具到被测应用"><a href="#集成截图工具到被测应用" class="headerlink" title="集成截图工具到被测应用"></a>集成截图工具到被测应用</h2><p>这是不少大厂的做法，比如支付宝应用截图后就会提示你是否要反馈问题，还有一些App在你摇一摇后就自动截屏反馈问题。</p>
+<p>如果你们的开发团队有精力并且愿意为质量部门添砖加瓦，那么这个世界将会非常美好。这需要各部门的通力合作和强力支持，最主要还是老板和业务部门的点头，给资源和时间。</p>
+<p>这样的集成可以做的很深入，不仅截图，还有日志，当前运行数据等等一并捕获提交到bug管理工具，省心啊。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/4abeb57ffe.jpg" alt=""></p>
+<h2 id="DIY一个同步工具"><a href="#DIY一个同步工具" class="headerlink" title="DIY一个同步工具"></a>DIY一个同步工具</h2><p>这是最后考虑的方案，简单来说就是自己写一个App，比如安装后在状态栏加一个同步按钮，或者贴在屏幕边缘等等。当你需要时点击一下进行同步，同时也提供个分享接口。做这样的一个App不算太难，不过还是需要时间和精力的投入，如果你有兴趣我们可以聊一聊。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/201901141355323283.png" alt=""></p>
+<p>基本功能大概是这样的：</p>
+<ul>
+<li>监控指定文件夹（截图目录），自动上传到远程设备目录</li>
+<li>提供分享接口</li>
+<li>收集设备状态</li>
+<li>提供Web管理端，方便访问截图，查看设备信息</li>
+<li>不需要连接数据线</li>
+</ul>
+<p>或许已经有类似的工具了，我没找到。但如果外部工具都不顺手的时候，自己做一个可能更符合需求。</p>
+<p><img src="https://tobyqin.github.io/images/bee265372c.jpg" alt=""></p>
+<h2 id="关于坚果云"><a href="#关于坚果云" class="headerlink" title="关于坚果云"></a>关于坚果云</h2><p>坚果云是目前唯一值得推荐的云盘，不限速只限流量，每月上传1G下载3G，没广告不推销，作为效率软件完全足够。每个项目组可以自己申请一个公用账号。</p>
+<p>国内外的网盘因为各种原因都已经不值得推荐了，各种笔记类App也已经加上很很多限制，比如多端登录和流量限制等等。</p>
+<p>坚果云作为一个要盈利的公司将来怎么样也不好说，而且是公网软件，敏感数据还是不要全往里面放。有朋友说可以考虑搭建私有云，我稍微对比总结了一下：</p>
+<ol>
+<li>seafile - 国内团队开发的开源企业级云存储方案，提供全平台客户端，口碑较好。</li>
+<li>owncloud - 开源的个人云解决方案，貌似吐槽比较多，占资源，不太推荐。</li>
+<li>nextcloud - 据说是从owncloud团队分出来的，核心差不多，颜值比较高，口碑也一般。</li>
+</ol>
+<p>如果将来公有云都挂了，那么我们就整一个。</p>
+<p><img src="https://tobyqin.github.io/images/201901051016009569.jpg" alt=""></p>
+<h2 id="我的工具论"><a href="#我的工具论" class="headerlink" title="我的工具论"></a>我的工具论</h2><p>有一些同学认为不能用太顺手的工具，因为会形成依赖，一旦离开就会浑身难受。</p>
+<p>我认为这种担心是多余的，工具用得好，下班回家早。只有你工作效率提高了，才能更深入去了解业务和提高自己，如果总是忙于繁琐的事物，日复一日终将被工具替代。</p>
+<p>古人云了，工欲善其事必先利其器。</p>
+<p>古人还云了，磨刀不误砍柴工。</p>
+<p>好的工具是不会消失的，但有可能收费。当你觉得值的话，就买下它吧，免费的有可能更贵。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/programming-notes/" rel="bookmark">编程语录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/get-jetbrains-student-licence/" rel="bookmark">使用教育邮箱激活JetBrains全家桶</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/" title="从手机截图报Bug扯到工具论">https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tips/" rel="tag"># tips</a>
+              <a href="/tags/mobile/" rel="tag"># mobile</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-12/leetcode-add-two-numbers/" rel="prev" title="LeetCode第二题 - 两数相加">
+      <i class="fa fa-chevron-left"></i> LeetCode第二题 - 两数相加
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-22/reverse-proxy-and-intranet-through/" rel="next" title="反向代理和内网穿透">
+      反向代理和内网穿透 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#自动同步截图文件夹"><span class="nav-number">1.</span> <span class="nav-text">自动同步截图文件夹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#手动分享新图片"><span class="nav-number">2.</span> <span class="nav-text">手动分享新图片</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#集成截图工具到被测应用"><span class="nav-number">3.</span> <span class="nav-text">集成截图工具到被测应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DIY一个同步工具"><span class="nav-number">4.</span> <span class="nav-text">DIY一个同步工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于坚果云"><span class="nav-number">5.</span> <span class="nav-text">关于坚果云</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我的工具论"><span class="nav-number">6.</span> <span class="nav-text">我的工具论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/";
+    this.page.identifier = "posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/";
+    this.page.title = "从手机截图报Bug扯到工具论";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

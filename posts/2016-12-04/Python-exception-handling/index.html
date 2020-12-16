@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="异常处理在任何一门编程语言里都是值得关注的一个话题，良好的异常处理可以让你的程序更加健壮，清晰的错误信息更能帮助你快速修复问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="总结：Python中的异常处理">
+<meta property="og:url" content="https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="异常处理在任何一门编程语言里都是值得关注的一个话题，良好的异常处理可以让你的程序更加健壮，清晰的错误信息更能帮助你快速修复问题。">
+<meta property="article:published_time" content="2016-12-04T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.484Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="exception handling">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>总结：Python中的异常处理 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          总结：Python中的异常处理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2016-12-04 00:00:00" itemprop="dateCreated datePublished" datetime="2016-12-04T00:00:00Z">2016-12-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>异常处理在任何一门编程语言里都是值得关注的一个话题，良好的异常处理可以让你的程序更加健壮，清晰的错误信息更能帮助你快速修复问题。</p>
+<a id="more"></a>
+
+<p>在Python中，和不部分高级语言一样，使用了try/except/finally语句块来处理异常，如果你有其他编程语言的经验，实践起来并不难。</p>
+<h2 id="异常处理语句-try…excpet…finally"><a href="#异常处理语句-try…excpet…finally" class="headerlink" title="异常处理语句 try…excpet…finally"></a>异常处理语句 try…excpet…finally</h2><h3 id="实例代码"><a href="#实例代码" class="headerlink" title="实例代码"></a>实例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">div</span><span class="params">(a, b)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        print(a / b)</span><br><span class="line">    <span class="keyword">except</span> ZeroDivisionError:</span><br><span class="line">        print(<span class="string">"Error: b should not be 0 !!"</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        print(<span class="string">"Unexpected Error: &#123;&#125;"</span>.format(e))</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        print(<span class="string">'Run into else only when everything goes well'</span>)</span><br><span class="line">    <span class="keyword">finally</span>:</span><br><span class="line">        print(<span class="string">'Always run into finally block.'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># tests</span></span><br><span class="line">div(<span class="number">2</span>, <span class="number">0</span>)</span><br><span class="line">div(<span class="number">2</span>, <span class="string">'bad type'</span>)</span><br><span class="line">div(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Mutiple exception in one line</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    print(a / b)</span><br><span class="line"><span class="keyword">except</span> (ZeroDivisionError, TypeError) <span class="keyword">as</span> e:</span><br><span class="line">    print(e)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Except block is optional when there is finally</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    open(database)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    close(database)</span><br><span class="line"></span><br><span class="line"><span class="comment"># catch all errors and log it</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    do_work()</span><br><span class="line"><span class="keyword">except</span>:    </span><br><span class="line">    <span class="comment"># get detail from logging module</span></span><br><span class="line">    logging.exception(<span class="string">'Exception caught!'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get detail from sys.exc_info() method</span></span><br><span class="line">    error_type, error_value, trace_back = sys.exc_info()</span><br><span class="line">    print(error_value)</span><br><span class="line">    <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="总结如下"><a href="#总结如下" class="headerlink" title="总结如下"></a>总结如下</h3><ol>
+<li><code>except</code>语句不是必须的，<code>finally</code>语句也不是必须的，但是二者必须要有一个，否则就没有<code>try</code>的意义了。</li>
+<li><code>except</code>语句可以有多个，Python会按<code>except</code>语句的顺序依次匹配你指定的异常，如果异常已经处理就不会再进入后面的<code>except</code>语句。</li>
+<li><code>except</code>语句可以以元组形式同时指定多个异常，参见实例代码。</li>
+<li><code>except</code>语句后面如果不指定异常类型，则默认捕获所有异常，你可以通过logging或者sys模块获取当前异常。</li>
+<li>如果要捕获异常后要重复抛出，请使用<code>raise</code>，后面不要带任何参数或信息。</li>
+<li>不建议捕获并抛出同一个异常，请考虑重构你的代码。</li>
+<li>不建议在不清楚逻辑的情况下捕获所有异常，有可能你隐藏了很严重的问题。</li>
+<li>尽量使用内置的异常处理语句来 替换try/except语句，比如<code>with</code>语句，<code>getattr()</code>方法。</li>
+</ol>
+<h2 id="抛出异常-raise"><a href="#抛出异常-raise" class="headerlink" title="抛出异常 raise"></a>抛出异常 raise</h2><p>如果你需要自主抛出异常一个异常，可以使用<code>raise</code>关键字，等同于C#和Java中的<code>throw</code>语句，其语法规则如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">raise</span> NameError(<span class="string">"bad name!"</span>)</span><br></pre></td></tr></table></figure>
+
+<p><code>raise</code>关键字后面需要指定你抛出的异常类型，一般来说抛出的异常越详细越好，Python在<code>exceptions</code>模块内建了很多的异常类型，通过使用<code>dir()</code>函数来查看<code>exceptions</code>中的异常类型，如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> exceptions</span><br><span class="line"></span><br><span class="line"><span class="comment"># ['ArithmeticError', 'AssertionError'.....]</span></span><br><span class="line"><span class="keyword">print</span> dir(exceptions)</span><br></pre></td></tr></table></figure>
+
+<p>当然你也可以查阅Python的文档库进行更详细的了解。</p>
+<ul>
+<li><a href="https://docs.python.org/2.7/library/exceptions.html#bltin-exceptions" target="_blank" rel="noopener">https://docs.python.org/2.7/library/exceptions.html#bltin-exceptions</a></li>
+</ul>
+<h2 id="自定义异常类型"><a href="#自定义异常类型" class="headerlink" title="自定义异常类型"></a>自定义异常类型</h2><p>Python中也可以自定义自己的特殊类型的异常，只需要要从<code>Exception</code>类继承(直接或间接)即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SomeCustomException</span><span class="params">(Exception)</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>一般你在自定义异常类型时，需要考虑的问题应该是这个异常所应用的场景。如果内置异常已经包括了你需要的异常，建议考虑使用内置 的异常类型。比如你希望在函数参数错误时抛出一个异常，你可能并不需要定义一个<code>InvalidArgumentError</code>，使用内置的<code>ValueError</code>即可。</p>
+<h2 id="经验案例"><a href="#经验案例" class="headerlink" title="经验案例"></a>经验案例</h2><h3 id="传递异常-re-raise-Exception"><a href="#传递异常-re-raise-Exception" class="headerlink" title="传递异常 re-raise Exception"></a>传递异常 re-raise Exception</h3><p>捕捉到了异常，但是又想重新引发它（传递异常），使用不带参数的<code>raise</code>语句即可：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f1</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="number">1</span>/<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f2</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        f1()</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">raise</span>  <span class="comment"># don't raise e !!!</span></span><br><span class="line"></span><br><span class="line">f2()</span><br></pre></td></tr></table></figure>
+
+<p>在Python2中，为了保持异常的完整信息，那么你捕获后再次抛出时千万不能在<code>raise</code>后面加上异常对象，否则你的<strong><code>trace</code>信息就会从此处截断</strong>。以上是最简单的重新抛出异常的做法。</p>
+<p>还有一些技巧可以考虑，比如抛出异常前对异常的信息进行更新。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f2</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        f1()</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        e.args += (<span class="string">'more info'</span>,)</span><br><span class="line">        <span class="keyword">raise</span></span><br></pre></td></tr></table></figure>
+
+<p>如果你有兴趣了解更多，建议阅读这篇博客。</p>
+<ul>
+<li><a href="http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html" target="_blank" rel="noopener">http://www.ianbicking.org/blog/2007/09/re-raising-exceptions.html</a></li>
+</ul>
+<p>Python3对重复传递异常有所改进，你可以自己尝试一下，不过建议还是同上。</p>
+<h3 id="Exception-和-BaseException"><a href="#Exception-和-BaseException" class="headerlink" title="Exception 和 BaseException"></a>Exception 和 BaseException</h3><p>当我们要捕获一个通用异常时，应该用<code>Exception</code>还是<code>BaseException</code>？我建议你还是看一下<a href="https://docs.python.org/2.7/library/exceptions.html#bltin-exceptions" target="_blank" rel="noopener"> 官方文档说明</a>，这两个异常到底有啥区别呢？ 请看它们之间的继承关系。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">BaseException</span><br><span class="line"> +-- SystemExit</span><br><span class="line"> +-- KeyboardInterrupt</span><br><span class="line"> +-- GeneratorExit</span><br><span class="line"> +-- Exception</span><br><span class="line">      +-- StopIteration...</span><br><span class="line">      +-- StandardError...</span><br><span class="line">      +-- Warning...</span><br></pre></td></tr></table></figure>
+
+<p>从<code>Exception</code>的层级结构来看，<code>BaseException</code>是最基础的异常类，<code>Exception</code>继承了它。<code>BaseException</code>除了包含所有的<code>Exception</code>外还包含了<code>SystemExit</code>，<code>KeyboardInterrupt</code>和<code>GeneratorExit</code>三个异常。</p>
+<p>有此看来你的程序在捕获所有异常时更应该使用<code>Exception</code>而不是<code>BaseException</code>，因为另外三个异常属于更高级别的异常，合理的做法应该是交给Python的解释器处理。</p>
+<h3 id="except-Exception-as-e和-except-Exception-e"><a href="#except-Exception-as-e和-except-Exception-e" class="headerlink" title="except Exception as e和 except Exception, e"></a>except Exception as e和 except Exception, e</h3><p>代码示例如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    do_something()</span><br><span class="line"><span class="keyword">except</span> NameError <span class="keyword">as</span> e:  <span class="comment"># should</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">except</span> KeyError, e:  <span class="comment"># should not</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>在Python2的时代，你可以使用以上两种写法中的任意一种。在Python3中你只能使用第一种写法，第二种写法被废弃掉了。第一个种写法可读性更好，而且为了程序的兼容性和后期移植的成本，请你也抛弃第二种写法。</p>
+<h3 id="raise-“Exception-string”"><a href="#raise-“Exception-string”" class="headerlink" title="raise “Exception string”"></a>raise “Exception string”</h3><p>把字符串当成异常抛出看上去是一个非常简洁的办法，但其实是一个非常不好的习惯。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> is_work_done():</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">raise</span> <span class="string">"Work is not done!"</span> <span class="comment"># not cool</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的语句如果抛出异常，那么会是这样的：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">Traceback (most recent call last):</span><br><span class="line">  File <span class="string">"/demo/exception_hanlding.py"</span>, line <span class="number">48</span>, <span class="keyword">in</span> &lt;module&gt;</span><br><span class="line">    <span class="keyword">raise</span> <span class="string">"Work is not done!"</span></span><br><span class="line">TypeError: exceptions must be old-style classes <span class="keyword">or</span> derived <span class="keyword">from</span> BaseException, <span class="keyword">not</span> str</span><br></pre></td></tr></table></figure>
+
+<p>这在Python2.4以前是可以接受的做法，但是没有指定异常类型有可能会让下游没办法正确捕获并处理这个异常，从而导致你的程序挂掉。简单说，这种写法是是封建时代的陋习，应该扔了。</p>
+<h3 id="使用内置的语法范式代替try-except"><a href="#使用内置的语法范式代替try-except" class="headerlink" title="使用内置的语法范式代替try/except"></a>使用内置的语法范式代替try/except</h3><p>Python 本身提供了很多的语法范式简化了异常的处理，比如<code>for</code>语句就处理的<code>StopIteration</code>异常，让你很流畅地写出一个循环。</p>
+<p><code>with</code>语句在打开文件后会自动调用<code>finally</code>中的关闭文件操作。我们在写Python代码时应该尽量避免在遇到这种情况时还使用try/except/finally的思维来处理。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># should not</span></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    f = open(a_file)</span><br><span class="line">    do_something(f)</span><br><span class="line"><span class="keyword">finally</span>:</span><br><span class="line">    f.close()</span><br><span class="line"></span><br><span class="line"><span class="comment"># should </span></span><br><span class="line"><span class="keyword">with</span> open(a_file) <span class="keyword">as</span> f:</span><br><span class="line">    do_something(f)</span><br></pre></td></tr></table></figure>
+
+<p>再比如，当我们需要访问一个不确定的属性时，有可能你会写出这样的代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    test = Test()</span><br><span class="line">    name = test.name  <span class="comment"># not sure if we can get its name</span></span><br><span class="line"><span class="keyword">except</span> AttributeError:</span><br><span class="line">    name = <span class="string">'default'</span></span><br></pre></td></tr></table></figure>
+
+<p>其实你可以使用更简单的<code>getattr()</code>来达到你的目的。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">name = getattr(test, <span class="string">'name'</span>, <span class="string">'default'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h2><p>最佳实践不限于编程语言，只是一些规则和填坑后的收获。</p>
+<ol>
+<li>只处理你知道的异常，避免捕获所有 异常然后吞掉它们。</li>
+<li>抛出的异常应该说明原因，有时候你知道异常类型也猜不出所以然的。</li>
+<li>避免在catch语句块中干一些没意义的事情。</li>
+<li>不要使用异常来控制流程，那样你的程序会无比难懂和难维护。</li>
+<li>如果有需要，切记使用finally来释放资源。</li>
+<li>如果有需要，请不要忘记在处理异常后做清理工作或者回滚操作。</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-10-08/use-logging-in-python/" rel="bookmark">Python中的logging模块</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/" title="总结：Python中的异常处理">https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/exception-handling/" rel="tag"># exception handling</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2016-11-23/gif-screenshot-tool-gifcam/" rel="prev" title="Gif截屏工具 - GifCam">
+      <i class="fa fa-chevron-left"></i> Gif截屏工具 - GifCam
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2017-02-06/move-on-to-python-3/" rel="next" title="Move on to Python 3">
+      Move on to Python 3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#异常处理语句-try…excpet…finally"><span class="nav-number">1.</span> <span class="nav-text">异常处理语句 try…excpet…finally</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#抛出异常-raise"><span class="nav-number">2.</span> <span class="nav-text">抛出异常 raise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义异常类型"><span class="nav-number">3.</span> <span class="nav-text">自定义异常类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#经验案例"><span class="nav-number">4.</span> <span class="nav-text">经验案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最佳实践"><span class="nav-number">5.</span> <span class="nav-text">最佳实践</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2016-12-04/Python-exception-handling/";
+    this.page.identifier = "posts/2016-12-04/Python-exception-handling/";
+    this.page.title = "总结：Python中的异常处理";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Flask是Python一个非常轻量的库，可以让你毫不费力地写一个简单的网站。如果你需要写一些后台API或者准备自动化测试数据时，Flask是一个非常不错的选择。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自动为Flask写的API生成帮助文档">
+<meta property="og:url" content="https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="Flask是Python一个非常轻量的库，可以让你毫不费力地写一个简单的网站。如果你需要写一些后台API或者准备自动化测试数据时，Flask是一个非常不错的选择。">
+<meta property="og:image" content="https://tobyqin.github.io/images/api-demo-home.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/api-demo-full.png">
+<meta property="article:published_time" content="2018-02-27T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.476Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="flask">
+<meta property="article:tag" content="api-doc">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/api-demo-home.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>自动为Flask写的API生成帮助文档 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自动为Flask写的API生成帮助文档
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-02-27 00:00:00" itemprop="dateCreated datePublished" datetime="2018-02-27T00:00:00Z">2018-02-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Flask是Python一个非常轻量的库，可以让你毫不费力地写一个简单的网站。如果你需要写一些后台API或者准备自动化测试数据时，Flask是一个非常不错的选择。</p>
+<a id="more"></a>
+
+<h2 id="一个API例子"><a href="#一个API例子" class="headerlink" title="一个API例子"></a>一个API例子</h2><p>举个例子，我们可以这样写几个API，具体实现暂时略过：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># views/api.py</span></span><br><span class="line"></span><br><span class="line">api = Blueprint(<span class="string">'api'</span>, __name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@api.route('/get_todo', methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_todo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""Get all todo tasks."""</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@api.route('/add_todo', methods=['POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_todo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Add a todo task,  please post data in json format, e.g.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    data = &#123;</span></span><br><span class="line"><span class="string">              "name":"the title",</span></span><br><span class="line"><span class="string">              "task":"the detail"</span></span><br><span class="line"><span class="string">            &#125;</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@api.route('/delete_todo', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete_todo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""Delete a todo task."""</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p>一旦你的API完成，你可能需要和调用方沟通调用的细节，最好给一些例子。明明你已经在代码里给所有方法都写了注释，难道还要再把这些注释拿出来重新组织排版一下？</p>
+<p>我猜你和我一样，听过这么一句话。</p>
+<blockquote>
+<p><strong>read the fucking manual</strong>!</p>
+</blockquote>
+<p>可是谁会去翻代码去看你的注释呢，何况你的代码他们还不一定能看到。如果能自动生成一个帮助页面那就好了。</p>
+<h2 id="自动化API帮助文档"><a href="#自动化API帮助文档" class="headerlink" title="自动化API帮助文档"></a>自动化API帮助文档</h2><p>假设我们的API都是以 <code>http://127.0.0.1/api/*</code> 的形式书写的，那么最好把API的完整列表就放在根目录下面，比如这样：</p>
+<p><img src="https://tobyqin.github.io/images/api-demo-home.png" alt="api-demo-home"></p>
+<p>view 方法的实现主要依靠 <code>app.url_map</code> 来获取Flask中所有的API：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># views/api.py</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_api_map</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""Search API from rules, if match the pattern then we said it is API."""</span></span><br><span class="line">    <span class="keyword">for</span> rule <span class="keyword">in</span> get_app().url_map.iter_rules():</span><br><span class="line">        <span class="keyword">if</span> re.search(<span class="string">r'/api/.+'</span>, str(rule)):</span><br><span class="line">            <span class="keyword">yield</span> str(rule), rule.endpoint</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@api.route('/', methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""List all API to this page, api_map contains each api url + endpoint."""</span></span><br><span class="line">    api_map = sorted(list(get_api_map()))</span><br><span class="line">    index_url = url_for(<span class="string">'main.index'</span>, _external=<span class="literal">True</span>)</span><br><span class="line">    api_map = [(index_url + x[<span class="number">0</span>][<span class="number">1</span>:], x[<span class="number">1</span>]) <span class="keyword">for</span> x <span class="keyword">in</span> api_map]</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'api_index.html'</span>, api_map=api_map)</span><br></pre></td></tr></table></figure>
+
+<p>模板的实现：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"># templates/api_index.html</span><br><span class="line"></span><br><span class="line">&#123;% extends "./layout.html" %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block title %&#125;API Root&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block breadcrumb_nav %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; url_for('api.index') &#125;&#125;"</span>&gt;</span>Api Root<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block page_header %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Api Root<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block content_area %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">pre</span>&gt;</span>&#123;</span><br><span class="line">&#123;% for i in api_map %&#125;    "<span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/docs/&#123;&#123; i[1] &#125;&#125;"</span>&gt;</span>&#123;&#123; i[0] &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span>"&#123;&#123; ",\n" if not loop.last &#125;&#125;&#123;% endfor %&#125;</span><br><span class="line">&#125;<span class="tag">&lt;/<span class="name">pre</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来我们来文档化每个具体的API方法，最终的展示结果会是这样的。</p>
+<p><img src="https://tobyqin.github.io/images/api-demo-full.png" alt="api-demo-full"></p>
+<p>view 方法的实现思路其实也很明确，我们可以通过 <code>app.view_functions</code> 这个字典找到每个API 的endpoint所绑定的方法，然后访问方法的名字和文档即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># views/main.py</span></span><br><span class="line"></span><br><span class="line">main = Blueprint(<span class="string">'main'</span>, __name__)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@main.route('/', methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="string">"""Redirect home page to docs page."""</span></span><br><span class="line">    <span class="keyword">return</span> redirect(url_for(<span class="string">'api.index'</span>))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@main.route('/docs/&lt;endpoint&gt;', methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">docs</span><span class="params">(endpoint)</span>:</span></span><br><span class="line">    <span class="string">"""Document page for an endpoint."""</span></span><br><span class="line">    api = &#123;</span><br><span class="line">        <span class="string">'endpoint'</span>: endpoint,</span><br><span class="line">        <span class="string">'methods'</span>: [],</span><br><span class="line">        <span class="string">'doc'</span>: <span class="string">''</span>,</span><br><span class="line">        <span class="string">'url'</span>: <span class="string">''</span>,</span><br><span class="line">        <span class="string">'name'</span>: <span class="string">''</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        func = get_app().view_functions[endpoint]</span><br><span class="line"></span><br><span class="line">        api[<span class="string">'name'</span>] = _get_api_name(func)</span><br><span class="line">        api[<span class="string">'doc'</span>] = _get_api_doc(func)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> rule <span class="keyword">in</span> get_app().url_map.iter_rules():</span><br><span class="line">            <span class="keyword">if</span> rule.endpoint == endpoint:</span><br><span class="line">                api[<span class="string">'methods'</span>] = <span class="string">','</span>.join(rule.methods)</span><br><span class="line">                api[<span class="string">'url'</span>] = str(rule)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">except</span>:</span><br><span class="line">        api[<span class="string">'doc'</span>] = <span class="string">'Invalid api endpoint: "&#123;&#125;"!'</span>.format(endpoint)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'api_docs.html'</span>, api=api)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_api_name</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="string">"""e.g. Convert 'do_work' to 'Do Work'"""</span></span><br><span class="line">    words = func.__name__.split(<span class="string">'_'</span>)</span><br><span class="line">    words = [w.capitalize() <span class="keyword">for</span> w <span class="keyword">in</span> words]</span><br><span class="line">    <span class="keyword">return</span> <span class="string">' '</span>.join(words)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_get_api_doc</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> func.__doc__:</span><br><span class="line">        <span class="keyword">return</span> func.__doc__</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'No doc found for this API!'</span></span><br></pre></td></tr></table></figure>
+
+<p>模板的实现：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;% extends "./layout.html" %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block title %&#125;API - &#123;&#123; api['name'] &#125;&#125;&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block breadcrumb_nav %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; url_for('api.index') &#125;&#125;"</span>&gt;</span>Api Root<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; api['url'] &#125;&#125;"</span>&gt;</span>&#123;&#123; api['name'] &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block page_header %&#125;</span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;&#123; api['name'] | upper &#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block content_area %&#125;</span><br><span class="line"><span class="tag">&lt;<span class="name">pre</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">b</span>&gt;</span>Target:<span class="tag">&lt;/<span class="name">b</span>&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&#123;&#123; api['url'] &#125;&#125;"</span>&gt;</span>&#123;&#123; api['url'] &#125;&#125;<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">b</span>&gt;</span>Allow :<span class="tag">&lt;/<span class="name">b</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; api['methods'] &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">b</span>&gt;</span>Usage :<span class="tag">&lt;/<span class="name">b</span>&gt;</span> <span class="tag">&lt;<span class="name">span</span>&gt;</span>&#123;&#123; api['doc'] &#125;&#125;<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">pre</span>&gt;</span></span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="GitHub项目地址"><a href="#GitHub项目地址" class="headerlink" title="GitHub项目地址"></a>GitHub项目地址</h2><p>如果你想看完整的例子，可以到我的GitHub去拉一份代码。</p>
+<blockquote>
+<p><a href="https://github.com/tobyqin/flask_api_doc" target="_blank" rel="noopener">https://github.com/tobyqin/flask_api_doc</a></p>
+</blockquote>
+<p>只需要三步就可以在你的机器上运行Demo：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd /path/to/flask_api/doc</span><br><span class="line">pip install -r requirements.txt</span><br><span class="line">python main.py</span><br></pre></td></tr></table></figure>
+
+<p>如果你觉得Demo不错，欢迎给个Star。有建议或者想法也可以拿来讨论。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2017-03-27/deploy-flask-to-iis/" rel="bookmark">在Windows平台使用IIS部署Flask网站</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2018-04-01/find-duplicate-photos-by-photodup/" rel="bookmark">Python 查找重复文件升级版 - photodup</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-01-26/the-flask-project-structure/" rel="bookmark">组织Flask项目结构</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-04-26/deploy-a-private-online-drawing-service/" rel="bookmark">部署一个私有的在线绘图服务</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/" title="自动为Flask写的API生成帮助文档">https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/flask/" rel="tag"># flask</a>
+              <a href="/tags/api-doc/" rel="tag"># api-doc</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2018-01-26/setup-jekyll-environment-on-windows/" rel="prev" title="在Windows上搭建Jekyll运行环境">
+      <i class="fa fa-chevron-left"></i> 在Windows上搭建Jekyll运行环境
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2018-03-22/find-duplicate-files-by-python/" rel="next" title="使用Python查找目录中的重复文件">
+      使用Python查找目录中的重复文件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一个API例子"><span class="nav-number">1.</span> <span class="nav-text">一个API例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自动化API帮助文档"><span class="nav-number">2.</span> <span class="nav-text">自动化API帮助文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GitHub项目地址"><span class="nav-number">3.</span> <span class="nav-text">GitHub项目地址</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2018-02-27/auto-document-flask-api/";
+    this.page.identifier = "posts/2018-02-27/auto-document-flask-api/";
+    this.page.title = "自动为Flask写的API生成帮助文档";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

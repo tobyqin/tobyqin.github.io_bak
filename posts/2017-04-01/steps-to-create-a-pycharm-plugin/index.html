@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="PyCharm 是很多 Python 开发者优先选择的 IDE，功能强大，跨平台，提供免费社区版，非常良心。如果你想自己给PyCharm添加一些功能怎么办呢？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何开发一个 PyCharm 插件">
+<meta property="og:url" content="https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="PyCharm 是很多 Python 开发者优先选择的 IDE，功能强大，跨平台，提供免费社区版，非常良心。如果你想自己给PyCharm添加一些功能怎么办呢？">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-plugin-sdk-1.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-plugin-sdk-2.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-new-project.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-project-structure.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-deploy-local.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-deploy-local-2.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/idea-deploy-remote.png">
+<meta property="article:published_time" content="2017-04-01T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.416Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="pycharm">
+<meta property="article:tag" content="plugin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/idea-plugin-sdk-1.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>如何开发一个 PyCharm 插件 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          如何开发一个 PyCharm 插件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-04-01 00:00:00" itemprop="dateCreated datePublished" datetime="2017-04-01T00:00:00Z">2017-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>PyCharm 是很多 Python 开发者优先选择的 IDE，功能强大，跨平台，提供免费社区版，非常良心。如果你想自己给PyCharm添加一些功能怎么办呢？</p>
+<a id="more"></a> 
+
+<p>有两个办法：</p>
+<ol>
+<li>通过提需求实现，到 JetBrains 的 <a href="https://github.com/JetBrains/intellij-community/" target="_blank" rel="noopener">github</a> 去提issue或者自己发Pull Request请他们merge。</li>
+<li>通过安装插件实现，你可以查找现有的<a href="https://plugins.jetbrains.com/" target="_blank" rel="noopener">插件仓库</a>，或者，自己写一个。</li>
+</ol>
+<p>今天我们说说怎么搭建环境自己写一个 PyCharm 插件。</p>
+<h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><p>先普及一下知识，开发 PyCharm 插件和开发 IntellJ IDEA 插件需要的环境是一样的，因为 PyCharm 本身就是 IDEA 的一个子集，说白了就是 IDEA 上套了一个 Python 语言支持的插件。其他系列的 IDEA IDE 其实也是一样的道理，都是套了对应语言支持的框架外加一点外观修改，就成了新的产品，比如 WebStrom，PhpStorm，RubyMine。到这里你应该有个印象，JetBrains 这个公司太能玩了，就一个 IDEA 能整出那么多产品来，很厉害吧？</p>
+<p><strong>开发 PyCharm 插件你需要：</strong></p>
+<ul>
+<li><p>对 Java  语言有一定了解，因为你只能用 Java 开发插件</p>
+</li>
+<li><p>安装最新版的 <a href="https://www.jetbrains.com/idea/" target="_blank" rel="noopener">IntelliJ IDEA</a></p>
+</li>
+<li><p>安装 PyCharm Community Edition 到本地</p>
+</li>
+<li><p>确保 IntelliJ 安装并启用了 <code>Plugin DevKit</code> 插件，默认自带</p>
+</li>
+<li><p>配置 IntelliJ Platform SDK， 下文会涉及相关步骤</p>
+</li>
+<li><p>（非必需）将<a href="https://github.com/JetBrains/intellij-community/" target="_blank" rel="noopener">IntellJ IDEA Community Edition</a> 的代码克隆到本地，方便调试</p>
+</li>
+</ul>
+<p>如果你英文还可以，也可以阅读官方的帮助文档。</p>
+<ul>
+<li><a href="http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started.html" target="_blank" rel="noopener">http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started.html</a></li>
+</ul>
+<h2 id="新建插件工程"><a href="#新建插件工程" class="headerlink" title="新建插件工程"></a>新建插件工程</h2><p>从文件菜单选择 <strong>New Project</strong>， 选择 <strong>IntelliJ Platform Plugin</strong>，如果你没有配置<strong>SDK</strong>，点击<strong>New</strong> 菜单。</p>
+<p><img src="https://tobyqin.github.io/images/idea-plugin-sdk-1.png" alt="idea-plugin-sdk-1"></p>
+<p>选择你本地 PyCharm Community Edition（社区版）的安装路径作为SDK目录，Java SDK 选择 1.8 以上的版本。</p>
+<blockquote>
+<p>请注意，你也可以使用 PyCharm Professional (旗舰版) 的安装路径作为SDK目录，不过当你调试插件碰到核心代码时，社区版你可以一步一步跟到最里面，但旗舰版不行，因为旗舰版并不是开源的，你拿不到源代码。</p>
+</blockquote>
+<p><img src="https://tobyqin.github.io/images/idea-plugin-sdk-2.png" alt="idea-plugin-sdk-2"></p>
+<p>回到 <strong>New Project</strong> 的界面，点击 <strong>Next</strong>，输入 <strong>Project name</strong> 和 <strong>Project location</strong>，点击完成。</p>
+<p><img src="https://tobyqin.github.io/images/idea-new-project.png" alt="idea-new-project"></p>
+<p><strong>小贴士：</strong>如果你是打开别人的写的插件，那么你直接选择打开工程目录是没有用的，因为 IntelliJ IDEA 不认为这是个插件工程，所以你没法运行和调试这个插件，一个不怎么优雅的办法就是<strong>从现有代码新建一个插件工程</strong>，StackOverflow 关于这个的吐槽问题你搜到，如果你有更好的办法请告诉我。当你换一台机器把插件代码克隆下来之后应该就知道我在说什么了。</p>
+<h2 id="插件工程目录结构"><a href="#插件工程目录结构" class="headerlink" title="插件工程目录结构"></a>插件工程目录结构</h2><p>一个典型的插件目录结构就像下图。</p>
+<p><img src="https://tobyqin.github.io/images/idea-project-structure.png" alt="idea-project-structure"></p>
+<ul>
+<li><strong>.idea</strong> 目录 - JetBrains IDE 生成的工程都会有这么一个目录，存放用户配置和缓存，无需关心。</li>
+<li><strong>doc</strong> 目录 - 插件的文档，可选。</li>
+<li><strong>out</strong> 目录 - 编译后的代码字节，无需关心。</li>
+<li><strong>resources</strong> 目录 - 资源存放目录，插件的配置文件在此。</li>
+<li><strong>src</strong> 目录 - 代码存放的位置。</li>
+<li><strong>*.iml</strong> 文件 - 项目的配置文件。</li>
+</ul>
+<h2 id="修改插件信息"><a href="#修改插件信息" class="headerlink" title="修改插件信息"></a>修改插件信息</h2><p>打开 <code>/resources/META-INF/plugin.xml</code>， 更新插件信息，举例说明。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">idea-plugin</span> <span class="attr">version</span>=<span class="string">"2"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>com.eflabs.plugin.efcommon<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">name</span>&gt;</span>EF Common for PyCharm<span class="tag">&lt;/<span class="name">name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">vendor</span> <span class="attr">email</span>=<span class="string">"toby.qin@live.com"</span>&gt;</span>Toby Qin<span class="tag">&lt;/<span class="name">vendor</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">description</span>&gt;</span>&lt;![CDATA[</span><br><span class="line">      &lt;b&gt;Able to run and debug ef common tests easily.&lt;/b&gt;&lt;br&gt;</span><br><span class="line">      &lt;br&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">      &lt;li&gt;Support run/debug ef-common tests via context menu.&lt;/li&gt;</span><br><span class="line">      &lt;li&gt;Show run button in the line of test case.&lt;/li&gt;</span><br><span class="line">      &lt;/ul&gt;]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">description</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">change-notes</span>&gt;</span>&lt;![CDATA[</span><br><span class="line">      &lt;b&gt;v3.0&lt;/b&gt;&lt;br&gt;</span><br><span class="line">      &lt;p&gt;Support PyCharm 171.*&lt;/p&gt;</span><br><span class="line">      &lt;p&gt;Support nested ef-common project.&lt;/p&gt;</span><br><span class="line">      &lt;br&gt;</span><br><span class="line"></span><br><span class="line">      &lt;b&gt;Early version&lt;/b&gt;&lt;br&gt;</span><br><span class="line">      &lt;p&gt;Bug fix: failed to get run.template in resource.&lt;/p&gt;</span><br><span class="line">      &lt;p&gt;The baby version.&lt;/p&gt;</span><br><span class="line">      &lt;br&gt;]]&gt;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">change-notes</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">idea-version</span> <span class="attr">since-build</span>=<span class="string">"171.1"</span>/&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- please see http://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products</span></span><br><span class="line"><span class="comment">         on how to target different products --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">depends</span>&gt;</span>com.intellij.modules.python<span class="tag">&lt;/<span class="name">depends</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">extensions</span> <span class="attr">defaultExtensionNs</span>=<span class="string">"com.intellij"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Add your extensions here --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configurationType</span> <span class="attr">implementation</span>=<span class="string">"com.eflabs.efcommon.runConfiguration.EfCommonConfigurationType"</span></span></span><br><span class="line"><span class="tag">                           <span class="attr">order</span>=<span class="string">"FIRST"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">runConfigurationProducer</span> <span class="attr">implementation</span>=<span class="string">"com.eflabs.efcommon.runConfiguration.EfCommonConfigurationProducer"</span></span></span><br><span class="line"><span class="tag">                                  <span class="attr">order</span>=<span class="string">"FIRST"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">runLineMarkerContributor</span></span></span><br><span class="line"><span class="tag">                <span class="attr">implementationClass</span>=<span class="string">"com.eflabs.efcommon.runLineMarker.EfCommonRunLineMarkerContributor"</span></span></span><br><span class="line"><span class="tag">                <span class="attr">language</span>=<span class="string">"Python"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">extensions</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">actions</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Add your actions here --&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">actions</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">idea-plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个配置文件里有几点要注意的：</p>
+<ol>
+<li><code>&lt;id&gt;</code>和<code>&lt;version&gt;</code> 用于声明你的插件唯一标识，同id和version的插件不能够重复上传。</li>
+<li><code>&lt;depends&gt;</code> 节点声明了此插件的依赖条件，如果是PyCharm 适用的，那么就写 <code>com.intellij.modules.python</code></li>
+<li><code>&lt;extenstions</code> 节点用于声明你要扩展的类，只要继承和实现对应的接口就可以了。</li>
+<li><code>&lt;actions&gt;</code> 节点用于注册你要实现的 Action，比如你先写一些 Action，然后<a href="http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/creating_an_action.html" target="_blank" rel="noopener">注册到某个菜单</a>。</li>
+</ol>
+<h2 id="实现具体的业务代码"><a href="#实现具体的业务代码" class="headerlink" title="实现具体的业务代码"></a>实现具体的业务代码</h2><p>这里我略过最核心的部分，因为每个人的需求和代码能力都不一样，这应该去查阅Java编程规范。</p>
+<p>简而言之，就是根据你自己的需求用Java实现一些接口和方法。</p>
+<h2 id="运行和调试你的插件"><a href="#运行和调试你的插件" class="headerlink" title="运行和调试你的插件"></a>运行和调试你的插件</h2><p>如果你的代码已经实现了，那么运行和调试就比较简单。</p>
+<ul>
+<li>使用 <strong>Run | Run</strong> 菜单来运行你的插件，这时候会启动一个新的PyCharm，默认安装好你的插件。</li>
+<li>使用 <strong>Run | Debug</strong>  菜单来调试你的插件，你可以设置断点进行调试。</li>
+</ul>
+<h2 id="发布你的插件"><a href="#发布你的插件" class="headerlink" title="发布你的插件"></a>发布你的插件</h2><p>你可以选择本地发布你的插件，也可以选择上传到 JetBrains 的插件仓库。</p>
+<h3 id="本地发布安装"><a href="#本地发布安装" class="headerlink" title="本地发布安装"></a>本地发布安装</h3><p>如果你的插件是内部小范围使用，并且可能带有敏感信息，那么这样的方式会比较适合你。从主菜单选择 <strong>Build &gt; Prepare plugin ‘my_plugin’ For Deployment</strong>。</p>
+<p><img src="https://tobyqin.github.io/images/idea-deploy-local.png" alt="idea-deploy-local"></p>
+<p>如果成功那么在工程目录就会生成一个同名的 jar 文件。</p>
+<p><img src="https://tobyqin.github.io/images/idea-deploy-local-2.png" alt="idea-deploy-local-2"></p>
+<p>将这个文件 copy 到目标机器就可以通过 *<em>Install Plugin from disk … *</em> 完成安装。</p>
+<h3 id="发布插件到-JetBrains-Plugin-仓库"><a href="#发布插件到-JetBrains-Plugin-仓库" class="headerlink" title="发布插件到 JetBrains Plugin 仓库"></a>发布插件到 JetBrains Plugin 仓库</h3><p>生成插件的步骤和本地发布是一样的，唯一不同的就是你需要到 JetBrains Plugins 网站去注册一个账号。</p>
+<ul>
+<li><a href="https://plugins.jetbrains.com/" target="_blank" rel="noopener">https://plugins.jetbrains.com/</a></li>
+</ul>
+<p>登录之后选择 <strong>UPLOAD PLUGIN</strong> 菜单，上传之后大概需要2个工作日审核。</p>
+<p><img src="https://tobyqin.github.io/images/idea-deploy-remote.png" alt="idea-deploy-remote"></p>
+<p>审核通过后其他用户就可以直接从 <strong>Browse Repositories…</strong> 里搜索到你的插件并安装。通过插件仓库安装的插件，一旦有新版本发布，用户将收到更新提示。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>关于如何实现具体的插件业务代码，一个偷懒的办法就是去看现有功能大概是怎么实现的，你既然可以拿到 PyCharm Community Edition 的所有代码，还有啥看不到的，看懂只是时间问题。再或者去 github 搜搜看，万一有惊喜呢？</p>
+<p>就 PyCharm 本身来说，我觉得作为 IDE 提供的功能已经很丰富了，为啥还要写插件呢？对啊，哪里来的需求，会不会是一个伪需求呢。写插件前请你想一想这个问题。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-02-08/pycharm-tips/" rel="bookmark">一些 PyCharm 的使用和设置建议</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/" title="如何开发一个 PyCharm 插件">https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/pycharm/" rel="tag"># pycharm</a>
+              <a href="/tags/plugin/" rel="tag"># plugin</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2017-03-27/deploy-flask-to-iis/" rel="prev" title="在Windows平台使用IIS部署Flask网站">
+      <i class="fa fa-chevron-left"></i> 在Windows平台使用IIS部署Flask网站
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2017-05-03/setup-appium-automation-test-environment/" rel="next" title="在 Windows 下搭建 Appium + Android 自动化测试环境">
+      在 Windows 下搭建 Appium + Android 自动化测试环境 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前期准备"><span class="nav-number">1.</span> <span class="nav-text">前期准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建插件工程"><span class="nav-number">2.</span> <span class="nav-text">新建插件工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#插件工程目录结构"><span class="nav-number">3.</span> <span class="nav-text">插件工程目录结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改插件信息"><span class="nav-number">4.</span> <span class="nav-text">修改插件信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现具体的业务代码"><span class="nav-number">5.</span> <span class="nav-text">实现具体的业务代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运行和调试你的插件"><span class="nav-number">6.</span> <span class="nav-text">运行和调试你的插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发布你的插件"><span class="nav-number">7.</span> <span class="nav-text">发布你的插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">8.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2017-04-01/steps-to-create-a-pycharm-plugin/";
+    this.page.identifier = "posts/2017-04-01/steps-to-create-a-pycharm-plugin/";
+    this.page.title = "如何开发一个 PyCharm 插件";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

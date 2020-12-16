@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="现在很多服务都已经云端化了，浏览器早已不是只用来浏览信息的浏览器了。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="部署一个私有的在线绘图服务">
+<meta property="og:url" content="https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="现在很多服务都已经云端化了，浏览器早已不是只用来浏览信息的浏览器了。">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200426214245160.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200426214432654.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/demo.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200426222414429.png">
+<meta property="article:published_time" content="2020-04-26T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.464Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="flask">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="draw.io">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/image-20200426214245160.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>部署一个私有的在线绘图服务 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          部署一个私有的在线绘图服务
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-04-26T00:00:00Z">2020-04-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>现在很多服务都已经云端化了，浏览器早已不是只用来浏览信息的浏览器了。</p>
+<a id="more"></a>
+
+<h2 id="在线绘图"><a href="#在线绘图" class="headerlink" title="在线绘图"></a>在线绘图</h2><p>国内最常用的就是 ProcessOn 了，功能很全，就是免费额度有点少。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200426214245160.png" alt="image-20200426214245160"></p>
+<p>国外最知名的就是 <a href="https://draw.io" target="_blank" rel="noopener">Draw.io</a> 了，基本上就是免费的，常常集成在各种服务里。就是速度有点慢，不，是非常慢。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200426214432654.png" alt="image-20200426214432654"></p>
+<p>Draw.io 现在改名了，叫 diagrams.net。最关键的是，它还是开源的！</p>
+<h2 id="部署一个-Draw-io"><a href="#部署一个-Draw-io" class="headerlink" title="部署一个 Draw.io"></a>部署一个 Draw.io</h2><p>Draw.io 是基于<a href="https://github.com/jgraph/mxgraph" target="_blank" rel="noopener">mxGraph library</a>构建的，后端用 Java 实现了简单的文件导出和处理功能，画图的功能都是通过 JavaScript 在浏览器的，所以是完全可以用静态页面的方式来托管一个不需要文件导出和鉴权的绘图站点。</p>
+<p>欲知详情请移步至该项目：</p>
+<ul>
+<li><a href="https://github.com/jgraph/drawio" target="_blank" rel="noopener">https://github.com/jgraph/drawio</a></li>
+</ul>
+<p>要完整部署该项目需要用 ant 来编译 war，并用 tomcat 托管。但是，我不想用 ant 去编译也不想和 Tom 猫发生什么关系，所以我要对这个项目的功能进行阉割。</p>
+<ul>
+<li>去除所有国外的在线服务，比如 Google Drive，OneDrive，Github 等等</li>
+<li>避免跳转到 Draw.io 官网</li>
+<li>去除后端服务，只要能在浏览器绘图并缓存，能保存为本地文件</li>
+</ul>
+<p>来来来，folk 一下这个项目开干，新项目地址：</p>
+<ul>
+<li><a href="https://github.com/tobyqin/drawio-local" target="_blank" rel="noopener">https://github.com/tobyqin/drawio-local</a></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 第一步，干掉Java，只保留Web应用</span></span><br><span class="line">mv -r src/main/webapp /temp/webapp</span><br><span class="line">rm -rf *</span><br><span class="line">mv -r /tmp/webapp .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二步，去掉在线服务</span></span><br><span class="line">code js/PreConfig.js</span><br><span class="line"><span class="comment"># 配置 local='1'</span></span><br><span class="line"><span class="comment"># 参考 https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第三步，修改错误的资源引用，用Chrome的开发者工具</span></span><br><span class="line"><span class="comment"># 第四步，加一些黑科技到 index.html 来hack外部跳转，balabala</span></span><br></pre></td></tr></table></figure>
+
+<p>完事具备，用一行代码在本地托管：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 8000</span><br></pre></td></tr></table></figure>
+
+<p>OK 啦，干净清爽的感觉就是那么好。</p>
+<p><img src="https://tobyqin.github.io/images/demo.jpg" alt="demo"></p>
+<p>改一下 <code>README.md</code> 就推送了吧。感觉我只需要花几分钟，其实我调试了几小时，开发为什么总估不准时间呢？奇怪。</p>
+<h2 id="部署到-Docker"><a href="#部署到-Docker" class="headerlink" title="部署到 Docker"></a>部署到 Docker</h2><p>没有容器化的服务是没有灵魂的服务，那么我们就给它加点灵魂。加灵魂需要一个 <code>Dockerfile</code>，这样写：</p>
+<figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> frolvlad/alpine-python3:latest</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir /app</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> pip3 install flask</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> . /app/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">5000</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> python3 app.py</span></span><br></pre></td></tr></table></figure>
+
+<p>这个灵魂是有讲究的，为什么这么说呢？</p>
+<ol>
+<li>用的是 apline 的基础镜像，这个是开源界最常用的基础镜像，因为它及其的小，一般只有几 MB 或者几十 MB。对应的 apline 镜像还有 node，java，go 版的，应有尽有。</li>
+<li>先安装 flask 后 copy 应用，因为 flask 安装后这个 layer 就不变了，但是 app 每次打包都会不一样。</li>
+</ol>
+<p>为啥要加个 flask 啊？因为我想在它访问后端报错时可以更友好一点，人性化和用户体验，Understand？</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route('/not-support', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_support</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Sorry, this action is not supported."</span></span><br></pre></td></tr></table></figure>
+
+<p>好啦，打包镜像走起。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t tobyqin/drawio-local:latest .</span><br></pre></td></tr></table></figure>
+
+<p>让这个灵魂跑起来。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it --rm -p 5000:5000  tobyqin/drawio-local</span><br></pre></td></tr></table></figure>
+
+<p>访问本地 5000 端口，一点毛病都没有，注意 <code>--rm</code> 在调试时很有用，它可以帮你自动清理退出的容器。</p>
+<p>让我们来把这个灵魂发布到全世界。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker login</span><br><span class="line">docker push tobyqin/drawio-local</span><br></pre></td></tr></table></figure>
+
+<p>咦？这个灵魂好像有点重啊，完全推不动嘛。用 Portainer 查看一下里面到底有什么东西。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200426222414429.png" alt="layer"></p>
+<p>基础镜像层总共才 4M，应用层居然接近 100M，要给灵魂减减肥了。在根目录加个 <code>.dockerignore</code> 文件，把不想打包的文件统统写在里面。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.git</span><br><span class="line">.DS_Store</span><br><span class="line">.vscode</span><br><span class="line">*.md</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>321 再来一遍灵魂序曲，嗯，有内味了。</p>
+<h2 id="拿来主义"><a href="#拿来主义" class="headerlink" title="拿来主义"></a>拿来主义</h2><p>我想你是不愿意再踩一遍我的坑了，反正这个东西做一遍就行了，拿去用吧。</p>
+<h3 id="1-静态托管"><a href="#1-静态托管" class="headerlink" title="1. 静态托管"></a>1. 静态托管</h3><p>直接到<a href="https://github.com/tobyqin/drawio-local" target="_blank" rel="noopener">Github</a> 下载 zip 解压后丢到 nginx 或者 iis 即可，顺手给项目加个星呗。</p>
+<h3 id="2-Docker-部署"><a href="#2-Docker-部署" class="headerlink" title="2. Docker 部署"></a>2. Docker 部署</h3><p>一行命令即可。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --name=<span class="string">"drawio-local"</span> --restart always -p 5000:5000  tobyqin/drawio-local</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-薅我羊毛"><a href="#3-薅我羊毛" class="headerlink" title="3. 薅我羊毛"></a>3. 薅我羊毛</h3><p>这个服务我已经部署到了我的主机，免费用，随便用，但不保证它的速度和生命延续。</p>
+<ul>
+<li><a href="https://draw.pytips.cn" target="_blank" rel="noopener">https://draw.pytips.cn</a></li>
+</ul>
+<p>就这样，Peace。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2017-03-27/deploy-flask-to-iis/" rel="bookmark">在Windows平台使用IIS部署Flask网站</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2018-02-27/auto-document-flask-api/" rel="bookmark">自动为Flask写的API生成帮助文档</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2018-04-01/find-duplicate-photos-by-photodup/" rel="bookmark">Python 查找重复文件升级版 - photodup</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-01-26/the-flask-project-structure/" rel="bookmark">组织Flask项目结构</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/" title="部署一个私有的在线绘图服务">https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/flask/" rel="tag"># flask</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/draw-io/" rel="tag"># draw.io</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2020-04-04/command-line-configuration-memo/" rel="prev" title="命令行配置备忘">
+      <i class="fa fa-chevron-left"></i> 命令行配置备忘
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2020-05-02/n1-uses-docker-with-openwrt/" rel="next" title="N1用Docker刷旁路由">
+      N1用Docker刷旁路由 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#在线绘图"><span class="nav-number">1.</span> <span class="nav-text">在线绘图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署一个-Draw-io"><span class="nav-number">2.</span> <span class="nav-text">部署一个 Draw.io</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署到-Docker"><span class="nav-number">3.</span> <span class="nav-text">部署到 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拿来主义"><span class="nav-number">4.</span> <span class="nav-text">拿来主义</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/";
+    this.page.identifier = "posts/2020-04-26/deploy-a-private-online-drawing-service/";
+    this.page.title = "部署一个私有的在线绘图服务";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

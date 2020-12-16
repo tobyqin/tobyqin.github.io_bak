@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在 Windows 平台部署基于 Python 的网站是一件非常折腾的事情，Linux&#x2F;Unix 平台下有很多选择，本文记录了 Flask 部署到 IIS 的主要步骤，希望对你有所帮助。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Windows平台使用IIS部署Flask网站">
+<meta property="og:url" content="https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="在 Windows 平台部署基于 Python 的网站是一件非常折腾的事情，Linux&#x2F;Unix 平台下有很多选择，本文记录了 Flask 部署到 IIS 的主要步骤，希望对你有所帮助。">
+<meta property="og:image" content="https://tobyqin.github.io/images/iis+cgi.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/wpi-url.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/iis-add-web-site.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/iis-website-config.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/iis-web-site-ok.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/ptvs-web.png">
+<meta property="article:published_time" content="2017-03-27T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.460Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="flask">
+<meta property="article:tag" content="iis">
+<meta property="article:tag" content="deployment">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/iis+cgi.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>在Windows平台使用IIS部署Flask网站 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Windows平台使用IIS部署Flask网站
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-03-27 00:00:00" itemprop="dateCreated datePublished" datetime="2017-03-27T00:00:00Z">2017-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在 Windows 平台<strong>部署</strong>基于 Python 的网站是一件非常折腾的事情，Linux/Unix 平台下有很多选择，本文记录了 Flask 部署到 IIS 的主要步骤，希望对你有所帮助。</p>
+<a id="more"></a>
+
+<h2 id="涉及工具和平台"><a href="#涉及工具和平台" class="headerlink" title="涉及工具和平台"></a>涉及工具和平台</h2><ul>
+<li>Windows 7 x64</li>
+<li>Python 3.4+</li>
+<li>Flask</li>
+</ul>
+<h2 id="完成-Hello-Flask-网站"><a href="#完成-Hello-Flask-网站" class="headerlink" title="完成 Hello Flask 网站"></a>完成 Hello Flask 网站</h2><p>这是一个最简单的 Flask 网站：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># hello.py</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line">app=Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/',methods=['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Hello Flask!"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:</span><br><span class="line">    app.run(debug=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<p>运行<code>python hello.py</code>后没有错误说明你的 Python 环境一切正常，可以继续后面的步骤。</p>
+<h2 id="安装-IIS，启用-CGI"><a href="#安装-IIS，启用-CGI" class="headerlink" title="安装 IIS，启用 CGI"></a>安装 IIS，启用 CGI</h2><p>在控制面板中找到<em>打开或者关闭 Windows 功能</em>，安装 IIS 和 CGI，如下图。</p>
+<p><img src="https://tobyqin.github.io/images/iis+cgi.png" alt="iis+cgi"></p>
+<h2 id="安装-URL-重写组件"><a href="#安装-URL-重写组件" class="headerlink" title="安装 URL 重写组件"></a>安装 URL 重写组件</h2><p>IIS 需要安装 URL 重写组件，这个可以通过<a href="https://www.microsoft.com/web/downloads/platform.aspx" target="_blank" rel="noopener">Microsoft Web Platform Installer</a>来安装。下载<a href="https://www.microsoft.com/web/downloads/platform.aspx" target="_blank" rel="noopener">Microsoft Web Platform Installer</a>后运行，搜索<code>url</code>，分别安装。</p>
+<p><img src="https://tobyqin.github.io/images/wpi-url.png" alt="wpi-url"></p>
+<p><em>注：据说 Windows10 上的 IIS 10 现在不支持 url 重写？待验证</em></p>
+<h2 id="安装-wfastcgi"><a href="#安装-wfastcgi" class="headerlink" title="安装 wfastcgi"></a>安装 wfastcgi</h2><p>通过pip就可以安装：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install wfastcgi</span><br></pre></td></tr></table></figure>
+
+<h2 id="启用-wfastcgi"><a href="#启用-wfastcgi" class="headerlink" title="启用 wfastcgi"></a>启用 wfastcgi</h2><p>剩下的事情就只有一些配置了。首先以管理员身份运行<code>wfastcgi-enable</code>来在IIS上启用wfastcgi，这个命令位于<code>c:\python_dir\scripts</code>，也就是你需要确保此目录在系统的PATH里，或者你需要cd到这个目录后再执行。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> to python_dir\scripts <span class="keyword">if</span> it is not <span class="keyword">in</span> PATH</span></span><br><span class="line">wfastcgi-enable</span><br></pre></td></tr></table></figure>
+
+<p>记住命令执行成功后返回的信息：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\Python34\Scripts&gt; wfastcgi-enable</span><br><span class="line">Applied configuration changes to section &quot;system.webServer&#x2F;fastCgi&quot; for &quot;MACHINE&#x2F;WEBROOT&#x2F;APPHOST&quot; at configuration commit path &quot;MACHINE&#x2F;WEBROOT&#x2F;APPHOST&quot;</span><br><span class="line">&quot;C:\Python34\python.exe|C:\Python34\lib\site-packages\wfastcgi.py&quot; can now be used as a FastCGI script processor</span><br></pre></td></tr></table></figure>
+<p> “C:\Python34\python.exe|C:\Python34\lib\site-packages\wfastcgi.py” 在下文的配置文件中需要使用。</p>
+<p><em>Tips: 使用命令 <code>wfastcgi-disable</code> 可以将其移除。</em></p>
+<h2 id="创建-web-config-文件"><a href="#创建-web-config-文件" class="headerlink" title="创建 web.config 文件"></a>创建 web.config 文件</h2><p>下面是一个<code>web.config</code>文件的例子，你只需要修改对应部分就可以使用。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">system.webServer</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">handlers</span>&gt;</span></span><br><span class="line">      <span class="comment">&lt;!-- scriptProcessor 的值来自命令行工具 wfastcgi-enable --&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">add</span> <span class="attr">name</span>=<span class="string">"FlaskFastCGI"</span> <span class="attr">path</span>=<span class="string">"*"</span> <span class="attr">verb</span>=<span class="string">"*"</span> <span class="attr">modules</span>=<span class="string">"FastCgiModule"</span> <span class="attr">scriptProcessor</span>=<span class="string">"C:\Python34\python.exe|C:\Python34\lib\site-packages\wfastcgi.py"</span> <span class="attr">resourceType</span>=<span class="string">"Unspecified"</span> <span class="attr">requireAccess</span>=<span class="string">"Script"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">handlers</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">security</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- URL 重写中的特殊字符，比如加号+等等 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">requestFiltering</span> <span class="attr">allowDoubleEscaping</span>=<span class="string">"true"</span>&gt;</span><span class="tag">&lt;/<span class="name">requestFiltering</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">security</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">system.webServer</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">appSettings</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Required settings --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 在这里指定Falsk app在模块中的具体位置 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">key</span>=<span class="string">"WSGI_HANDLER"</span> <span class="attr">value</span>=<span class="string">"hello.app"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">key</span>=<span class="string">"PYTHONPATH"</span> <span class="attr">value</span>=<span class="string">"~/"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Optional settings --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 需要先创建日志目录，否则报错 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">key</span>=<span class="string">"WSGI_LOG"</span> <span class="attr">value</span>=<span class="string">"C:\logs\oboeqa_web.log"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">add</span> <span class="attr">key</span>=<span class="string">"WSGI_RESTART_FILE_REGEX"</span> <span class="attr">value</span>=<span class="string">""</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">appSettings</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="配置-IIS-目录及权限"><a href="#配置-IIS-目录及权限" class="headerlink" title="配置 IIS 目录及权限"></a>配置 IIS 目录及权限</h2><p>假设你的 Flask 程序将部署在 C:\website\hello 下面，那么你的目录结构大致如此。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">C:\WEBSITE</span><br><span class="line">└───hello</span><br><span class="line">        hello.py</span><br><span class="line">        web.config</span><br></pre></td></tr></table></figure>
+
+<p>现在你需要让IIS用户拥有访问和执行你的网站脚本的权限，进入 C:\website 目录，执行下面两条命令：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd C:\website</span><br><span class="line">icacls . &#x2F;grant &quot;NT AUTHORITY\IUSR:(OI)(CI)(RX)&quot;</span><br><span class="line">icacls . &#x2F;grant &quot;Builtin\IIS_IUSRS:(OI)(CI)(RX)&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建并访问你的网站"><a href="#创建并访问你的网站" class="headerlink" title="创建并访问你的网站"></a>创建并访问你的网站</h2><p>现在你离成功只差一步之遥，打开 IIS 管理面板，新建一个网站。</p>
+<p><img src="https://tobyqin.github.io/images/iis-add-web-site.png" alt="iis-add-web-site"></p>
+<p>你只需要填上网站名称，物理地址和相应的端口号，点击确认。</p>
+<p><img src="https://tobyqin.github.io/images/iis-website-config.png" alt="iis-website-config"></p>
+<p>打开浏览器，就可以访问你配置好的网站。如果有错误，可以去检查 <code>web.config</code> 中配置的日志文件。</p>
+<p><img src="https://tobyqin.github.io/images/iis-web-site-ok.png" alt="iis-web-site-ok"></p>
+<h2 id="简单总结"><a href="#简单总结" class="headerlink" title="简单总结"></a>简单总结</h2><p>写完之后发现其实要完成的步骤并不是特别复杂，但是从摸索到实践的过程确实不易。本文仅讨论了部署的主要步骤，其实真正的生产环境你要考虑的问题可能更多，比如使用virtualenv 对网站进行隔离，安全问题，静态文件解析等等。</p>
+<h2 id="最后的惊喜"><a href="#最后的惊喜" class="headerlink" title="最后的惊喜"></a>最后的惊喜</h2><p><strong>据说</strong>部署Python 网站到 IIS 还有更简单的办法，那就是安装宇宙最强的IDE - <a href="https://www.visualstudio.com/" target="_blank" rel="noopener">Visual Studio 2015</a> （VS2017 暂不支持 Python 开发），个人开发者可以免授权使用社区版。在 VS 中你可以使用 <a href="https://microsoft.github.io/PTVS/" target="_blank" rel="noopener">PTVS</a> 来快捷开发<strong>并部署</strong>Python 程序，真正让你一键无忧。</p>
+<p><img src="https://tobyqin.github.io/images/ptvs-web.png" alt="ptvs-web"></p>
+<p>PTVS 支持了常见的 Python Web 框架，比如 Flask，Django，Bottle，Jade 等等，调试的时候只需要按 F5，部署右键选择 publish，跟着向导一步两步你就可以完成魔鬼的步伐。</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="http://stackoverflow.com/questions/5072166/how-do-i-deploy-a-flask-application-in-iis" target="_blank" rel="noopener">http://stackoverflow.com/questions/5072166/how-do-i-deploy-a-flask-application-in-iis</a></li>
+<li><a href="http://stackoverflow.com/questions/20134329/how-to-deploy-a-flask-application-in-iis-8-windows-server-2012" target="_blank" rel="noopener">http://stackoverflow.com/questions/20134329/how-to-deploy-a-flask-application-in-iis-8-windows-server-2012</a></li>
+<li><a href="http://blog.csdn.net/firefox1/article/details/46438769" target="_blank" rel="noopener">http://blog.csdn.net/firefox1/article/details/46438769</a></li>
+<li><a href="http://www.cnblogs.com/liulixiang/p/4999608.html" target="_blank" rel="noopener">http://www.cnblogs.com/liulixiang/p/4999608.html</a></li>
+<li><a href="http://www.cnblogs.com/xiaolecn/p/5111076.html" target="_blank" rel="noopener">http://www.cnblogs.com/xiaolecn/p/5111076.html</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2018-02-27/auto-document-flask-api/" rel="bookmark">自动为Flask写的API生成帮助文档</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2018-04-01/find-duplicate-photos-by-photodup/" rel="bookmark">Python 查找重复文件升级版 - photodup</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-01-26/the-flask-project-structure/" rel="bookmark">组织Flask项目结构</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-04-26/deploy-a-private-online-drawing-service/" rel="bookmark">部署一个私有的在线绘图服务</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/" title="在Windows平台使用IIS部署Flask网站">https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/flask/" rel="tag"># flask</a>
+              <a href="/tags/iis/" rel="tag"># iis</a>
+              <a href="/tags/deployment/" rel="tag"># deployment</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2017-03-09/git-diff-tip/" rel="prev" title="理解 Git Diff 命令">
+      <i class="fa fa-chevron-left"></i> 理解 Git Diff 命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2017-04-01/steps-to-create-a-pycharm-plugin/" rel="next" title="如何开发一个 PyCharm 插件">
+      如何开发一个 PyCharm 插件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#涉及工具和平台"><span class="nav-number">1.</span> <span class="nav-text">涉及工具和平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完成-Hello-Flask-网站"><span class="nav-number">2.</span> <span class="nav-text">完成 Hello Flask 网站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-IIS，启用-CGI"><span class="nav-number">3.</span> <span class="nav-text">安装 IIS，启用 CGI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-URL-重写组件"><span class="nav-number">4.</span> <span class="nav-text">安装 URL 重写组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-wfastcgi"><span class="nav-number">5.</span> <span class="nav-text">安装 wfastcgi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用-wfastcgi"><span class="nav-number">6.</span> <span class="nav-text">启用 wfastcgi</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建-web-config-文件"><span class="nav-number">7.</span> <span class="nav-text">创建 web.config 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置-IIS-目录及权限"><span class="nav-number">8.</span> <span class="nav-text">配置 IIS 目录及权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建并访问你的网站"><span class="nav-number">9.</span> <span class="nav-text">创建并访问你的网站</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简单总结"><span class="nav-number">10.</span> <span class="nav-text">简单总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最后的惊喜"><span class="nav-number">11.</span> <span class="nav-text">最后的惊喜</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">12.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2017-03-27/deploy-flask-to-iis/";
+    this.page.identifier = "posts/2017-03-27/deploy-flask-to-iis/";
+    this.page.title = "在Windows平台使用IIS部署Flask网站";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

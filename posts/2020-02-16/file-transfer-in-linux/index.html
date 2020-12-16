@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="如果要和Linux交换文件怎么办？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux里的文件传输">
+<meta property="og:url" content="https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="如果要和Linux交换文件怎么办？">
+<meta property="article:published_time" content="2020-02-16T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.432Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="shell">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Linux里的文件传输 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux里的文件传输
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-02-16T00:00:00Z">2020-02-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>如果要和Linux交换文件怎么办？</p>
+<a id="more"></a>
+
+<h2 id="scp"><a href="#scp" class="headerlink" title="scp"></a>scp</h2><p>命令全称Secure copy， 用于ssh主机间的文件复制，也称为远程拷贝。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Copy a local file to a remote host:</span></span><br><span class="line">scp path/to/local_file remote_host:path/to/remote_file</span><br><span class="line"></span><br><span class="line"><span class="comment"># Copy a file from a remote host to a local directory:</span></span><br><span class="line">scp remote_host:path/to/remote_file path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Recursively copy the contents of a directory from a remote host to a local directory:</span></span><br><span class="line">scp -r remote_host:path/to/remote_directory path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Copy a file between two remote hosts transferring through the local host:</span></span><br><span class="line">scp -3 host1:path/to/remote_file host2:path/to/remote_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use a specific username when connecting to the remote host:</span></span><br><span class="line">scp path/to/local_file remote_username@remote_host:path/to/remote_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Use a specific ssh private key for authentication with the remote host:</span></span><br><span class="line">scp -i ~/.ssh/private_key local_file remote_host:/path/remote_file</span><br></pre></td></tr></table></figure>
+
+<p>​    参数说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-1： 强制scp命令使用协议ssh1</span><br><span class="line">-2： 强制scp命令使用协议ssh2</span><br><span class="line">-4： 强制scp命令只使用IPv4寻址</span><br><span class="line">-6： 强制scp命令只使用IPv6寻址</span><br><span class="line">-B： 使用批处理模式（传输过程中不询问传输口令或短语）</span><br><span class="line">-C： 允许压缩。（将-C标志传递给ssh，从而打开压缩功能）</span><br><span class="line">-p：保留原文件的修改时间，访问时间和访问权限。</span><br><span class="line">-q： 不显示传输进度条。</span><br><span class="line">-r： 递归复制整个目录。</span><br><span class="line">-v：详细方式显示输出。scp和ssh(1)会显示出整个过程的调试信息。这些信息用于调试连接，验证和配置问题。</span><br><span class="line">-c cipher： 以cipher将数据传输进行加密，这个选项将直接传递给ssh。</span><br><span class="line">-F ssh_config： 指定一个替代的ssh配置文件，此参数直接传递给ssh。</span><br><span class="line">-i identity_file： 从指定文件中读取传输时使用的密钥文件，此参数直接传递给ssh。</span><br><span class="line">-l limit： 限定用户所能使用的带宽，以Kbit&#x2F;s为单位。</span><br><span class="line">-o ssh_option： 如果习惯于使用ssh_config(5)中的参数传递方式，</span><br><span class="line">-P port：注意是大写的P, port是指定数据传输用到的端口号</span><br><span class="line">-S program： 指定加密传输时所使用的程序。此程序必须能够理解ssh(1)的选项。</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="rsync"><a href="#rsync" class="headerlink" title="rsync"></a>rsync</h2><p><code>rsync</code>基本上就是用来替代<code>scp</code>的命令，功能更强大，参数也更复杂。支持增量备份，压缩拷贝，删除同步，软链复制等等。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Transfer file from local to remote host:</span></span><br><span class="line">rsync path/to/local_file remote_host:path/to/remote_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer file from remote host to local:</span></span><br><span class="line">rsync remote_host:path/to/remote_file path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer file in [a]rchive (to preserve attributes) </span></span><br><span class="line"><span class="comment"># and compressed ([z]ipped) mode </span></span><br><span class="line"><span class="comment"># with [v]erbose and [h]uman-readable [p]rogress:</span></span><br><span class="line">rsync -azvhP path/to/local_file remote_host:path/to/remote_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer a directory and all its children from a remote to local:</span></span><br><span class="line">rsync -r remote_host:path/to/remote_directory path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer directory contents (but not the directory itself) from a remote to local:</span></span><br><span class="line">rsync -r remote_host:path/to/remote_directory/ path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer a directory [r]ecursively, in [a]rchive to preserve attributes</span></span><br><span class="line"><span class="comment"># resolving contained soft[l]inks , and ignoring already transferred files [u]nless newer:</span></span><br><span class="line">rsync -rauL remote_host:path/to/remote_file path/to/local_directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer file over SSH and delete local files that do not exist on remote host:</span></span><br><span class="line">rsync -e ssh --delete remote_host:path/to/remote_file path/to/local_file</span><br><span class="line"></span><br><span class="line"><span class="comment"># Transfer file over SSH and show global progress:</span></span><br><span class="line">rsync -e ssh --info=progress2 remote_host:path/to/remote_file path/to/local_file</span><br></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-v, --verbose          详细模式输出。</span><br><span class="line">-q, --quiet            精简输出模式。</span><br><span class="line">-c, --checksum         打开校验开关，强制对文件传输进行校验。</span><br><span class="line">-a, --archive          归档模式，表示以递归方式传输文件，并保持所有文件属性，等于 -rlptgoD。</span><br><span class="line">-r, --recursive        对子目录以递归模式处理。</span><br><span class="line">-R, --relative         使用相对路径信息。</span><br><span class="line">-b, --backup           创建备份，也就是对于目的已经存在有同样的文件名时，将老的文件重新命名为 ~filename。可以使用 --suffix 选项来指定不同的备份文件前缀。</span><br><span class="line">--backup-dir           将备份文件（~filename）存放在在目录下。</span><br><span class="line">-suffix&#x3D;SUFFIX         定义备份文件前缀。</span><br><span class="line">-u, --update           仅仅进行更新，也就是跳过所有已经存在于 DST，并且文件时间晚于要备份的文件。（不覆盖更新的文件。）</span><br><span class="line">-l, --links            保留软链结。</span><br><span class="line">-L, --copy-links       想对待常规文件一样处理软链结。</span><br><span class="line">--copy-unsafe-links    仅仅拷贝指向 SRC 路径目录树以外的链结。</span><br><span class="line">--safe-links           忽略指向 SRC 路径目录树以外的链结。</span><br><span class="line">-H, --hard-links       保留硬链结。</span><br><span class="line">-p, --perms            保持文件权限。</span><br><span class="line">-o, --owner            保持文件属主信息。</span><br><span class="line">-g, --group            保持文件属组信息。</span><br><span class="line">-D, --devices          保持设备文件信息。</span><br><span class="line">-t, --times            保持文件时间信息。</span><br><span class="line">-S, --sparse           对稀疏文件进行特殊处理以节省 DST 的空间。</span><br><span class="line">-n, --dry-run          显示哪些文件将被传输（新增、修改和删除）。</span><br><span class="line">-W, --whole-file       拷贝文件，不进行增量检测。</span><br><span class="line">-x, --one-file-system  不要跨越文件系统边界。</span><br><span class="line">-B, --block-size&#x3D;SIZE  检验算法使用的块尺寸，默认是 700 字节。</span><br><span class="line">-e, --rsh&#x3D;COMMAND      指定使用 rsh, ssh 方式进行数据同步。</span><br><span class="line">--rsync-path&#x3D;PATH      指定远程服务器上的 rsync 命令所在路径信息。</span><br><span class="line">-C, --cvs-exclude      使用和 CVS 一样的方法自动忽略文件，用来排除那些不希望传输的文件。</span><br><span class="line">--existing             仅仅更新那些已经存在于 DST 的文件，而不备份那些新创建的文件。</span><br><span class="line">--delete               删除那些 DST 中 SRC 没有的文件。</span><br><span class="line">--delete-excluded      同样删除接收端那些被该选项指定排除的文件。</span><br><span class="line">--delete-after         传输结束以后再删除。</span><br><span class="line">--ignore-errors        即使出现 IO 错误也进行删除。</span><br><span class="line">--max-delete&#x3D;NUM       最多删除 NUM 个文件。</span><br><span class="line">--partial              保留那些因故没有完全传输的文件，以便实现断点续传。</span><br><span class="line">--force                强制删除目录，即使不为空。</span><br><span class="line">--numeric-ids          不将数字的用户和组 ID 匹配为用户名和组名。</span><br><span class="line">--timeout&#x3D;TIME         IP 超时时间，单位为秒。</span><br><span class="line">-I, --ignore-times     不跳过那些有同样的时间和长度的文件。</span><br><span class="line">--size-only            当决定是否要备份文件时，仅仅察看文件大小而不考虑文件时间。</span><br><span class="line">--modify-window&#x3D;NUM    决定文件是否时间相同时使用的时间戳窗口，默认为 0。</span><br><span class="line">-T --temp-dir&#x3D;DIR      在 DIR 中创建临时文件。</span><br><span class="line">--compare-dest&#x3D;DIR     同样比较 DIR 中的文件来决定是否需要备份。</span><br><span class="line">--progress             显示传输过程。</span><br><span class="line">-P                     等同于 -partial -progress。</span><br><span class="line">-z, --compress         对备份的文件在传输时进行压缩处理。</span><br><span class="line">--exclude&#x3D;PATTERN      指定排除不需要传输的文件模式。</span><br><span class="line">--include&#x3D;PATTERN      指定不排除而需要传输的文件模式。</span><br><span class="line">--exclude-from&#x3D;FILE    排除 FILE 中指定模式的文件。</span><br><span class="line">--include-from&#x3D;FILE    不排除 FILE 指定模式匹配的文件。</span><br><span class="line">--version              打印版本信息。</span><br><span class="line">--address              绑定到特定的地址。</span><br><span class="line">--config&#x3D;FILE          指定其他的配置文件，不使用默认的 rsyncd.conf 文件。</span><br><span class="line">--port&#x3D;PORT            指定其他的 rsync 服务端口。</span><br><span class="line">--blocking-io          对远程 shell 使用阻塞 IO。</span><br><span class="line">--stats                给出某些文件的传输状态。</span><br><span class="line">--log-format&#x3D;formAT    指定日志文件格式。</span><br><span class="line">--password-file&#x3D;FILE   从 FILE 中得到密码。</span><br><span class="line">--bwlimit&#x3D;KBPS         限制 I&#x2F;O 带宽，KBytes per second。</span><br><span class="line">-h, --help             显示帮助信息。</span><br></pre></td></tr></table></figure>
+
+<h2 id="vsftpd"><a href="#vsftpd" class="headerlink" title="vsftpd"></a>vsftpd</h2><p><code>vsftpd</code>是Linux的ftp服务端程序，一般需要单独安装，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install vsftpd -y</span><br></pre></td></tr></table></figure>
+
+<p>修改配置文件前记得备份。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">cp /etc/vsftpd.conf /etc/vsftpd.conf.bak      //备份配置文件</span><br><span class="line">vim /etc/vsftpd.conf</span><br></pre></td></tr></table></figure>
+
+<p>如果需要匿名访问，参考以下配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">listen&#x3D;YES                       &#x2F;&#x2F;FTP处于独立启动模式</span><br><span class="line">anonymous_enable&#x3D;YES             &#x2F;&#x2F;是否允许匿名访问,匿名帐户为 ftp和 anonymous</span><br><span class="line">local_enable&#x3D;YES                 &#x2F;&#x2F;是否允许本地用户访问</span><br><span class="line">write_enable&#x3D;YES                 &#x2F;&#x2F;允许本地用户访问时,是否允许他们有写入的权限</span><br><span class="line">local_umask&#x3D;022                  &#x2F;&#x2F;本地用户在写入文件时,这些文件默认的权限</span><br><span class="line">anon_upload_enable&#x3D;YES           &#x2F;&#x2F;是否允许匿名用户上传</span><br><span class="line">anon_mkdir_write_enable&#x3D;YES      &#x2F;&#x2F;是否允许匿名用户创建目录</span><br><span class="line">dirmessage_enable&#x3D;YES            &#x2F;&#x2F;使用者进入某个目录时是否显示由message_file指定的文件内容</span><br><span class="line">xferlog_enable&#x3D;YES               &#x2F;&#x2F;是否启用日志</span><br><span class="line">connected_from_port_20&#x3D;YES       &#x2F;&#x2F;是否允许从20的连接请求</span><br><span class="line">xferlog_file&#x3D;&#x2F;var&#x2F;log&#x2F;vsftpd.log &#x2F;&#x2F;日志文件的位置</span><br><span class="line">xferlog_std_format&#x3D;YES           &#x2F;&#x2F;是否用标准格式存储日志</span><br><span class="line">secure_chroot_dir&#x3D;&#x2F;var&#x2F;run&#x2F;vsftpd&#x2F;empty</span><br><span class="line">pam_service_name&#x3D;vsftpd          &#x2F;&#x2F;设置PAM认证服务的配置文件名,该文件位于&#x2F;etc&#x2F;pam.d目录下</span><br><span class="line">rsa_cert_file&#x3D;&#x2F;etc&#x2F;ssl&#x2F;certs&#x2F;ssl-cert-snakeoil.pem</span><br><span class="line">rsa_private_key_file&#x3D;&#x2F;etc&#x2F;ssl&#x2F;private&#x2F;ssl-cert-snakeoil.key</span><br><span class="line">ssl_enable&#x3D;NO</span><br><span class="line">utf8_filesystem&#x3D;YES</span><br><span class="line">anon_root&#x3D;&#x2F;home&#x2F;www              &#x2F;&#x2F;匿名用户访问的目录</span><br></pre></td></tr></table></figure>
+
+<p>修改配置后重启服务。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># restart</span></span><br><span class="line">systemctl restart vsftpd</span><br><span class="line"><span class="comment"># check</span></span><br><span class="line">netstat -an | grep 21</span><br></pre></td></tr></table></figure>
+
+<p>默认的匿名访问目录就是<code>ftp</code>用户的家目录，可以查 <code>/etc/passwd</code> 文件。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">cat /etc/passwd | grep ftp</span><br><span class="line">ftp:x:110:115:ftp daemon,,,:/srv/ftp:/bin/<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<p>如果文件写入失败，有可能是权限的问题，owner改成<code>ftp</code>并下放权限。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">chown -R ftp &#x2F;srv&#x2F;ftp</span><br></pre></td></tr></table></figure>
+
+<h2 id="http"><a href="#http" class="headerlink" title="http"></a>http</h2><p>如果只是为了读文件，直接用Python开个http服务即可。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;path&#x2F;to&#x2F;shared_dir</span><br><span class="line"></span><br><span class="line"># python2，系统自带</span><br><span class="line">python -m SimpleHTTPServer 8000</span><br><span class="line"></span><br><span class="line"># python3 的用法不一样</span><br><span class="line">python3 -m http.server 8000</span><br></pre></td></tr></table></figure>
+
+<p>然后用浏览器访问 <code>http://linux-ip:8000</code> 即可下载该目录的文件。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-09/linux-new-user-missed-home-directory/" rel="bookmark">Linux新建用户没有用户目录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-09/linux-view-system-information/" rel="bookmark">Linux查看系统信息的命令</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-12/history-command-in-linux/" rel="bookmark">Linux中的history命令</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-12/linux-task-manager/" rel="bookmark">Linux中的任务管理器</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-15/how-to-quickly-add-ssh-fingerprint-to-known_hosts-file/" rel="bookmark">如何快速将SSH指纹添加到known_hosts文件中</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/" title="Linux里的文件传输">https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># Linux</a>
+              <a href="/tags/shell/" rel="tag"># shell</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2020-02-15/em-and-px-in-css/" rel="prev" title="CSS中的em和px">
+      <i class="fa fa-chevron-left"></i> CSS中的em和px
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2020-02-21/switch-case-in-linux/" rel="next" title="Linux中的Switch Case">
+      Linux中的Switch Case <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#scp"><span class="nav-number">1.</span> <span class="nav-text">scp</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#rsync"><span class="nav-number">2.</span> <span class="nav-text">rsync</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#vsftpd"><span class="nav-number">3.</span> <span class="nav-text">vsftpd</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#http"><span class="nav-number">4.</span> <span class="nav-text">http</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2020-02-16/file-transfer-in-linux/";
+    this.page.identifier = "posts/2020-02-16/file-transfer-in-linux/";
+    this.page.title = "Linux里的文件传输";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

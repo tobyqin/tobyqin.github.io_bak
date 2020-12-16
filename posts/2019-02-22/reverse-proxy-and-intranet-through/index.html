@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="学习一下正向代理和反向代理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反向代理和内网穿透">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="学习一下正向代理和反向代理。">
+<meta property="og:image" content="https://tobyqin.github.io/images/1550823489351.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/1550824448581.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/1550825022784.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/1550826381553.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/1550848043738.png">
+<meta property="article:published_time" content="2019-02-22T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.476Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="reverse-proxy">
+<meta property="article:tag" content="frp">
+<meta property="article:tag" content="ngrok">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/1550823489351.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>反向代理和内网穿透 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          反向代理和内网穿透
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-22 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-22T00:00:00Z">2019-02-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>学习一下正向代理和反向代理。</p>
+<a id="more"></a>
+
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>反向代理看上去看深奥，其实不然，只是因为汉语言文化的差异导致它看上去深奥。一般反派感觉都比较厉害和神秘。</p>
+<p>要理解反向代理，我们就不得不说一下正向代理。</p>
+<h3 id="正向代理-（Forward-Proxy）"><a href="#正向代理-（Forward-Proxy）" class="headerlink" title="正向代理 （Forward Proxy）"></a>正向代理 （Forward Proxy）</h3><p>所谓正向代理，就是大家通常说的代理。打个通俗的比方，你想跟你舅舅借钱，但不好开口（或者你舅妈会设法阻拦），就跟你妈说。这时母亲大人就是个正向代理。此时代理本质就是个桥的作用，这个桥让你能和桥对面的人交换信息。</p>
+<p><img src="https://tobyqin.github.io/images/1550823489351.png" alt=""></p>
+<p>正向代理是多对一的概念，例如你姐，你妹你可以通过你妈去跟舅舅借钱，但舅舅只有一个舅舅。舅舅有可能并不知道到底是谁真正在借钱，只知道钱给了你妈。</p>
+<h3 id="反向代理-（Reserve-Proxy）"><a href="#反向代理-（Reserve-Proxy）" class="headerlink" title="反向代理 （Reserve Proxy）"></a>反向代理 （Reserve Proxy）</h3><p>大家都有打客服电话的经历，比如10086，一般上来就是个语音系统，转接人工服务后嘟嘟嘟好几声才有人接听，说我是工号xxx，很高兴为你服务。这个客服总机号码10086就是个反向代理，</p>
+<p><img src="https://tobyqin.github.io/images/1550824448581.png" alt=""></p>
+<p>反向代理隐藏了真实的服务端，有可能有N个客服对应N个号码，但你只需要记一个10086，它会平衡客服之间的压力给你安排合适的人。</p>
+<p>反向代理是一对多的概念，刚好和正向代理反过来了。</p>
+<ul>
+<li>正向代理<strong>代理的对象是客户端</strong></li>
+<li>反向代理<strong>代理的对象是服务端</strong></li>
+</ul>
+<p>反向代理最常见的作用就是负载均衡。比如你访问baidu的域名后，baidu会根据你的ip地址和网络情况给你分配最快的服务器，这个分配服务器的服务器就是反向代理。</p>
+<p><img src="https://tobyqin.github.io/images/1550825022784.png" alt=""></p>
+<p>反向代理还有一个场景就是内网穿透，因为服务对象是在内网里，你需要通过代理才能访问到。</p>
+<h2 id="内网穿透"><a href="#内网穿透" class="headerlink" title="内网穿透"></a>内网穿透</h2><p>从外网是没办法直接访问到内网的资源的，因为内网是一个局域网不在一个网段，而且还有防火墙在。</p>
+<p><img src="https://tobyqin.github.io/images/1550826381553.png" alt="1550826381553"></p>
+<p>这时候你弄个反向代理就可以解决这个问题：</p>
+<ul>
+<li>内网服务器访问代理服务器</li>
+<li>握手，建立<strong>通道</strong></li>
+<li>外网用户访问代理，代理通过<strong>通道</strong>和内网通信</li>
+</ul>
+<p><img src="https://tobyqin.github.io/images/1550848043738.png" alt="1550848043738"></p>
+<p>举一个具体例子，TeamViewer的服务端（外网）就是个反向代理，它需要和TeamViewer客户端（内网）一直保持通信，建立一个通道（TeamViewer ID）。当远程连接这台机器时，你需要登录到TeamViewer服务器，然后通过代理通道（TeamViewer ID）和远程机器连接。</p>
+<h2 id="一些反向代理服务"><a href="#一些反向代理服务" class="headerlink" title="一些反向代理服务"></a>一些反向代理服务</h2><p>远程连接内网机器的桌面服务是最常见的需求，有时候我们希望做的是自己的机器上跑一些服务能够从外网访问，比如demo，博客，甚至私有云等等。</p>
+<p>TeamViewer和向日葵大家可能都知道，我说一些不一样的。</p>
+<h3 id="frp"><a href="#frp" class="headerlink" title="frp"></a>frp</h3><p>开源界最流行的反向代理之一，frp全称FaskReverseProxy，它的目标是做最快速可靠的反向代理，用GO语言实现，在Github上正在快速迭代中。安装和配置都非常简单，只需要几个命令就可以完成。frp支持的客户端非常丰富，树莓派，路由器，安卓手机等等，可玩性很高。</p>
+<p>frp服务可以让你本地的web项目提供给外网访问，特别适合向别人展示你本机的web demo 以及调试一些远程的API (比如微信公众号，企业号的开发)。</p>
+<p>FRP还可以轻松代理TCP，HTTPS，SSH等等协议，你需要有一台具有公网IP的机器，最好加一个域名。</p>
+<h3 id="ngrok"><a href="#ngrok" class="headerlink" title="ngrok"></a>ngrok</h3><p>曾经是开源界反向代理软件的老大，到2.0以后选择闭源，最后开源的版本2016年后就没有再更新，止于1.7。基于C语言实现，配置略复杂，不过据说灵活性和稳定性超好。</p>
+<p>ngrok也可以代理常见的各种协议，自己搭建只能用早期的开源版本。或者选择商业公司提供的收费服务，国内外可以搜到很多提供NGROK服务的网站，可不可靠不太敢说，但真的很多。</p>
+<p>这里列举一些知乎推荐过的，你也可以通过ngrok这个关键字搜索到很多。</p>
+<ul>
+<li>natapp.cn</li>
+<li>小米球</li>
+<li>Sunny-Ngrok</li>
+<li>echosite</li>
+</ul>
+<h3 id="dog-tunnel"><a href="#dog-tunnel" class="headerlink" title="dog-tunnel"></a>dog-tunnel</h3><p>翻译过来就是狗洞吧，国人做的，基于GO语言开发，在GitHub上活跃度还不错，有1k+的星星，有兴趣可以试一下。</p>
+<h3 id="serveo-net"><a href="#serveo-net" class="headerlink" title="serveo.net"></a>serveo.net</h3><p>无需注册，无需配置，只需要 ssh 就行，没有客户端，支持多端口映射，支持自定义子域名，只要一行代码。</p>
+<p><code>ssh -R 80:localhost:3000 http://serveo.net</code></p>
+<p>我试了一下，临时用一下真的很棒！</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>内网服务本来就是比较敏感的，所以从数据安全的角度看我觉得还是自己搭建代理服务更可靠。用不靠谱的服务有很大风险，还有可能很坑，非常坑。</p>
+<p>比如nat123和花生壳，一步一步诱导你付费，协议，端口，流量，速度，域名每个细节都要收费，还不一次说清楚，你付完钱才知道后面还要付钱的，别问我怎么知道的。</p>
+<p>更多讨论，你也可以去看知乎：<a href="https://www.zhihu.com/question/49629610/" target="_blank" rel="noopener">https://www.zhihu.com/question/49629610/</a></p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-09/frp-server-for-free/" rel="bookmark">免费的FRP服务器</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/" title="反向代理和内网穿透">https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/reverse-proxy/" rel="tag"># reverse-proxy</a>
+              <a href="/tags/frp/" rel="tag"># frp</a>
+              <a href="/tags/ngrok/" rel="tag"># ngrok</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-13/sync-screenshots-from-mobile-devices-to-pc/" rel="prev" title="从手机截图报Bug扯到工具论">
+      <i class="fa fa-chevron-left"></i> 从手机截图报Bug扯到工具论
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-24/build-chrome-extension-with-vuejs/" rel="next" title="用VueJS写一个Chrome浏览器插件">
+      用VueJS写一个Chrome浏览器插件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内网穿透"><span class="nav-number">2.</span> <span class="nav-text">内网穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些反向代理服务"><span class="nav-number">3.</span> <span class="nav-text">一些反向代理服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">4.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-02-22/reverse-proxy-and-intranet-through/";
+    this.page.identifier = "posts/2019-02-22/reverse-proxy-and-intranet-through/";
+    this.page.title = "反向代理和内网穿透";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

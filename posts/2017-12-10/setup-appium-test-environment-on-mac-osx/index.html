@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Appium是手机端自动化测试的必备知识。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Mac OSX 上配置 Appium + Android 自动化测试环境">
+<meta property="og:url" content="https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="Appium是手机端自动化测试的必备知识。">
+<meta property="article:published_time" content="2017-12-10T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.456Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="appium">
+<meta property="article:tag" content="mac">
+<meta property="article:tag" content="automation">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>在Mac OSX 上配置 Appium + Android 自动化测试环境 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Mac OSX 上配置 Appium + Android 自动化测试环境
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-12-10 00:00:00" itemprop="dateCreated datePublished" datetime="2017-12-10T00:00:00Z">2017-12-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Appium是手机端自动化测试的必备知识。</p>
+<a id="more"></a>
+
+<h2 id="前提准备"><a href="#前提准备" class="headerlink" title="前提准备"></a>前提准备</h2><p>开始正文之前，你需要准备好一些基本条件：</p>
+<ol>
+<li>安装好Mac OSX 操作系统的设备</li>
+<li>能够访问中国局域网以外资源的方法（没有也行，但很痛苦）</li>
+<li>已经安装好 <a href="https://brew.sh/" target="_blank" rel="noopener">homebrew</a></li>
+<li>已经安装好 Python3.x，可以通过brew安装</li>
+<li>已经安装好 Java Runtime Environment，可以通过brew安装</li>
+</ol>
+<h2 id="安装-Android-Studio-SDK"><a href="#安装-Android-Studio-SDK" class="headerlink" title="安装 Android Studio / SDK"></a>安装 Android Studio / SDK</h2><p>本文主要为了测试安卓应用，那么这里我们就需要安装Android Studio或者Android SDK。</p>
+<ul>
+<li>Android Studio - 完整的开发以及测试工具，需要梯子</li>
+<li>Android SDK + Platform Tools - 足够完成自动化测试，通过homebrew安装</li>
+</ul>
+<p>如果只是为了自动化测试建议安装SDK足矣，使用brew命令轻松搞定。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">brew cask install android-sdk</span><br><span class="line">brew cask install android-platform-tools</span><br></pre></td></tr></table></figure>
+
+<p>在国内使用brew可以事先配置好国内源，速度会快很多。</p>
+<p>如果有梯子可以选择Android Studio，安装方法很简单，官网下载后一路Next，启动后会让你把SDK等等一系列依赖都装好，一步到位。</p>
+<h2 id="准备Android-模拟器或者使用真机"><a href="#准备Android-模拟器或者使用真机" class="headerlink" title="准备Android 模拟器或者使用真机"></a>准备Android 模拟器或者使用真机</h2><p>如果SDK已经安装完毕，应该可以使用adb命令来检查可用的模拟器或者已经连接到电脑上的实体手机。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">adb devices</span><br></pre></td></tr></table></figure>
+
+<p>如果不知道adb工具在哪，可以先在命令行里通过find搜索。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">find &#x2F;Users -name adb  # 搜索用户目录</span><br><span class="line">find &#x2F; -name adb  # 搜索全盘</span><br></pre></td></tr></table></figure>
+
+<p>找到之后可以把 adb 目录加入PATH，方便后续使用。一般在 <code>~/Library/Android/sdk/platform-tools/adb</code>，如果通过brew安装，会自动建立软链接后加入PATH。</p>
+<p>模拟器可以使用官方模拟器（Android Studio自带），或者口碑较好的 <a href="https://www.genymotion.com/" target="_blank" rel="noopener">Genymotion</a>，具体请查阅其他文章，搭模拟器其实也挺不容易的。</p>
+<h2 id="安装Appium"><a href="#安装Appium" class="headerlink" title="安装Appium"></a>安装Appium</h2><p>Appium 可以通过多种方式安装。</p>
+<h3 id="方式一：使用-NodeJS-安装"><a href="#方式一：使用-NodeJS-安装" class="headerlink" title="方式一：使用 NodeJS 安装"></a>方式一：使用 NodeJS 安装</h3><p>首先通过brew安装nodejs：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">brew install node</span><br></pre></td></tr></table></figure>
+
+<p>配置国内源，在个人目录下新建一个.npmrc文件，写入：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">registry=https://registry.npm.taobao.org/</span><br></pre></td></tr></table></figure>
+
+<p>开始安装Appium：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">npm install -g appium</span><br><span class="line">npm install -g appium-doctor</span><br></pre></td></tr></table></figure>
+
+<p>Appium-doctor 可以帮你诊断测试环境，建议安装。</p>
+<h3 id="方式二：下载Appium桌面版安装"><a href="#方式二：下载Appium桌面版安装" class="headerlink" title="方式二：下载Appium桌面版安装"></a>方式二：下载Appium桌面版安装</h3><p>官方的Appium桌面安装包可以从github下载，需要梯子。</p>
+<ul>
+<li><a href="https://github.com/appium/appium-desktop/releases" target="_blank" rel="noopener">https://github.com/appium/appium-desktop/releases</a></li>
+</ul>
+<p>下载到的dmg文件双击装载，把Appium拖到Application里完成安装。</p>
+<h2 id="安装-Appium-Client"><a href="#安装-Appium-Client" class="headerlink" title="安装 Appium-Client"></a>安装 Appium-Client</h2><p>本文只讨论Python实现的Appium测试，所以你只需要允许以下命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pip install Appium-Python-Client</span><br></pre></td></tr></table></figure>
+
+<p>如果需要使用其他编程语言，下表供参考：</p>
+<table>
+<thead>
+<tr>
+<th>语言/框架</th>
+<th>Github版本库以及安装指南</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ruby</td>
+<td><a href="https://github.com/appium/ruby_lib" target="_blank" rel="noopener">https://github.com/appium/ruby_lib</a></td>
+</tr>
+<tr>
+<td>Python</td>
+<td><a href="https://github.com/appium/python-client" target="_blank" rel="noopener">https://github.com/appium/python-client</a></td>
+</tr>
+<tr>
+<td>Java</td>
+<td><a href="https://github.com/appium/java-client" target="_blank" rel="noopener">https://github.com/appium/java-client</a></td>
+</tr>
+<tr>
+<td>JavaScript (Node.js)</td>
+<td><a href="https://github.com/admc/wd" target="_blank" rel="noopener">https://github.com/admc/wd</a></td>
+</tr>
+<tr>
+<td>Objective C</td>
+<td><a href="https://github.com/appium/selenium-objective-c" target="_blank" rel="noopener">https://github.com/appium/selenium-objective-c</a></td>
+</tr>
+<tr>
+<td>PHP</td>
+<td><a href="https://github.com/appium/php-client" target="_blank" rel="noopener">https://github.com/appium/php-client</a></td>
+</tr>
+<tr>
+<td>C# (.NET)</td>
+<td><a href="https://github.com/appium/appium-dotnet-driver" target="_blank" rel="noopener">https://github.com/appium/appium-dotnet-driver</a></td>
+</tr>
+<tr>
+<td>RobotFramework</td>
+<td><a href="https://github.com/jollychang/robotframework-appiumlibrary" target="_blank" rel="noopener">https://github.com/jollychang/robotframework-appiumlibrary</a></td>
+</tr>
+</tbody></table>
+<h2 id="必要的环境变量设置"><a href="#必要的环境变量设置" class="headerlink" title="必要的环境变量设置"></a>必要的环境变量设置</h2><p>如果你已经安装了appium-doctor，那么你只要运行appium-doctor命令就可以知道你还需要设置哪些环境变量，比如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tobyqin@CatBook ~&gt; appium-doctor</span><br><span class="line">info AppiumDoctor Appium Doctor v.1.4.3</span><br><span class="line">info AppiumDoctor ### Diagnostic starting ###</span><br><span class="line">info AppiumDoctor  ✔ The Node.js binary was found at: /usr/local/bin/node</span><br><span class="line">info AppiumDoctor  ✔ Node version is 7.10.0</span><br><span class="line">info AppiumDoctor  ✔ Xcode is installed at: /Applications/Xcode.app/Contents/Developer</span><br><span class="line">WARN AppiumDoctor  ✖ Xcode Command Line Tools are NOT installed!</span><br><span class="line">info AppiumDoctor  ✔ DevToolsSecurity is enabled.</span><br><span class="line">info AppiumDoctor  ✔ The Authorization DB is set up properly.</span><br><span class="line">WARN AppiumDoctor  ✖ Carthage was NOT found!</span><br><span class="line">info AppiumDoctor  ✔ HOME is set to: /Users/tobyqin</span><br><span class="line">info AppiumDoctor  ✔ ANDROID_HOME is set to: /Users/tobyqin/Library/Android/sdk/</span><br><span class="line">info AppiumDoctor  ✔ JAVA_HOME is set to: /Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home</span><br><span class="line">info AppiumDoctor  ✔ adb exists at: /Users/tobyqin/Library/Android/sdk/platform-tools/adb</span><br><span class="line">info AppiumDoctor  ✔ android exists at: /Users/tobyqin/Library/Android/sdk/tools/android</span><br><span class="line">info AppiumDoctor  ✔ emulator exists at: /Users/tobyqin/Library/Android/sdk/tools/emulator</span><br><span class="line">info AppiumDoctor  ✔ Bin directory of $JAVA_HOME is set</span><br><span class="line">info AppiumDoctor ### Diagnostic completed, 2 fixes needed. ###</span><br><span class="line">info AppiumDoctor</span><br><span class="line">info AppiumDoctor ### Manual Fixes Needed ###</span><br><span class="line">info AppiumDoctor The configuration cannot be automatically fixed, please do the following first:</span><br><span class="line">WARN AppiumDoctor - Please install Carthage. Visit https://github.com/Carthage/Carthage#installing-carthage for more information.</span><br><span class="line">info AppiumDoctor ###</span><br><span class="line">info AppiumDoctor</span><br><span class="line">info AppiumDoctor Bye! Run appium-doctor again when all manual fixes have been applied!</span><br></pre></td></tr></table></figure>
+
+<p>其实你不一定需要把通过所有检查项，如果只是为了完成Android的Appium测试，只要确保ANDROID_HOME 和 JAVA_HOME 正确配置，另外SDK Tools 和Platform Tools都加入PATH就基本完成了。可以参考我个人目录下的.bash_profile设置：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">export ANDROID_HOME=~/Library/Android/sdk/</span><br><span class="line">export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home</span><br><span class="line"></span><br><span class="line">export PATH=~/bin:$PATH:/usr/local/bin:$ANDROID_HOME/platform-tools/:$JAVA_HOME/bin</span><br></pre></td></tr></table></figure>
+
+<h2 id="开始编写自动化测试"><a href="#开始编写自动化测试" class="headerlink" title="开始编写自动化测试"></a>开始编写自动化测试</h2><p>终于到了开始写代码的时候了，相信你已经迫不及待了，别急，你还要准备以下条件：</p>
+<ol>
+<li>模拟器或者测试机必须是Ready的状态，每次启动模拟器都很费时间，所以建议模拟器不要关闭，通过代码来启动模拟器是一个办法，但是时间成本有点高。</li>
+<li>如果是调试代码阶段，建议保持Appium桌面版长期运行，但是Appium和uiautomator有冲突，只能二选一。</li>
+<li>Appium会根据你的测试代码去寻找符合要求的设备，如果你启动了多台虚拟机或者连接了多台实体机，请显式地在代码中指定设备名称或者版本号。</li>
+</ol>
+<p>自动化测试代码例子如下，启动内置拨号软件，搜索关键字。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> appium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line">desired_caps = &#123;&#125;</span><br><span class="line">desired_caps[<span class="string">'platformName'</span>] = <span class="string">'Android'</span></span><br><span class="line">desired_caps[<span class="string">'platformVersion'</span>] = <span class="string">'7.1.1'</span></span><br><span class="line">desired_caps[<span class="string">'deviceName'</span>] = <span class="string">'Android Emulator'</span></span><br><span class="line">desired_caps[<span class="string">'appPackage'</span>] = <span class="string">'com.android.dialer'</span></span><br><span class="line">desired_caps[<span class="string">'appActivity'</span>] = <span class="string">'DialtactsActivity'</span></span><br><span class="line"></span><br><span class="line">driver = webdriver.Remote(<span class="string">'http://localhost:4723/wd/hub'</span>, desired_caps)</span><br><span class="line">driver.find_element_by_id(<span class="string">'com.android.dialer:id/search_box_collapsed'</span>).click()</span><br><span class="line">search_box = driver.find_element_by_id(<span class="string">'com.android.dialer:id/search_view'</span>)</span><br><span class="line">search_box.click()</span><br><span class="line">search_box.send_keys(<span class="string">'hello toby'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>恭喜你，解锁了移动应用测试的新成就！</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="/posts/2017-05-03/setup-appium-automation-test-environment/">在 Windows 下搭建 Appium + Android 自动化测试环境</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2017-05-03/setup-appium-automation-test-environment/" rel="bookmark">在 Windows 下搭建 Appium + Android 自动化测试环境</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/" title="在Mac OSX 上配置 Appium + Android 自动化测试环境">https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/appium/" rel="tag"># appium</a>
+              <a href="/tags/mac/" rel="tag"># mac</a>
+              <a href="/tags/automation/" rel="tag"># automation</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2017-09-26/excellent-python-time-ultility-arrow/" rel="prev" title="如何使用Python优雅地处理时间数据">
+      <i class="fa fa-chevron-left"></i> 如何使用Python优雅地处理时间数据
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2017-12-12/connect-adb-via-wifi/" rel="next" title="使用ADB无线连接Android真机进行调试">
+      使用ADB无线连接Android真机进行调试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前提准备"><span class="nav-number">1.</span> <span class="nav-text">前提准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Android-Studio-SDK"><span class="nav-number">2.</span> <span class="nav-text">安装 Android Studio &#x2F; SDK</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#准备Android-模拟器或者使用真机"><span class="nav-number">3.</span> <span class="nav-text">准备Android 模拟器或者使用真机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装Appium"><span class="nav-number">4.</span> <span class="nav-text">安装Appium</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Appium-Client"><span class="nav-number">5.</span> <span class="nav-text">安装 Appium-Client</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#必要的环境变量设置"><span class="nav-number">6.</span> <span class="nav-text">必要的环境变量设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始编写自动化测试"><span class="nav-number">7.</span> <span class="nav-text">开始编写自动化测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2017-12-10/setup-appium-test-environment-on-mac-osx/";
+    this.page.identifier = "posts/2017-12-10/setup-appium-test-environment-on-mac-osx/";
+    this.page.title = "在Mac OSX 上配置 Appium + Android 自动化测试环境";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

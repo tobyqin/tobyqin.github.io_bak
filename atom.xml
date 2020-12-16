@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>BetaCat 未上线的猫</title>
+  
+  <subtitle>未上线的猫</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://tobyqin.cn/"/>
+  <updated>2020-12-16T15:36:46.444Z</updated>
+  <id>https://tobyqin.cn/</id>
+  
+  <author>
+    <name>Toby Qin</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MacOXS上快速启动一个ELK</title>
+    <link href="https://tobyqin.cn/posts/2020-12-16/quickly-start-an-elk-on-macoxs/"/>
+    <id>https://tobyqin.cn/posts/2020-12-16/quickly-start-an-elk-on-macoxs/</id>
+    <published>2020-12-16T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.444Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="快速开始"><a href="#快速开始" class="headerlink" title="快速开始"></a>快速开始</h2><ol><li>确保你的Docker已经安装完毕。</li><li>配置一个docker的仓库镜像，任选其一或者自行搜索。</li></ol><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;hub-mirror.c.163.com</span><br><span class="line">https:&#x2F;&#x2F;ngim31fm.mirror.aliyuncs.com</span><br></pre></td></tr></table></figure><ol start="3"><li>只需要一行命令即可。</li></ol><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ sudo docker run -p 5601:5601 -p 9200:9200 -p 5044:5044 -it \</span><br><span class="line">  -e MAX_MAP_COUNT=262144 --name elk sebp/elk</span><br></pre></td></tr></table></figure><h2 id="功能验证"><a href="#功能验证" class="headerlink" title="功能验证"></a>功能验证</h2><p>如果启动过程没报错，那么可以通过以下地址访问服务。</p><ol><li>ElasticSearc: <a href="http://localhost:9200" target="_blank" rel="noopener">http://localhost:9200</a></li><li>Kibana: <a href="http://localhost:5601" target="_blank" rel="noopener">http://localhost:5601</a></li></ol><p>This command publishes the following ports, which are needed for proper operation of the ELK stack:</p><ul><li>5601 (Kibana web interface).</li><li>9200 (Elasticsearch JSON interface).</li><li>5044 (Logstash Beats interface, receives logs from Beats such as Filebeat – see the <em><a href="https://elk-docker.readthedocs.io/#forwarding-logs-filebeat" target="_blank" rel="noopener">Forwarding logs with Filebeat</a></em> section).</li></ul><p>The image exposes (but does not publish):</p><ul><li>Elasticsearch’s transport interface on port 9300. Use the <code>-p 9300:9300</code> option with the <code>docker</code> command above to publish it. This transport interface is notably used by <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/index.html" target="_blank" rel="noopener">Elasticsearch’s Java client API</a>, and to run Elasticsearch in a cluster.</li><li><a href="https://www.elastic.co/guide/en/logstash/current/monitoring-logstash.html" target="_blank" rel="noopener">Logstash’s monitoring API</a> on port 9600. Use the <code>-p 9600:9600</code> option with the <code>docker</code> command above to publish it.</li></ul><h2 id="相关文档"><a href="#相关文档" class="headerlink" title="相关文档"></a>相关文档</h2><ol><li><a href="https://elk-docker.readthedocs.io/" target="_blank" rel="noopener">https://elk-docker.readthedocs.io/</a></li></ol><p>其他操作系统的相关介绍也可以在这里找到。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;快速开始&quot;&gt;&lt;a href=&quot;#快速开始&quot; class=&quot;headerlink&quot; title=&quot;快速开始&quot;&gt;&lt;/a&gt;快速开始&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;确保你的Docker已经安装完毕。&lt;/li&gt;
+&lt;li&gt;配置一个docker的仓库镜像，任选其一或者自行搜索。&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/tags/tech/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2020年，再见</title>
+    <link href="https://tobyqin.cn/posts/2020-12-04/2020-bye/"/>
+    <id>https://tobyqin.cn/posts/2020-12-04/2020-bye/</id>
+    <published>2020-12-04T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.488Z</updated>
+    
+    <content type="html"><![CDATA[<p>todo</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;todo&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="Life" scheme="https://tobyqin.cn/categories/life/"/>
+    
+    
+      <category term="Life" scheme="https://tobyqin.cn/tags/life/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>给MacBook Pro升级硬盘</title>
+    <link href="https://tobyqin.cn/posts/2020-11-08/upgrade-hard-drive-for-macbook-pro/"/>
+    <id>https://tobyqin.cn/posts/2020-11-08/upgrade-hard-drive-for-macbook-pro/</id>
+    <published>2020-11-08T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.432Z</updated>
+    
+    <content type="html"><![CDATA[<p>小记一下，其实过程比较简单。</p><h2 id="购买工具"><a href="#购买工具" class="headerlink" title="购买工具"></a>购买工具</h2><p>在淘宝可以买到，需要苹果后盖专门定制的五角螺丝刀和m2硬盘转接口。一般买转接口会送螺丝刀，但是需要螺丝还是要品质好一点的，我买了第一个转接口送了个山寨螺丝刀，结果只拧了5颗螺丝就滑丝了，郁闷的要死，只能重新网购第一把螺丝刀，结果还搞错了型号。</p><p><img src="https://tobyqin.github.io/images/image-20201108210010053.png" alt="image-20201108210010053"></p><p>这个是比较好一点的，有两把螺丝刀，一个开后盖，一个拧硬盘，拧硬盘的螺丝属于标准六角螺丝，一般的工具箱里有。上面这套价格不超过30元就可以买到。</p><h2 id="选购硬盘"><a href="#选购硬盘" class="headerlink" title="选购硬盘"></a>选购硬盘</h2><p>选购硬盘前还需要确认你的MacBook能不能升级硬盘，简单区分就是2018年后的新款MacBook都不能升级，硬盘已经焊死在主板上，具体支持的型号淘宝卖转接口的店铺都有列表，2015之前型号基本都支持升级，不管是MacBook还是Pro。</p><p>然后就是选购的硬盘，需要M2接口的，型号也是有讲究的，不是所有都能很好的兼容，推荐比较多的是用三星的，因为原装的就是三星的。</p><p>也可以用西数的黑盘或者蓝盘，我买了蓝盘1T SN550，速度比黑盘差一点，但是发热量小不少。M2硬盘基本上速度越快热量越高。</p><p><img src="https://tobyqin.github.io/images/image-20201108211729043.png" alt="image-20201108211729043"></p><p>东西齐了，就可以开工了。</p><h2 id="升级过程"><a href="#升级过程" class="headerlink" title="升级过程"></a>升级过程</h2><p>整个过程挺简单的，就是比较费时间。</p><ol><li>确保系统版本大于10.13，这样它才认识NVME的M2硬盘</li><li>用一块空的移动硬盘备份整个系统：插入硬盘，格式化，启动TimeMachine等待备份完成即可</li><li>拆开后盖，卸下老硬盘，装上新硬盘（需要第一步的工具和转接口）</li><li>顺便清理一下里面的灰，合上后盖，开始恢复系统</li><li>恢复完成后确认系统OK后再拧上螺丝钉</li></ol><p><img src="https://tobyqin.github.io/images/image-20201108212846696.png" alt="image-20201108212846696"></p><p>具体到恢复系统，大致的步骤如下：</p><ol><li>先插入有TimeMachine备份的移动硬盘</li><li>同时按住 电源+cmd+option+r开机，等待小地球出现</li><li>进入MacOS实用工具系统，有可能需要输入wifi，我的没输入</li><li>选择磁盘工具，把新硬盘格式化为APFS，分区GUID</li><li>格式完成后回到前一个页面，选择从时间机器恢复</li><li>等待恢复完成后开机就是你原来的系统，除了需要重新输入密码里面啥也不会丢</li></ol><p><img src="https://tobyqin.github.io/images/image-20201108212948441.png" alt="image-20201108212948441"></p><p>恢复需要的时间取决于你备份的大小和移动硬盘的速度，最好是USB3.0和M2的移动硬盘，我用的是普通移动硬盘恢复了200多G的数据，花了4个小时以上。</p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个升级还是很划算的，从256G的空间一下子变成1G，再也不会因为多跑两个虚拟机而删这删那，硬盘的整体速度也有了很大提升。原装的硬盘是5年前的产品，读写和现在的真的没法比。</p><p><img src="https://tobyqin.github.io/images/image-20201108214040099.png" alt="image-20201108214040099"></p><p>关于升级的细节网上也有很多文章，可以很容易查到。或者去淘宝找店家要视频甚至远程指导，也是有可能的。</p><p>发一个链接，仅供参考：<a href="https://post.smzdm.com/p/a783vk9g/" target="_blank" rel="noopener">https://post.smzdm.com/p/a783vk9g/</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;小记一下，其实过程比较简单。&lt;/p&gt;
+&lt;h2 id=&quot;购买工具&quot;&gt;&lt;a href=&quot;#购买工具&quot; class=&quot;headerlink&quot; title=&quot;购买工具&quot;&gt;&lt;/a&gt;购买工具&lt;/h2&gt;&lt;p&gt;在淘宝可以买到，需要苹果后盖专门定制的五角螺丝刀和m2硬盘转接口。一般买转接口会
+      
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>黑客马拉松后记</title>
+    <link href="https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/"/>
+    <id>https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/</id>
+    <published>2020-09-20T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.424Z</updated>
+    
+    <content type="html"><![CDATA[<p>今年已经参加了两次黑客马拉松。</p><h2 id="黑马流程"><a href="#黑马流程" class="headerlink" title="黑马流程"></a>黑马流程</h2><p>黑马(Hackathon)的一般流程就是主办方广告预热，然后组队报名，确认报名成功后及时了解大赛注意事项和黑马主题。</p><p>一般来说，正式比赛时间只会持续1~2天，这段时间是比较高强度的脑子和体力劳动，如果小组配合不默契的话，大概率只能出个PPT，demo也只能停留在搭环境或者Hello World上。</p><h2 id="组建团队"><a href="#组建团队" class="headerlink" title="组建团队"></a>组建团队</h2><p>一个真正高效的团队不需要每个人都是MVP，而是相互之间有足够的默契和信任，每个人能在比赛过程中都为同一个目标全力以赴。</p><p>那么这里有两个问题需要明确，什么是同一个目标，怎么全力以赴。</p><h3 id="共同目标"><a href="#共同目标" class="headerlink" title="共同目标"></a>共同目标</h3><p>在比赛开始前，我们的目标是想出一个点子，作为我们参赛的项目。团队里的每个人都应该尽可能的大开脑洞，去提供建议和意见。有新意并且有价值的点子并不是那么容易得到，但其实也是可以有一些套路的。</p><ol><li>头脑风暴：一群人一起提出各种想法，比如最优价值的产品，最优的解决方案，最大的痛点，最可能实现的创意，最想做的事情等等。</li><li>奔驰思考：这是美国心理学家Robert Eberie提出一种激发创新的改进思路，用7个字母总结 - SCAMPER。<ol><li>S - Substitued，是不是有替代的方法或者产品？</li><li>C - Combined，是不是结合在一起产生新的东西？</li><li>A - Adapt，能否调整或者改造，升级优化？</li><li>M - Modify，能否修改设计，尺寸，外观等等？</li><li>P - Put to other use，能否拓展其他用途？想象一下跨界。</li><li>E - Eliminate，能否缩减，消除，简化？看看手机按键的消失。</li><li>R - Rearrange，能否重组，逆向，反套路。</li></ol></li><li>六顶帽子：从不同角度去激发创意，假设你有六顶帽子，每顶帽子颜色不一样，轮着戴到自己头上。<ol><li>白色：中立而客观，关注客观事实和数据。</li><li>绿色：创造和生命力，突破常规的可能和意见。</li><li>黄色：价值和肯定，从正面考虑问题，表达乐观。</li><li>黑色：否定和怀疑，精确批判和找出逻辑上的错误。</li><li>红色：情绪和直觉，主观表达自己的感受和看法。</li><li>蓝色：结构化思维，纵览全局，规划和管理整个思考过程，并作出结论。</li></ol></li></ol><p>纵然有很多思维方式的套路，在现实中我们更多的创意是来源于生活和工作，如果平时有思考和总结的习惯，发现不合理的设计，你的创意就不会少。</p><h3 id="全力以赴"><a href="#全力以赴" class="headerlink" title="全力以赴"></a>全力以赴</h3><p>每个人都有自己擅长的领域，一旦目标定下来后就要主动去承担一些责任。比如分配任务时主动完成自己能够完成的部分，与此同时，还需要一个人来监控和推进任务的进度，确保项目能够顺利交付。</p><p>上午完成什么，下午完成什么，晚上完成什么，设置几个里程碑，里程碑时间到达时，大家一起坐下来分享成果。如果有需要调整技术方案，就及时提出。</p><p>一天时间想把项目做得很完美基本很难，切记不要调代码调的太入迷，忘记了最初的目的和最终的结果。</p><p>最初的目的是，把我们伟大的项目表达出来。</p><p>最终的结果是，我们伟大的项目完整地表达出来了，表达的方式可能是PPT，Demo或者其他形式。</p><h2 id="享受过程"><a href="#享受过程" class="headerlink" title="享受过程"></a>享受过程</h2><p>过程能不能享受其实还跟主办方有很大关系，比如有没有舒适的场地，提供免费的餐饮，设备和设施是否完善和周全。</p><p>如果一切都OK，小组成员各就各位，就可以开心码代码了。</p><p>有一些小贴士可以罗列一下，也许对各位看官有帮助。</p><ol><li>网络一定要好，能正常访问Google和SO，不然写不出代码。</li><li>开发环境也需要提前准备好，不然临时安装git，java，node，docker七七八八的环境，大半天就过去了。</li><li>弄个无线投屏器也是非常方便的，组里任何一个人想共享屏幕都一键上屏，吃饭时还可以一起看个动画片。</li><li>任务可以用看板跟踪，免费的看板可以用Github或者Teambition，还可以投到大屏上。</li><li>尽量坐在一排，坐在对面有时讲不清楚，需要结合屏幕有效避免鸡同鸭讲。</li><li>核心接口和约定要文档化，写到README里，不然来回问很费时间。</li><li>手上的任务要尽可能早获得反馈，好的项目是逐渐调整和优化出来的，不是憋半天大招憋出来的。</li><li>不要忘了做PPT或者演示文稿，至少安排2次以上彩排，避免伟大的创意因为糟糕的演讲而腹死胎中。</li><li>最好有人能扮演程序员鼓励师，买（拿）吃的喝的。</li></ol><p><img src="https://tobyqin.github.io/images/image-20200920154539693.png" alt="image-20200920154539693"></p><p>需要不要熬夜呢？看情况吧，其实这个事情在一开始就应该商量好，临时决定熬夜的话多少让人有些不愉快。如果大家觉得夜里效率更高，那么先浪起来，半夜一起debug。</p><p>我个人觉得，半夜写代码大概率会翻车，你不想被打扰，但是都已经快交作业了，难道Deadline Driven Development的感觉真的很爽？</p><h2 id="分享成果"><a href="#分享成果" class="headerlink" title="分享成果"></a>分享成果</h2><p>除了能和志同道合的伙伴码代码，当然我们还是希望能拿奖的。分享成果最重要的三件事是：</p><ol><li>不要翻车</li><li>不要翻车</li><li>不要翻车</li></ol><p><img src="https://tobyqin.github.io/images/image-20200920153632201.png" alt="image-20200920153632201"></p><p>由此可见系统的健壮性有多么重要，QA的测试有多么重要，多测试，早联调，考虑Plan B。</p><h2 id="我们做了什么项目？"><a href="#我们做了什么项目？" class="headerlink" title="我们做了什么项目？"></a>我们做了什么项目？</h2><p>两次比赛我们做了两个比较有意思的项目。</p><h3 id="开发人员年度账单"><a href="#开发人员年度账单" class="headerlink" title="开发人员年度账单"></a>开发人员年度账单</h3><p>一年到头你写了多少bug？做了多少需求？有了年度账单，你就可以对自己的成就（发量）一目了然，还可以分享到朋友圈哦。</p><p><img src="https://tobyqin.github.io/images/image-20200920152904079.png" alt="image-20200920152904079"></p><h3 id="自动修复代码鸭"><a href="#自动修复代码鸭" class="headerlink" title="自动修复代码鸭"></a>自动修复代码鸭</h3><p>有一些显而易见的问题代码，这只鸭子来自动帮你修复，比如依赖版本升级，不合理的语法等等。虽然已经有Sonar之类的工具可以检测出类似问题，我们希望能帮助团队往前走一小步，修复掉我们100%有信心修复的问题。</p><p><img src="https://tobyqin.github.io/images/image-20200920153415416.png" alt="image-20200920153415416"></p><p>修复后自动提PR。</p><p><img src="https://tobyqin.github.io/images/image-20200920160639683.png" alt="image-20200920160639683"></p><p>本文到此，戛然而止。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;今年已经参加了两次黑客马拉松。&lt;/p&gt;
+&lt;h2 id=&quot;黑马流程&quot;&gt;&lt;a href=&quot;#黑马流程&quot; class=&quot;headerlink&quot; title=&quot;黑马流程&quot;&gt;&lt;/a&gt;黑马流程&lt;/h2&gt;&lt;p&gt;黑马(Hackathon)的一般流程就是主办方广告预热，然后组队报名，确认报名
+      
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="hackathon" scheme="https://tobyqin.cn/tags/hackathon/"/>
+    
+      <category term="tech" scheme="https://tobyqin.cn/tags/tech/"/>
+    
+      <category term="teamwork" scheme="https://tobyqin.cn/tags/teamwork/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>现场互动方案</title>
+    <link href="https://tobyqin.cn/posts/2020-05-10/on-site-interactive-solution/"/>
+    <id>https://tobyqin.cn/posts/2020-05-10/on-site-interactive-solution/</id>
+    <published>2020-05-10T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.444Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://tobyqin.github.io/images/%E5%A4%A7%E5%B1%8F%E4%BA%92%E5%8A%A8%E6%96%B9%E6%A1%88.png" alt="大屏互动方案"></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;img src=&quot;https://tobyqin.github.io/images/%E5%A4%A7%E5%B1%8F%E4%BA%92%E5%8A%A8%E6%96%B9%E6%A1%88.png&quot; alt=&quot;大屏互动方案&quot;&gt;&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="Other" scheme="https://tobyqin.cn/categories/other/"/>
+    
+    
+      <category term="interaction" scheme="https://tobyqin.cn/tags/interaction/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>分享</title>
+    <link href="https://tobyqin.cn/posts/2020-05-10/share-it/"/>
+    <id>https://tobyqin.cn/posts/2020-05-10/share-it/</id>
+    <published>2020-05-10T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.448Z</updated>
+    
+    <content type="html"><![CDATA[<p>古人说授人以渔，今天说说这个渔。</p><a id="more"></a><p>当你学到新的知识时，</p><p>有可能会记笔记，写备忘，或者去实践；</p><p>或者去分享给其他人。</p><p>但当你尝试去分享一个知识时，</p><p>你会很害怕，害怕被笑话，害怕出丑。</p><p>所以，当你决定去分享一个知识时，</p><p>你会努力深入，避免自己误人子弟；</p><p>你会反复检查，避免犯了低级错误。</p><p>做笔记，有没有把握都没关系；</p><p>去实践，你也许需要50%的把握；</p><p>去分享，你应该有80%的把握，或者更多。</p><p>如果你真的想掌握它，那就去分享它。</p><p>在分享过程中，你会重新理顺思路，组织语言，甚至画图。</p><p>看，记忆又加深了。</p><p>就好比Code Review，</p><p>如果没人看，你会很洒脱很真我，</p><p>又不是不能用。</p><p>如果有人看，你还是会在大家面前努力一下， </p><p>让阳光下的代码更漂亮，</p><p>毕竟那是自家的娃。</p><p>鲁迅说，</p><p>如果你有一个主意，我有一个主意，</p><p>我们互相交互，我们就都有了两个主意。</p><p>这就是分享。</p><p>鲁迅说，我没说过。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;古人说授人以渔，今天说说这个渔。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Life" scheme="https://tobyqin.cn/categories/life/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Parallels Desktop里的虚拟机的Docker无网络</title>
+    <link href="https://tobyqin.cn/posts/2020-05-07/virtual-machine-docker-in-parallels-desktop-without-network/"/>
+    <id>https://tobyqin.cn/posts/2020-05-07/virtual-machine-docker-in-parallels-desktop-without-network/</id>
+    <published>2020-05-07T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.444Z</updated>
+    
+    <content type="html"><![CDATA[<p>Parallel Desktop里装了一个CentOS，CentOS里装了一个Docker，有点像套娃。</p><a id="more"></a><p>安装过程很顺利，运行第一个例子也很正常，Hello World而已。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">curl -fsSL https://get.docker.com/ | sh</span><br><span class="line">sudo systemctl start docker</span><br><span class="line">sudo systemctl status docker</span><br><span class="line">sudo systemctl <span class="built_in">enable</span> docker</span><br><span class="line">sudo usermod -aG docker $(whoami)</span><br><span class="line">sudo docker run hello-world</span><br></pre></td></tr></table></figure><p>我想做什么呢？我想用原生的Docker来替代MacOS上的Docker。</p><p>接下来就是映射本地文件到虚拟机里，配置共享就好了。</p><p><img src="https://tobyqin.github.io/images/image-20200507220741525.png" alt="image-20200507220741525"></p><p>然后从本地iTerm登录到虚拟机的命令行，切换到本地工作目录（被挂载到了<code>/media/psf/Home/src</code>）。这样就可以在本地获得一个原生的Linux Shell，操作的还是项目里的文件。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssh toby@centos-linux</span><br><span class="line">cd &#x2F;media&#x2F;psf&#x2F;Home&#x2F;src&#x2F;xmind2testlink&#x2F;web</span><br><span class="line">docker build -t xmind2testlink .</span><br></pre></td></tr></table></figure><p>开始用原生的Docker打包镜像，发现基础镜像可以拉下来，但是安装Python包失败因为没有网络。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Step 1&#x2F;6 : FROM frolvlad&#x2F;alpine-python3:latest</span><br><span class="line">latest: Pulling from frolvlad&#x2F;alpine-python3</span><br><span class="line">aad63a933944: Pull complete</span><br><span class="line">071e92db37fc: Pull complete</span><br><span class="line">Digest: sha256:ee37502c33d69a230096c8abcda4f293cc398d1e08d3c3b854375b209ab85fe9</span><br><span class="line">Status: Downloaded newer image for frolvlad&#x2F;alpine-python3:latest</span><br><span class="line"> ---&gt; dd1e5224fc24</span><br><span class="line">Step 2&#x2F;6 : RUN mkdir &#x2F;app</span><br><span class="line"> ---&gt; Running in 1761ff57cd39</span><br><span class="line">Removing intermediate container 1761ff57cd39</span><br><span class="line"> ---&gt; 7b4a6a4e13c4</span><br><span class="line">Step 3&#x2F;6 : WORKDIR &#x2F;app</span><br><span class="line"> ---&gt; Running in cbf60703344e</span><br><span class="line">Removing intermediate container cbf60703344e</span><br><span class="line"> ---&gt; 24e13fb03163</span><br><span class="line">Step 4&#x2F;6 : ADD . &#x2F;app</span><br><span class="line"> ---&gt; b2b737f9503b</span><br><span class="line">Step 5&#x2F;6 : RUN pip3 install -r requirements.txt</span><br><span class="line"> ---&gt; Running in c574837c3e7f</span><br><span class="line">WARNING: Retrying (Retry(total&#x3D;4, connect&#x3D;None, read&#x3D;None, redirect&#x3D;None, status&#x3D;None)) after connection broken by &#39;NewConnectionError(&#39;&lt;pip._vendor.urllib3.connection.VerifiedHTTPSConnection object at 0x7fafbcc4b3a0&gt;: Failed to establish a new connection: [Errno -3] Try again&#39;)&#39;: &#x2F;simple&#x2F;flask&#x2F;</span><br></pre></td></tr></table></figure><p>在网上搜寻半天，各种配DNS，改防火墙，改代理，一点效果都没有。最简单的测试办法：</p><ul><li>在虚拟机里ping baidu，没问题。</li><li>在虚拟机的Docker里ping baidu，不行。</li><li>在虚拟机里ping 路由或者ip，没问题</li><li>在虚拟机里的Docker里ping 路由或者ip，不行。</li></ul><p>说明主机和虚拟机的网络桥接没问题，但是虚拟机和Docker之间的网络不通。不管切换什么网络共享方式，都行不通。</p><p><img src="https://tobyqin.github.io/images/image-20200507222519106.png" alt="image-20200507222519106"></p><p>算了，我打不过你。</p><p>我打开VMWare Workstation，把CentOS和Docker又装了一遍，上面的命令再跑一遍，行了。</p><p>MMP。</p><h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>其实VMWare也不是没有坑，它最坑的是需要安装VMWare Tools才能访问主机文件。官网的文档经久失修有误导性，便捷的办法就是用yum来安装。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum install -y open-vm-tools</span><br><span class="line">ls /usr/bin/vmtoolsd <span class="comment"># 确认安装完毕</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure><p>然后本地文件就可以在虚拟机里访问了，被挂载在 <code>/mnt/hgfs/tobyqin/src/</code>。</p><p>是不是我把CentOS和Docker再到PD里装一遍就好了呢？谁知道呢。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Parallel Desktop里装了一个CentOS，CentOS里装了一个Docker，有点像套娃。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="docker" scheme="https://tobyqin.cn/tags/docker/"/>
+    
+      <category term="linux" scheme="https://tobyqin.cn/tags/linux/"/>
+    
+      <category term="macosx" scheme="https://tobyqin.cn/tags/macosx/"/>
+    
+      <category term="vmware" scheme="https://tobyqin.cn/tags/vmware/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>N1用Docker刷旁路由</title>
+    <link href="https://tobyqin.cn/posts/2020-05-02/n1-uses-docker-with-openwrt/"/>
+    <id>https://tobyqin.cn/posts/2020-05-02/n1-uses-docker-with-openwrt/</id>
+    <published>2020-05-02T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.420Z</updated>
+    
+    <content type="html"><![CDATA[<p>前提条件是docker已经安装，用网线连接N1。</p><a id="more"></a><h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>安装Portainer很有用。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker volume create portainer_data</span><br><span class="line">docker run -d -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer:linux-arm64</span><br></pre></td></tr></table></figure><p>打开网卡混淆模式</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ip link <span class="built_in">set</span> eth0 promisc on</span><br></pre></td></tr></table></figure><p>创建docker虚拟网络，IP段需要和主路由的一致。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.254 -o parent=eth0 macnet</span><br></pre></td></tr></table></figure><p><code>192.168.1.254</code> 就是旁路由的地址，后面的登录和配置都要用这个地址。</p><h2 id="配置OpenWrt"><a href="#配置OpenWrt" class="headerlink" title="配置OpenWrt"></a>配置OpenWrt</h2><p>运行OpenWrt容器。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --restart always --name=openwrt -d --network macnet --privileged unifreq/openwrt-aarch64:latest</span><br></pre></td></tr></table></figure><p>进入OpenWrt的shell，修改网络。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it openwrt bash</span><br><span class="line">vi /etc/config/network</span><br><span class="line"></span><br><span class="line"><span class="comment"># 把 192.168.1.1 改成 192.168.0.254， 配置参考如下</span></span><br><span class="line"></span><br><span class="line">config interface <span class="string">'lan'</span></span><br><span class="line">        option <span class="built_in">type</span> <span class="string">'bridge'</span></span><br><span class="line">        option ifname <span class="string">'eth0'</span></span><br><span class="line">        option proto <span class="string">'static'</span></span><br><span class="line">        option ipaddr <span class="string">'192.168.1.254'</span> <span class="comment"># 改这行</span></span><br><span class="line">        option netmask <span class="string">'255.255.255.0'</span></span><br><span class="line">        option ip6assign <span class="string">'60'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 退出容器里的shell，重启N1</span></span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure><p>重启完成后就可以在浏览器访问旁路由了。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">http://192.168.1.254/</span><br><span class="line"><span class="comment"># 默认用户名密码 root / password</span></span><br></pre></td></tr></table></figure><p>修改网络接口，使用主路由网关和DNS。</p><p><img src="https://tobyqin.github.io/images/image-20200502154013741.png" alt="image-20200502154013741"></p><p><img src="https://tobyqin.github.io/images/image-20200502154126282.png" alt="image-20200502154126282"></p><p>关闭旁路由DHCP服务。</p><p><img src="https://tobyqin.github.io/images/image-20200502154244314.png" alt="image-20200502154244314"></p><p><img src="https://tobyqin.github.io/images/image-20200502154256056.png" alt="image-20200502154256056"></p><p>到此为止，旁路由的配置基本完毕，后面就是测试了。如果中间任何配置有问题想重来，停止并删除容器即可。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker stop openwrt</span><br><span class="line">docker rm openwrt</span><br></pre></td></tr></table></figure><h2 id="使用旁路由"><a href="#使用旁路由" class="headerlink" title="使用旁路由"></a>使用旁路由</h2><p>第一种方式，非全局模式。如果只需要某一些设备走旁路由，需要手动配置网络为旁路由地址，主路由不需要做任何配置。好处是旁路由挂了只会影响这些特定的设备，坏处就是比较麻烦。</p><p><img src="https://tobyqin.github.io/images/image-20200502162133900.png" alt="image-20200502162133900"></p><p>第二种方式，主路由全局模式。经旁路由的网关配置到主路由的DHCP即可，以后所有连接主路由的设备都会先经过旁路由。</p><p>配置方法就是进入主路由后台，将DHCP默认网关改成 192.168.1.254，DNS也改成这个地址。已经连接的设备重新连接主路由一下才会生效。</p><p><img src="https://tobyqin.github.io/images/image-20200502162550814.png" alt="image-20200502162550814"></p><p>一般用第一种方式测试一下旁路由是不是正常工作了，然后我会全局都走旁路由。我发现N1放那么几天就会死机，所有最后配置一下自动重启，比如每天重启一次。</p><h2 id="旁路由的作用"><a href="#旁路由的作用" class="headerlink" title="旁路由的作用"></a>旁路由的作用</h2><p>配置了半天，旁路由的作用都没说出来，在旁路由里世界无穷大。去广告什么的都不说了，还有很多只可以意会不可言传的功能。</p><p><img src="https://tobyqin.github.io/images/image-20200502163251438.png" alt="image-20200502163251438"></p><p><img src="https://tobyqin.github.io/images/image-20200502163305280.png" alt="image-20200502163305280"></p><p><img src="https://tobyqin.github.io/images/image-20200502163321286.png" alt="image-20200502163321286"></p><p>参考文章：</p><ul><li><a href="https://instar.me/archives/e806f8ac.html" target="_blank" rel="noopener">https://instar.me/archives/e806f8ac.html</a></li><li><a href="https://post.smzdm.com/p/akm7q5xk/" target="_blank" rel="noopener">https://post.smzdm.com/p/akm7q5xk/</a></li><li><a href="http://hostloc.com/thread-532624-1-1.html" target="_blank" rel="noopener">http://hostloc.com/thread-532624-1-1.html</a></li><li><a href="https://leeyr.com/326.html" target="_blank" rel="noopener">https://leeyr.com/326.html</a></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前提条件是docker已经安装，用网线连接N1。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+      <category term="docker" scheme="https://tobyqin.cn/tags/docker/"/>
+    
+      <category term="n1" scheme="https://tobyqin.cn/tags/n1/"/>
+    
+      <category term="route" scheme="https://tobyqin.cn/tags/route/"/>
+    
+      <category term="armbian" scheme="https://tobyqin.cn/tags/armbian/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>部署一个私有的在线绘图服务</title>
+    <link href="https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/"/>
+    <id>https://tobyqin.cn/posts/2020-04-26/deploy-a-private-online-drawing-service/</id>
+    <published>2020-04-26T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.464Z</updated>
+    
+    <content type="html"><![CDATA[<p>现在很多服务都已经云端化了，浏览器早已不是只用来浏览信息的浏览器了。</p><a id="more"></a><h2 id="在线绘图"><a href="#在线绘图" class="headerlink" title="在线绘图"></a>在线绘图</h2><p>国内最常用的就是 ProcessOn 了，功能很全，就是免费额度有点少。</p><p><img src="https://tobyqin.github.io/images/image-20200426214245160.png" alt="image-20200426214245160"></p><p>国外最知名的就是 <a href="https://draw.io" target="_blank" rel="noopener">Draw.io</a> 了，基本上就是免费的，常常集成在各种服务里。就是速度有点慢，不，是非常慢。</p><p><img src="https://tobyqin.github.io/images/image-20200426214432654.png" alt="image-20200426214432654"></p><p>Draw.io 现在改名了，叫 diagrams.net。最关键的是，它还是开源的！</p><h2 id="部署一个-Draw-io"><a href="#部署一个-Draw-io" class="headerlink" title="部署一个 Draw.io"></a>部署一个 Draw.io</h2><p>Draw.io 是基于<a href="https://github.com/jgraph/mxgraph" target="_blank" rel="noopener">mxGraph library</a>构建的，后端用 Java 实现了简单的文件导出和处理功能，画图的功能都是通过 JavaScript 在浏览器的，所以是完全可以用静态页面的方式来托管一个不需要文件导出和鉴权的绘图站点。</p><p>欲知详情请移步至该项目：</p><ul><li><a href="https://github.com/jgraph/drawio" target="_blank" rel="noopener">https://github.com/jgraph/drawio</a></li></ul><p>要完整部署该项目需要用 ant 来编译 war，并用 tomcat 托管。但是，我不想用 ant 去编译也不想和 Tom 猫发生什么关系，所以我要对这个项目的功能进行阉割。</p><ul><li>去除所有国外的在线服务，比如 Google Drive，OneDrive，Github 等等</li><li>避免跳转到 Draw.io 官网</li><li>去除后端服务，只要能在浏览器绘图并缓存，能保存为本地文件</li></ul><p>来来来，folk 一下这个项目开干，新项目地址：</p><ul><li><a href="https://github.com/tobyqin/drawio-local" target="_blank" rel="noopener">https://github.com/tobyqin/drawio-local</a></li></ul><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 第一步，干掉Java，只保留Web应用</span></span><br><span class="line">mv -r src/main/webapp /temp/webapp</span><br><span class="line">rm -rf *</span><br><span class="line">mv -r /tmp/webapp .</span><br><span class="line"></span><br><span class="line"><span class="comment"># 第二步，去掉在线服务</span></span><br><span class="line">code js/PreConfig.js</span><br><span class="line"><span class="comment"># 配置 local='1'</span></span><br><span class="line"><span class="comment"># 参考 https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 第三步，修改错误的资源引用，用Chrome的开发者工具</span></span><br><span class="line"><span class="comment"># 第四步，加一些黑科技到 index.html 来hack外部跳转，balabala</span></span><br></pre></td></tr></table></figure><p>完事具备，用一行代码在本地托管：</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 8000</span><br></pre></td></tr></table></figure><p>OK 啦，干净清爽的感觉就是那么好。</p><p><img src="https://tobyqin.github.io/images/demo.jpg" alt="demo"></p><p>改一下 <code>README.md</code> 就推送了吧。感觉我只需要花几分钟，其实我调试了几小时，开发为什么总估不准时间呢？奇怪。</p><h2 id="部署到-Docker"><a href="#部署到-Docker" class="headerlink" title="部署到 Docker"></a>部署到 Docker</h2><p>没有容器化的服务是没有灵魂的服务，那么我们就给它加点灵魂。加灵魂需要一个 <code>Dockerfile</code>，这样写：</p><figure class="highlight dockerfile"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> frolvlad/alpine-python3:latest</span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> mkdir /app</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="bash"> pip3 install flask</span></span><br><span class="line"><span class="keyword">ADD</span><span class="bash"> . /app/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">5000</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> python3 app.py</span></span><br></pre></td></tr></table></figure><p>这个灵魂是有讲究的，为什么这么说呢？</p><ol><li>用的是 apline 的基础镜像，这个是开源界最常用的基础镜像，因为它及其的小，一般只有几 MB 或者几十 MB。对应的 apline 镜像还有 node，java，go 版的，应有尽有。</li><li>先安装 flask 后 copy 应用，因为 flask 安装后这个 layer 就不变了，但是 app 每次打包都会不一样。</li></ol><p>为啥要加个 flask 啊？因为我想在它访问后端报错时可以更友好一点，人性化和用户体验，Understand？</p><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">@app.route('/not-support', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">not_support</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Sorry, this action is not supported."</span></span><br></pre></td></tr></table></figure><p>好啦，打包镜像走起。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker build -t tobyqin/drawio-local:latest .</span><br></pre></td></tr></table></figure><p>让这个灵魂跑起来。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -it --rm -p 5000:5000  tobyqin/drawio-local</span><br></pre></td></tr></table></figure><p>访问本地 5000 端口，一点毛病都没有，注意 <code>--rm</code> 在调试时很有用，它可以帮你自动清理退出的容器。</p><p>让我们来把这个灵魂发布到全世界。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker login</span><br><span class="line">docker push tobyqin/drawio-local</span><br></pre></td></tr></table></figure><p>咦？这个灵魂好像有点重啊，完全推不动嘛。用 Portainer 查看一下里面到底有什么东西。</p><p><img src="https://tobyqin.github.io/images/image-20200426222414429.png" alt="layer"></p><p>基础镜像层总共才 4M，应用层居然接近 100M，要给灵魂减减肥了。在根目录加个 <code>.dockerignore</code> 文件，把不想打包的文件统统写在里面。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.git</span><br><span class="line">.DS_Store</span><br><span class="line">.vscode</span><br><span class="line">*.md</span><br><span class="line">...</span><br></pre></td></tr></table></figure><p>321 再来一遍灵魂序曲，嗯，有内味了。</p><h2 id="拿来主义"><a href="#拿来主义" class="headerlink" title="拿来主义"></a>拿来主义</h2><p>我想你是不愿意再踩一遍我的坑了，反正这个东西做一遍就行了，拿去用吧。</p><h3 id="1-静态托管"><a href="#1-静态托管" class="headerlink" title="1. 静态托管"></a>1. 静态托管</h3><p>直接到<a href="https://github.com/tobyqin/drawio-local" target="_blank" rel="noopener">Github</a> 下载 zip 解压后丢到 nginx 或者 iis 即可，顺手给项目加个星呗。</p><h3 id="2-Docker-部署"><a href="#2-Docker-部署" class="headerlink" title="2. Docker 部署"></a>2. Docker 部署</h3><p>一行命令即可。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run --name=<span class="string">"drawio-local"</span> --restart always -p 5000:5000  tobyqin/drawio-local</span><br></pre></td></tr></table></figure><h3 id="3-薅我羊毛"><a href="#3-薅我羊毛" class="headerlink" title="3. 薅我羊毛"></a>3. 薅我羊毛</h3><p>这个服务我已经部署到了我的主机，免费用，随便用，但不保证它的速度和生命延续。</p><ul><li><a href="https://draw.pytips.cn" target="_blank" rel="noopener">https://draw.pytips.cn</a></li></ul><p>就这样，Peace。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;现在很多服务都已经云端化了，浏览器早已不是只用来浏览信息的浏览器了。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="python" scheme="https://tobyqin.cn/tags/python/"/>
+    
+      <category term="flask" scheme="https://tobyqin.cn/tags/flask/"/>
+    
+      <category term="docker" scheme="https://tobyqin.cn/tags/docker/"/>
+    
+      <category term="draw.io" scheme="https://tobyqin.cn/tags/draw-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>命令行配置备忘</title>
+    <link href="https://tobyqin.cn/posts/2020-04-04/command-line-configuration-memo/"/>
+    <id>https://tobyqin.cn/posts/2020-04-04/command-line-configuration-memo/</id>
+    <published>2020-04-04T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.476Z</updated>
+    
+    <content type="html"><![CDATA[<p>换到新的机器，命令行配置少不了。</p><a id="more"></a><h2 id="zsh-amp-oh-my-zsh"><a href="#zsh-amp-oh-my-zsh" class="headerlink" title="zsh &amp; oh-my-zsh"></a>zsh &amp; oh-my-zsh</h2><p>大概是需要代理加速的，下面是简要步骤，适用于MacOS或者Linux平台。</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装zsh，各平台命令不一样，但差不多</span></span><br><span class="line">yum install zsh -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查已经安装好的shell</span></span><br><span class="line">cat /etc/shells</span><br><span class="line"></span><br><span class="line"><span class="comment"># 交互式更换当前用户的shell，输入上面看到的 /bin/zsh</span></span><br><span class="line">chsh</span><br><span class="line"></span><br><span class="line"><span class="comment"># 免交互直接更改root的shell</span></span><br><span class="line">chsh -s /bin/zsh root</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装oh-my-zsh</span></span><br><span class="line">sh -c <span class="string">"<span class="variable">$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改配置文件</span></span><br><span class="line">vi ~/.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下是我必修改的配置，主题用ys，在配置文件的开头部分</span></span><br><span class="line">ZSH_THEME=<span class="string">"ys"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用的插件，在配置文件的中间位置，autojump, zsh-autosuggestions 非常好用</span></span><br><span class="line">plugins=(git pip python autojump zsh-autosuggestions)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 在文件末尾补充几部分内容</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 兼容bash的配置文件，忽略导入失败的错误</span></span><br><span class="line"><span class="built_in">source</span> ~/.bashrc &amp;&gt;/dev/null</span><br><span class="line"><span class="built_in">source</span> ~/.bash_profile  &amp;&gt;/dev/null</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加路径到PATH</span></span><br><span class="line"><span class="built_in">export</span> PATH=<span class="string">"/usr/local/sbin:<span class="variable">$PATH</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 常用的别名</span></span><br><span class="line"><span class="built_in">alias</span> s=systemctl</span><br><span class="line"><span class="built_in">alias</span> k=kubectl</span><br><span class="line"><span class="built_in">alias</span> n=nginx</span><br><span class="line"><span class="built_in">alias</span> vi=vim</span><br><span class="line"><span class="built_in">alias</span> cls=clear</span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l'</span></span><br><span class="line"><span class="built_in">alias</span> la=<span class="string">'ls -a'</span></span><br><span class="line"><span class="built_in">alias</span> grep=<span class="string">"grep --color=auto"</span></span><br></pre></td></tr></table></figure><h2 id="autojump"><a href="#autojump" class="headerlink" title="autojump"></a>autojump</h2><p>autojump是一个很方便的让你跳转目录的命令行工具。需要额外安装，在MacOSX可以用brew安装。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install autojump</span><br></pre></td></tr></table></figure><p>在其他Linux平台需要从源码安装。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/wting/autojump.git</span><br><span class="line"><span class="built_in">cd</span> autojump</span><br><span class="line">./install.py</span><br><span class="line"><span class="comment"># or ./uninstall.py</span></span><br></pre></td></tr></table></figure><p>装完之后注意看安装成功后提示，你需要把这段内容加到 <code>.bash_profile</code>里。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[[ -s &#x2F;root&#x2F;.autojump&#x2F;etc&#x2F;profile.d&#x2F;autojump.sh ]] &amp;&amp; source &#x2F;root&#x2F;.autojump&#x2F;etc&#x2F;profile.d&#x2F;autojump.sh</span><br></pre></td></tr></table></figure><p>然后重启命令行就可以开心的autojump了。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">j toby  # cd 到带有toby的最近目录</span><br><span class="line">j music # cd 到有可能是music的目录</span><br><span class="line">j doc   # cd 到有可能是doc的目录</span><br></pre></td></tr></table></figure><p>autojump非常智能，你只要给少量关键字就可以cd到你想要到的目录。</p><h2 id="autosuggestions"><a href="#autosuggestions" class="headerlink" title="autosuggestions"></a>autosuggestions</h2><p>有了oh-my-zsh 大部分命令是可以通过TAB补全的，autosuggestion可以锦上添花。但这玩意还是需要额外安装。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;zsh-users&#x2F;zsh-autosuggestions $&#123;ZSH_CUSTOM:-~&#x2F;.oh-my-zsh&#x2F;custom&#125;&#x2F;plugins&#x2F;zsh-autosuggestions</span><br></pre></td></tr></table></figure><p>然后在zsh的配置文件里启用即可，参考上文。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">plugins&#x3D;(zsh-autosuggestions)</span><br></pre></td></tr></table></figure><p>成功启用后的效果如下。</p><p><img src="https://tobyqin.github.io/images/image-20200404202408289.png" alt="image-20200404202408289"></p><p>灰色部分是自动提示的，主要是根据输入历史和自动完成的可能性，按右方向键就可以直接使用提示的完整命令，爽歪歪。</p><h2 id="alias"><a href="#alias" class="headerlink" title="alias"></a>alias</h2><p>命令行的别名可以极大提高效率。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ls --color=auto &amp;&gt;/dev/null &amp;&amp; <span class="built_in">alias</span> ls=<span class="string">'ls --color=auto'</span> &amp;&amp; <span class="built_in">eval</span> <span class="string">"<span class="variable">$(dircolors)</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> g=<span class="string">'git'</span></span><br><span class="line"><span class="built_in">alias</span> k=<span class="string">'kubectl'</span></span><br><span class="line"><span class="built_in">alias</span> n=<span class="string">'nginx'</span></span><br><span class="line"><span class="built_in">alias</span> h=<span class="string">'history'</span></span><br><span class="line"><span class="built_in">alias</span> s=<span class="string">'systemctl'</span></span><br><span class="line"><span class="built_in">alias</span> vi=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> svi=<span class="string">'sudo vim'</span></span><br><span class="line"><span class="built_in">alias</span> c=<span class="string">'clear'</span></span><br><span class="line"><span class="built_in">alias</span> cls=<span class="string">'clear'</span></span><br><span class="line"><span class="built_in">alias</span> l=<span class="string">'ls -lah'</span></span><br><span class="line"><span class="built_in">alias</span> ll=<span class="string">'ls -l'</span></span><br><span class="line"><span class="built_in">alias</span> la=<span class="string">'ll -la'</span></span><br><span class="line"><span class="built_in">alias</span> grep=<span class="string">"grep --color=auto"</span></span><br><span class="line"><span class="built_in">alias</span> egrep=<span class="string">'egrep --color=auto'</span></span><br><span class="line"><span class="built_in">alias</span> fgrep=<span class="string">'fgrep --color=auto'</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># bind file with default actions</span></span><br><span class="line"><span class="built_in">alias</span> -s html=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s rb=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s py=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s js=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s c=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s java=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s txt=<span class="string">'vim'</span></span><br><span class="line"><span class="built_in">alias</span> -s gz=<span class="string">'tar -xzvf'</span></span><br><span class="line"><span class="built_in">alias</span> -s tgz=<span class="string">'tar -xzvf'</span></span><br><span class="line"><span class="built_in">alias</span> -s zip=<span class="string">'unzip'</span></span><br><span class="line"><span class="built_in">alias</span> -s bz2=<span class="string">'tar -xjvf'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> cdback=<span class="string">'cd -'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="string">'..'</span>=<span class="string">'cd ..'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="string">'...'</span>=<span class="string">'../..'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="string">'....'</span>=<span class="string">'../../..'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="string">'.....'</span>=<span class="string">'../../../..'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="string">'......'</span>=<span class="string">'../../../../..'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> df=<span class="string">'df -h'</span></span><br><span class="line"><span class="built_in">alias</span> du=<span class="string">'du -h'</span></span><br><span class="line"><span class="built_in">alias</span> cp=<span class="string">'cp -v'</span></span><br><span class="line"><span class="built_in">alias</span> mv=<span class="string">'mv -v'</span></span><br><span class="line"><span class="built_in">alias</span> mkdir=<span class="string">'mkdir -pv'</span></span><br><span class="line"><span class="built_in">alias</span> <span class="built_in">which</span>=<span class="string">'which -a'</span></span><br><span class="line"><span class="built_in">alias</span> path=<span class="string">'echo -e $&#123;PATH//:/\\n&#125;'</span></span><br><span class="line"><span class="built_in">alias</span> ping=<span class="string">'ping -c 5'</span></span><br><span class="line"><span class="built_in">alias</span> ports=<span class="string">'netstat -tulanp'</span></span><br><span class="line"><span class="built_in">alias</span> rm=<span class="string">'rm -I --preserve-root'</span></span><br><span class="line"><span class="built_in">alias</span> chown=<span class="string">'chown -v --preserve-root'</span></span><br><span class="line"><span class="built_in">alias</span> chmod=<span class="string">'chmod -v --preserve-root'</span></span><br><span class="line"><span class="built_in">alias</span> chgrp=<span class="string">'chgrp --preserve-root'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> virc=<span class="string">'vi ~/.vimrc'</span></span><br><span class="line"><span class="built_in">alias</span> barc=<span class="string">'vi ~/.bashrc &amp;&amp; source ~/.bashrc'</span></span><br><span class="line"><span class="built_in">alias</span> baprofile=<span class="string">'vi ~/.bash_profile &amp;&amp; source ~/.bash_profile'</span></span><br><span class="line"><span class="built_in">alias</span> bareload=<span class="string">'source ~/.bash_profile &amp;&gt;/dev/null || source ~/.bashrc  &amp;&gt;/dev/null'</span></span><br><span class="line"><span class="built_in">alias</span> zshrc=<span class="string">'vi ~/.zshrc &amp;&amp; source ~/.zshrc'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> untar=<span class="string">'tar -zxvf'</span></span><br><span class="line"><span class="built_in">alias</span> www=<span class="string">'python2 -m SimpleHTTPServer 8000'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> ngx=<span class="string">'nginx'</span></span><br><span class="line"><span class="built_in">alias</span> ngxreload=<span class="string">'sudo ng -s reload'</span></span><br><span class="line"><span class="built_in">alias</span> ngxtest=<span class="string">'sudo ng -t'</span></span><br><span class="line"><span class="built_in">alias</span> ngxconf=<span class="string">'sudo vi /etc/nginx/conf/nginx.conf &amp;&amp; ngxtest'</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">alias</span> <span class="built_in">help</span>=<span class="string">'tldr'</span></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;换到新的机器，命令行配置少不了。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="bash" scheme="https://tobyqin.cn/tags/bash/"/>
+    
+      <category term="shell" scheme="https://tobyqin.cn/tags/shell/"/>
+    
+      <category term="linux" scheme="https://tobyqin.cn/tags/linux/"/>
+    
+      <category term="alias" scheme="https://tobyqin.cn/tags/alias/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS安装最新版Nodejs</title>
+    <link href="https://tobyqin.cn/posts/2020-03-29/centos-installs-the-latest-version-of-nodejs/"/>
+    <id>https://tobyqin.cn/posts/2020-03-29/centos-installs-the-latest-version-of-nodejs/</id>
+    <published>2020-03-29T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.432Z</updated>
+    
+    <content type="html"><![CDATA[<p>添加 Nodejs 到 Yum Repo</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install -y gcc-c++ make</span><br><span class="line">curl -sL https:&#x2F;&#x2F;rpm.nodesource.com&#x2F;setup_13.x | sudo -E bash -</span><br></pre></td></tr></table></figure><p>如果要稳定版就改成这样。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install -y gcc-c++ make</span><br><span class="line">curl -sL https:&#x2F;&#x2F;rpm.nodesource.com&#x2F;setup_12.x | sudo -E bash -</span><br></pre></td></tr></table></figure><p>然后用yum安装即可。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo yum install nodejs -y</span><br><span class="line"></span><br><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;添加 Nodejs 到 Yum Repo&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;yum install -y gcc-c++ make&lt;
+      
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>用Docker部署NextCloud到N1</title>
+    <link href="https://tobyqin.cn/posts/2020-03-28/deploy-nextcloud-to-n1-with-docker/"/>
+    <id>https://tobyqin.cn/posts/2020-03-28/deploy-nextcloud-to-n1-with-docker/</id>
+    <published>2020-03-28T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.464Z</updated>
+    
+    <content type="html"><![CDATA[<p>只需要一个命令。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8888:80  --name nextcloud  -v /data/nextcloud/:/var/www/html/ --restart=always   --privileged=<span class="literal">true</span>  arm64v8/nextcloud</span><br></pre></td></tr></table></figure><a id="more"></a><p>如果是部署到U盘，可以这样。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8888:80  --name nextcloud  -v /media/udisk/:/var/www/html/ --restart=always   --privileged=<span class="literal">true</span>  arm64v8/nextcloud</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;只需要一个命令。&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run -d -p 8888:80  --name nextcloud  -v /data/nextcloud/:/var/www/html/ --restart=always   --privileged=&lt;span class=&quot;literal&quot;&gt;true&lt;/span&gt;  arm64v8/nextcloud&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="docker" scheme="https://tobyqin.cn/tags/docker/"/>
+    
+      <category term="n1" scheme="https://tobyqin.cn/tags/n1/"/>
+    
+      <category term="nextcloud" scheme="https://tobyqin.cn/tags/nextcloud/"/>
+    
+      <category term="nas" scheme="https://tobyqin.cn/tags/nas/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>nginx常用命令</title>
+    <link href="https://tobyqin.cn/posts/2020-03-28/nginx-commonly-used-commands/"/>
+    <id>https://tobyqin.cn/posts/2020-03-28/nginx-commonly-used-commands/</id>
+    <published>2020-03-28T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.472Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nginx -t           <span class="comment">#测试配置文件</span></span><br><span class="line">nginx              <span class="comment">#启动命令</span></span><br><span class="line">nginx -s stop      <span class="comment">#强制停止Nginx服务</span></span><br><span class="line">nginx -s quit      <span class="comment">#处理完请求后再停止服务</span></span><br><span class="line">nginx -s reload    <span class="comment">#重启命令</span></span><br><span class="line">ps -ef |grep nginx <span class="comment">#查看进程命令</span></span><br><span class="line">nginx -v           <span class="comment">#查看Nginx的版本号</span></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;nginx -t           &lt;span class=&quot;comment&quot;&gt;#测试配置文件&lt;/span&gt;&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="nginx" scheme="https://tobyqin.cn/tags/nginx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PowerShell和Cmd和谐共处</title>
+    <link href="https://tobyqin.cn/posts/2020-03-19/powershell-and-cmd-live-in-harmony/"/>
+    <id>https://tobyqin.cn/posts/2020-03-19/powershell-and-cmd-live-in-harmony/</id>
+    <published>2020-03-19T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.420Z</updated>
+    
+    <content type="html"><![CDATA[<p>PowerShell真的很强大啊，但是双击运行不OK啊。批处理好方便啊，可是写一个<code>if</code>要半天啊。他俩就不能既方便又强大吗？</p><a id="more"></a><h2 id="在批处理嵌入PowerShell"><a href="#在批处理嵌入PowerShell" class="headerlink" title="在批处理嵌入PowerShell"></a>在批处理嵌入PowerShell</h2><p>这是可以的，<a href="https://stackoverflow.com/questions/2609985/how-to-run-a-powershell-script-within-a-windows-batch-file" target="_blank" rel="noopener">Stack Overflow</a>有帖子，这个操作可谓风骚非常。</p><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">@findstr /v <span class="string">"^@f.*&amp;"</span> <span class="string">"%~f0"</span> | powershell -&amp; goto:eof</span><br><span class="line"><span class="built_in">Write-Output</span> <span class="string">"Hello World"</span> </span><br><span class="line"><span class="built_in">Write-Output</span> <span class="string">"Hello some@com &amp; again"</span></span><br></pre></td></tr></table></figure><p>文件存成 <code>.bat</code> 或者 <code>.cmd</code>，双击就能运行。唯一的缺点是这个后缀的文件IDE或者编辑器都当成了批处理，没法用ISE或者VSCODE去编写和调试代码，只能先改成<code>ps1</code>调试好了再改成批处理。</p><h2 id="用批处理调用PowerShell"><a href="#用批处理调用PowerShell" class="headerlink" title="用批处理调用PowerShell"></a>用批处理调用PowerShell</h2><p>你还可以建两个文件，像这样：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">my-script.cmd</span><br><span class="line">my-script.ps1</span><br></pre></td></tr></table></figure><p>你的PowerShell想怎么写就怎么写，但是批处理要这么写。</p><figure class="highlight bat"><table><tr><td class="code"><pre><span class="line">@<span class="built_in">ECHO</span> OFF</span><br><span class="line"><span class="built_in">SET</span> PowerShellScriptPath=%~dpn0.ps1</span><br><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command "&amp; '<span class="variable">%PowerShellScriptPath%</span>'";</span><br></pre></td></tr></table></figure><p>而且名字还必须和PowerShell脚本的名字一致，如熊大和熊二的关系一般。</p><h3 id="调用说明"><a href="#调用说明" class="headerlink" title="调用说明"></a>调用说明</h3><p>如果你希望运行PowerShell带参数，第三行就这样写：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command <span class="string">"&amp; '%PowerShellScriptPath%' 'First Param Value' 'Second Param Value'"</span>;</span><br></pre></td></tr></table></figure><p>带命名参数：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command <span class="string">"&amp; '%PowerShellScriptPath%' -Param1Name 'Param 1 Value' -Param2Name 'Param 2 Value'"</span></span><br></pre></td></tr></table></figure><p>以管理员身份运行：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command <span class="string">"&amp; &#123;Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "</span><span class="string">"%PowerShellScriptPath%"</span><span class="string">"' -Verb RunAs&#125;"</span>;</span><br></pre></td></tr></table></figure><p>以管理员身份运行还带参数：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command <span class="string">"&amp; &#123;Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "</span><span class="string">""</span><span class="string">"%PowerShellScriptPath%"</span><span class="string">""</span><span class="string">" "</span><span class="string">""</span><span class="string">"First Param Value"</span><span class="string">""</span><span class="string">" "</span><span class="string">""</span><span class="string">"Second Param Value"</span><span class="string">""</span><span class="string">" ' -Verb RunAs&#125;"</span></span><br></pre></td></tr></table></figure><p>以管理员身份运行还带命名参数：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command <span class="string">"&amp; &#123;Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File "</span><span class="string">""</span><span class="string">"%PowerShellScriptPath%"</span><span class="string">""</span><span class="string">" -Param1Name "</span><span class="string">""</span><span class="string">"Param 1 Value"</span><span class="string">""</span><span class="string">" -Param2Name "</span><span class="string">""</span><span class="string">"Param 2 value"</span><span class="string">""</span><span class="string">" ' -Verb RunAs&#125;"</span>;</span><br></pre></td></tr></table></figure><h2 id="远程运行PowerShell"><a href="#远程运行PowerShell" class="headerlink" title="远程运行PowerShell"></a>远程运行PowerShell</h2><p>这里说的是运行某台服务器的上的PowerShell，管理员用的比较多，对运程机器也要提前配置好让它能接受远程命令。</p><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Invoke-Command</span> <span class="literal">-ComputerName</span> Server01, Server02 <span class="literal">-FilePath</span> c:\Scripts\DiskCollect.ps1</span><br></pre></td></tr></table></figure><p>配置相对复杂，具体请查阅文档。</p><h2 id="运行远程的PowerShell"><a href="#运行远程的PowerShell" class="headerlink" title="运行远程的PowerShell"></a>运行远程的PowerShell</h2><p>这里说的去执行一个远程已经存在的脚本，比如：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&amp; \\server\path\to\your\scriptmcscript.ps1</span><br></pre></td></tr></table></figure><p>不不不，我要说的远程脚本是在云上，比如 <a href="http://server/setup.ps1，没问题。" target="_blank" rel="noopener">http://server/setup.ps1，没问题。</a></p><figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 在 PowerShell 中执行</span></span><br><span class="line">iex ((<span class="built_in">New-Object</span> System.Net.WebClient).DownloadString(<span class="string">'https://chocolatey.org/install.ps1'</span>))</span><br></pre></td></tr></table></figure><p>但是你需要让别人打开PowerShell命令行后粘贴才行。</p><p>双击运行行不行？行，大兄弟。把下面的内容保存成批处理文件，让他双击，狠狠地双击吧。</p><figure class="highlight bat"><table><tr><td class="code"><pre><span class="line">PowerShell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.<span class="built_in">Net</span>.WebClient).DownloadString('http://server/setup.ps1'))";</span><br></pre></td></tr></table></figure><p>不要小看上面的小技巧，PowerShell可以做出你难以想象的事情，PowerShell是高效码农的必备，是黑客渗透Windows的首选。</p><p>这个双击，可以是来自天堂的Hello World，也可以是来自地狱的Goodbye Boy. </p><p>安全和便利从来都是背道而驰的，这个尺度需要自己把握。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;PowerShell真的很强大啊，但是双击运行不OK啊。批处理好方便啊，可是写一个&lt;code&gt;if&lt;/code&gt;要半天啊。他俩就不能既方便又强大吗？&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+      <category term="powershell" scheme="https://tobyqin.cn/tags/powershell/"/>
+    
+      <category term="batch" scheme="https://tobyqin.cn/tags/batch/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在ParallelDesktop虚拟机中访问Mac的IP</title>
+    <link href="https://tobyqin.cn/posts/2020-03-14/access-mac-s-ip-in-paralleldesktop-virtual-machine/"/>
+    <id>https://tobyqin.cn/posts/2020-03-14/access-mac-s-ip-in-paralleldesktop-virtual-machine/</id>
+    <published>2020-03-14T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.456Z</updated>
+    
+    <content type="html"><![CDATA[<p>假设在Mac主机开了一个http的服务。</p><a id="more"></a><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ python -m http.server 8000</span><br><span class="line">Serving HTTP on 0.0.0.0 port 8000 (http:&#x2F;&#x2F;0.0.0.0:8000&#x2F;) ...</span><br></pre></td></tr></table></figure><p>我们可以找到PD的网络设置，看到DHCP的地址。</p><p><img src="https://tobyqin.github.io/images/image-20200314154520597.png" alt="image-20200314154520597"></p><p>这里是 10.211.55.1，那么宿主机就是2号位。</p><p><img src="https://tobyqin.github.io/images/image-20200314154808932.png" alt="image-20200314154808932"></p><p>当然，如果你的机器联网了，也可以用路由器分配的地址。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ifconfig | grep 192</span><br><span class="line">trueinet 192.168.1.3 netmask 0xffffff00 broadcast 192.168.1.255</span><br></pre></td></tr></table></figure><p><img src="https://tobyqin.github.io/images/image-20200314154939087.png" alt="image-20200314154939087"></p><p>最后，如果你知道你的Mac的机器名是什么（hostname），也可以用机器名来访问。</p><p><img src="https://tobyqin.github.io/images/image-20200314155350759.png" alt="image-20200314155350759"></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;假设在Mac主机开了一个http的服务。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+      <category term="paralledesktop" scheme="https://tobyqin.cn/tags/paralledesktop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在N1上快速部署一个博客</title>
+    <link href="https://tobyqin.cn/posts/2020-03-09/quickly-deploy-a-blog-on-n1/"/>
+    <id>https://tobyqin.cn/posts/2020-03-09/quickly-deploy-a-blog-on-n1/</id>
+    <published>2020-03-09T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.436Z</updated>
+    
+    <content type="html"><![CDATA[<p>前提是你已经<a href="https://tobyqin.github.io/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/" target="_blank" rel="noopener">刷了armbian</a>。</p><a id="more"></a><p>然后你还需要docker，一个命令即可。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">curl -sSL https:&#x2F;&#x2F;get.docker.com | sh</span><br></pre></td></tr></table></figure><p>接下来一句话就可以搞定typecho。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">--name&#x3D;typecho \</span><br><span class="line">--restart always \</span><br><span class="line">--mount type&#x3D;tmpfs,destination&#x3D;&#x2F;tmp \</span><br><span class="line">-v &#x2F;data&#x2F;typecho:&#x2F;data \</span><br><span class="line">-e PHP_TZ&#x3D;Asia&#x2F;Shanghai \</span><br><span class="line">-e PHP_MAX_EXECUTION_TIME&#x3D;600 \</span><br><span class="line">-p 90:80 \</span><br><span class="line">80x86&#x2F;typecho:latest</span><br></pre></td></tr></table></figure><p>docker命令里<strong>冒号左边</strong>是本机的路径或者端口，根据情况调整。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;前提是你已经&lt;a href=&quot;https://tobyqin.github.io/posts/2020-02-09/feixun-n1s-road-of-twists-and-turns/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;刷了armbian&lt;/a&gt;。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="tips" scheme="https://tobyqin.cn/tags/tips/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux的压缩和解压</title>
+    <link href="https://tobyqin.cn/posts/2020-03-08/compression-and-decompression-for-linux/"/>
+    <id>https://tobyqin.cn/posts/2020-03-08/compression-and-decompression-for-linux/</id>
+    <published>2020-03-08T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.428Z</updated>
+    
+    <content type="html"><![CDATA[<p>最常用的是 zip 和 tar 命令。</p><a id="more"></a><h2 id="1-zip命令"><a href="#1-zip命令" class="headerlink" title="1.zip命令"></a>1.zip命令</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 将指定目录压缩成zip文件</span></span><br><span class="line">zip -r compressed.zip /path/to/dir</span><br><span class="line"></span><br><span class="line"><span class="comment"># 压缩文件夹，但排除某些文件</span></span><br><span class="line">zip -r compressed.zip path/to/dir -x path/to/exclude</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将多个目录压缩成zip</span></span><br><span class="line">zip -r compressed.zip /path/to/dir1 /path/to/dir2 /path/to/file</span><br><span class="line"></span><br><span class="line"><span class="comment"># 压缩加密码</span></span><br><span class="line">zip -e -r compressed.zip path/to/dir</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加文件到已经存在的zip</span></span><br><span class="line">zip compressed.zip path/to/file</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除zip里的文件</span></span><br><span class="line">zip -d compressed.zip <span class="string">"foo/*.tmp"</span></span><br></pre></td></tr></table></figure><p>zip可以将当前文件夹压缩至当前文件夹，比如 /home/toby =&gt; /home/toby/toby.zip</p><h2 id="2-unzip命令"><a href="#2-unzip命令" class="headerlink" title="2.unzip命令"></a>2.unzip命令</h2><p>与zip命令相反，这是解压命令。</p><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 解压文件，用空格来接受多个文件</span></span><br><span class="line">unzip file(s)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压文件到指定目录</span></span><br><span class="line">unzip compressed_file(s) -d /path/to/put/extracted_file(s)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示zip里的文件，不解压</span></span><br><span class="line">unzip -l file.zip</span><br></pre></td></tr></table></figure><h2 id="3-tar命令"><a href="#3-tar命令" class="headerlink" title="3.tar命令"></a>3.tar命令</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 只是打包成 tar</span></span><br><span class="line">tar cf target.tar file1 file2 file3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打包并使用gzip压缩</span></span><br><span class="line">tar czf target.tar.gz file1 file2 file3</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压tar到当前目录</span></span><br><span class="line">tar xf source.tar[.gz|.bz2|.xz]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压tar到指定目录</span></span><br><span class="line">tar xf source.tar -C directory</span><br><span class="line"></span><br><span class="line"><span class="comment"># 显示tar里的文件，不解压</span></span><br><span class="line">tar tvf source.tar</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压tar里符合规则的文件</span></span><br><span class="line">tar xf source.tar --wildcards <span class="string">"*.html"</span></span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最常用的是 zip 和 tar 命令。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="linux，zip，unzip，tar" scheme="https://tobyqin.cn/tags/linux%EF%BC%8Czip%EF%BC%8Cunzip%EF%BC%8Ctar/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux里的计划任务</title>
+    <link href="https://tobyqin.cn/posts/2020-03-07/scheduled-tasks-in-linux/"/>
+    <id>https://tobyqin.cn/posts/2020-03-07/scheduled-tasks-in-linux/</id>
+    <published>2020-03-07T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.436Z</updated>
+    
+    <content type="html"><![CDATA[<p>cron 是 Linux 内置的计划任务程序。</p><p>crontab 是 cron 定期执行任务所需的列表文件，注意通过 crontab 命令来修改。</p><p>anacron 可以看做是 cron 的补充程序，可以每月，每周，每天执行某些任务。</p><a id="more"></a><h2 id="cron-服务"><a href="#cron-服务" class="headerlink" title="cron 服务"></a>cron 服务</h2><p>cron服务的守护进程是crond。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">启动：service crond start</span><br><span class="line">停止：service crond stop</span><br><span class="line">重启：service crond restart</span><br><span class="line">查看状态：service crond status</span><br><span class="line">重新载入配置：service crond reload</span><br></pre></td></tr></table></figure><p>在 CentOS7 也可以用 <code>systemctl start crond</code> 来管理服务。默认情况下 cron 服务应该是开机自动运行的，如果没有可以 enable 一下。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">systemctl enable crond</span><br></pre></td></tr></table></figure><h2 id="crontab-命令"><a href="#crontab-命令" class="headerlink" title="crontab 命令"></a>crontab 命令</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">crontab -u     <span class="comment"># 设定某个用户的cron服务，一般root用户在执行这个命令的时候需要此参数</span></span><br><span class="line">crontab -l     <span class="comment"># 列出某个用户cron服务的详细内容</span></span><br><span class="line">crontab -r     <span class="comment"># 删除某个用户的cron服务，这个命令最没用还容易按错！！！</span></span><br><span class="line">crontab -e     <span class="comment"># 编辑某个用户的cron服务 </span></span><br><span class="line">crontab &lt;file&gt; <span class="comment"># 将 &lt;file&gt; 恢复至crontab</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看自己的cron设置</span></span><br><span class="line">crontab -l</span><br><span class="line"><span class="comment"># 编辑自己的cron设置</span></span><br><span class="line">crontab -e</span><br><span class="line"><span class="comment"># root想删除toby的cron设置</span></span><br><span class="line">crontab -u toby -r</span><br></pre></td></tr></table></figure><p>你也可以直接修改 crontab 的配置文件：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">系统配置文件：</span><br><span class="line">&#x2F;etc&#x2F;crontab</span><br><span class="line">系统级任务，一般为空，如果anacron不存在有可能会把anacron 类似的配置写到这里</span><br><span class="line"></span><br><span class="line">用户配置文件：</span><br><span class="line">&#x2F;var&#x2F;spool&#x2F;cron&#x2F;[user]</span><br><span class="line">比如 &#x2F;var&#x2F;spool&#x2F;cron&#x2F;toby</span><br></pre></td></tr></table></figure><p>crontab文件的内容：</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">SHELL=/bin/bash</span><br><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</span><br><span class="line">MAILTO=root</span><br><span class="line">HOME=/</span><br><span class="line"></span><br><span class="line"><span class="comment"># demo task</span></span><br><span class="line">01 * * * * root <span class="built_in">echo</span> hello</span><br></pre></td></tr></table></figure><p>前半部分用于声明环境变量，这四个变量是固定的，但值可以改。后半部分就是具体的任务，建议任务前用#号加以注释，方便以后管理。关于cron语法，可以参考其他文档或自行搜索：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># Example of job definition:</span><br><span class="line"># .---------------- minute (0 - 59)</span><br><span class="line"># |  .------------- hour (0 - 23)</span><br><span class="line"># |  |  .---------- day of month (1 - 31)</span><br><span class="line"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span><br><span class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday&#x3D;0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span><br><span class="line"># |  |  |  |  |</span><br><span class="line"># *  *  *  *  * user-name  command to be executed</span><br></pre></td></tr></table></figure><p>crontab 配置修改后不用重启服务，Linux会自动加载最新的改动。每次任务执行完毕后会将执行日志写到 <code>/var/log/cron</code>，可以通过 tail 命令排错。</p><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>要经常备份 crontab 文件：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">crontab -l &gt; ~&#x2F;mycrontab</span><br></pre></td></tr></table></figure><p>恢复你的备份：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">crontab ~&#x2F;mycrontab</span><br></pre></td></tr></table></figure><p>环境变量可以在具体命令前加载：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0 * * * * . &#x2F;etc&#x2F;profile;&#x2F;bin&#x2F;sh &#x2F;var&#x2F;my.sh</span><br></pre></td></tr></table></figure><p>定时重启的任务需要root权限：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">0 0 * * * root &#x2F;sbin&#x2F;reboot</span><br></pre></td></tr></table></figure><h2 id="anacron-命令"><a href="#anacron-命令" class="headerlink" title="anacron 命令"></a>anacron 命令</h2><p>anacron 算是 crontab 补充。假如你的服务器因为某些原因关机了，crontab 里配置的任务就错过了，例如你一个月备份一次数据库，刚好要备份那天服务器宕机了，当你重启后这个任务又要重新计算了，因为错过了备份时间。</p><p>但如果你把备份任务写到 anacron 里，服务器重启后依然会去执行你的任务。anacron 会通过计算记录文件的时间戳来判断上次任务是否已经执行，anacron 没那么灵活，只能按天，周，月配置任务。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">anacron 配置文件： </span><br><span class="line">&#x2F;etc&#x2F;anacrontab</span><br></pre></td></tr></table></figure><p>cat 一下这个配置文件：</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SHELL&#x3D;&#x2F;bin&#x2F;sh</span><br><span class="line">PATH&#x3D;&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;bin</span><br><span class="line">MAILTO&#x3D;root</span><br><span class="line"># the maximal random delay added to the base delay of the jobs</span><br><span class="line">RANDOM_DELAY&#x3D;45</span><br><span class="line"># the jobs will be started during the following hours only</span><br><span class="line">START_HOURS_RANGE&#x3D;3-22</span><br><span class="line"></span><br><span class="line">#period in days   delay in minutes   job-identifier   command</span><br><span class="line">15cron.dailynice run-parts &#x2F;etc&#x2F;cron.daily</span><br><span class="line">725cron.weeklynice run-parts &#x2F;etc&#x2F;cron.weekly</span><br><span class="line">@monthly 45cron.monthlynice run-parts &#x2F;etc&#x2F;cron.monthly</span><br></pre></td></tr></table></figure><p>可以看到所有放入 <code>/etc/cron.{daily，weekly，monthly}</code> 目录中的脚本都会在指定时间执行，而且不用担心服务器万一关机的情况。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;cron 是 Linux 内置的计划任务程序。&lt;/p&gt;
+&lt;p&gt;crontab 是 cron 定期执行任务所需的列表文件，注意通过 crontab 命令来修改。&lt;/p&gt;
+&lt;p&gt;anacron 可以看做是 cron 的补充程序，可以每月，每周，每天执行某些任务。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="linux，cron，crontab，anacron" scheme="https://tobyqin.cn/tags/linux%EF%BC%8Ccron%EF%BC%8Ccrontab%EF%BC%8Canacron/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>nano的简单用法</title>
+    <link href="https://tobyqin.cn/posts/2020-03-07/simple-usage-of-nano/"/>
+    <id>https://tobyqin.cn/posts/2020-03-07/simple-usage-of-nano/</id>
+    <published>2020-03-07T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.456Z</updated>
+    
+    <content type="html"><![CDATA[<p>不小心进了nano，都不知道怎么退出来。</p><a id="more"></a><p><img src="https://tobyqin.github.io/images/image-20200307150218747.png" alt="image-20200307150218747"></p><p>虽然画面上有快捷键，按完之后还是一脸懵逼。<code>^</code>是<code>Ctrl</code>键的缩写。</p><p><code>^O</code>是写入，按完之后就这样了。</p><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">File Name to Write: test</span><br><span class="line">^G Get Help        ^T To Files        M-M Mac Format     M-P Prepend</span><br><span class="line">^C Cancel          M-D DOS Format     M-A Append         M-B Backup File</span><br></pre></td></tr></table></figure><p>其实离成功就差一个回车，当然在回车前你还可以修改文件名。界面里的<code>M</code>是什么呢？后来查了半天发现<code>M</code>是<code>Modifier</code>键，通常指的是<code>Alt</code>键，Mac上是<code>Option</code>键。</p><p><code>^X</code>是退出，按完之后会让你三思。</p><p><img src="https://tobyqin.github.io/images/image-20200307150852101.png" alt="image-20200307150852101"></p><p>再按<code>Y</code>就跟上面的<code>^O</code>一样了。</p><p><img src="https://tobyqin.github.io/images/image-20200307151045048.png" alt="image-20200307151045048"></p><p>注意，快捷键都是小写，比如<code>^G</code>其实是<code>ctrl+g</code>，而不是<code>ctrl+shift+g</code>。最后附赠几个快捷键：</p><ul><li>复制：<code>alt+6</code></li><li>剪切：<code>ctrl+k</code></li><li>粘贴：<code>ctrl+u</code></li><li>自由剪切：<code>ctrl+6</code>指定起始剪切位置,按上下左右键来选中内容，然后按下<code>ctrl+k</code>剪切</li><li>撤销：<code>alt+u</code></li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;不小心进了nano，都不知道怎么退出来。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="nano，linux" scheme="https://tobyqin.cn/tags/nano%EF%BC%8Clinux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CentOS里的防火墙配置</title>
+    <link href="https://tobyqin.cn/posts/2020-03-06/firewall-configuration-in-centos/"/>
+    <id>https://tobyqin.cn/posts/2020-03-06/firewall-configuration-in-centos/</id>
+    <published>2020-03-06T00:00:00.000Z</published>
+    <updated>2020-12-16T15:36:46.432Z</updated>
+    
+    <content type="html"><![CDATA[<p>CentOS 6 以前，内置的防火墙是iptables，升级到7以后就变成了 firwalld。</p><a id="more"></a><h2 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a>iptables</h2><p>1.打开、关闭、重启防火墙</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">chkconfig iptables on      <span class="comment">#开启防火墙(重启后永久生效)</span></span><br><span class="line">chkconfig iptables off     <span class="comment">#关闭防火墙(重启后永久生效)</span></span><br><span class="line"></span><br><span class="line">service iptables start     <span class="comment">#开启防火墙(即时生效，重启后失效)</span></span><br><span class="line">service iptables stop      <span class="comment">#关闭防火墙(即时生效，重启后失效)</span></span><br><span class="line"></span><br><span class="line">service iptables restartd  <span class="comment">#重启防火墙</span></span><br></pre></td></tr></table></figure><p>2.查看打开的端口</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">/etc/init.d/iptables status</span><br></pre></td></tr></table></figure><p>3.打开某个端口(以8080为例)</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 开启端口</span></span><br><span class="line">iptables -A INPUT -p tcp --dport 8080 -j ACCEPT </span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存并重启防火墙</span></span><br><span class="line">/etc/rc.d/init.d/iptables save</span><br><span class="line">/etc/init.d/iptables restart</span><br></pre></td></tr></table></figure><p>4.打开<code>49152~65534</code>之间的端口</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">iptables -A INPUT -p tcp --dport 49152:65534 -j ACCEPT</span><br></pre></td></tr></table></figure><p>同样，这里需要对设置进行保存，并重启防火墙。</p><p>5.配置修改方式</p><p>我们还可以通过修改<code>/etc/sysconfig/iptables</code>文件的方式开启端口，如下</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">vi /etc/sysconfig/iptables</span><br></pre></td></tr></table></figure><p>然后在文件中增加一行</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">-A RH-Firewall-1-INPUT -m state –state NEW -m tcp -p tcp –dport 8080 -j ACCEPT</span><br></pre></td></tr></table></figure><p>参数说明:</p><ul><li>–A 参数就看成是添加一条规则</li><li>–p 指定是什么协议，我们常用的tcp 协议，当然也有udp，例如53端口的DNS</li><li>–dport 就是目标端口，当数据从外部进入服务器为目标端口</li><li>–sport 数据从服务器出去，则为数据源端口使用</li><li>–j 就是指定是 ACCEPT -接收 或者 DROP 不接收</li></ul><h2 id="firewalld"><a href="#firewalld" class="headerlink" title="firewalld"></a>firewalld</h2><p>Centos7默认安装了firewalld，如果没有安装的话，可以使用 <code>yum install firewalld firewalld-config</code>进行安装。</p><p>1.启动、关闭、重启防火墙</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">systemctl start firewalld         <span class="comment"># 启动,</span></span><br><span class="line">systemctl <span class="built_in">enable</span> firewalld        <span class="comment"># 开机启动</span></span><br><span class="line">systemctl stop firewalld          <span class="comment"># 关闭</span></span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld       <span class="comment"># 取消开机启动</span></span><br><span class="line"></span><br><span class="line">firewall-cmd --reload             <span class="comment"># 更新规则，重启防火墙</span></span><br><span class="line">firewall-cmd --complete-reload    <span class="comment"># 更新规则，重启服务</span></span><br></pre></td></tr></table></figure><p>2.查看状态</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">systemctl status firewalld</span><br><span class="line"><span class="comment">#或者 </span></span><br><span class="line">firewall-cmd --state</span><br></pre></td></tr></table></figure><p>3.查看和管理区域zone</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 查看当前配置的区域</span></span><br><span class="line">firewall-cmd --get-active-zones</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看指定接口所属区域</span></span><br><span class="line">firewall-cmd --get-zone-of-interface=eth0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置默认接口区域，无需重启，立即生效</span></span><br><span class="line">firwalld-cmd --<span class="built_in">set</span>-default-zone=public</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将接口添加至public区域，需要重启防火墙</span></span><br><span class="line">firewall-cmd --zone=public --add-interface=eth0 --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 永久删除pubic里的接口</span></span><br><span class="line">firewall-cmd --zone=public --permanent --remove-interface=eth0</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看public区域开放的端口</span></span><br><span class="line">firewall-cmd --zone=public --list-ports</span><br></pre></td></tr></table></figure><p>Firewall 能将不同的网络连接归类到不同的信任级别，Zone 提供了以下几个级别</p><ul><li>drop: 丢弃所有进入的包，而不给出任何响应</li><li>block: 拒绝所有外部发起的连接，允许内部发起的连接</li><li>public: 允许指定的进入连接</li><li>external: 同上，对伪装的进入连接，一般用于路由转发</li><li>dmz: 允许受限制的进入连接</li><li>work: 允许受信任的计算机被限制的进入连接，类似 workgroup</li><li>home: 同上，类似 homegroup</li><li>internal: 同上，范围针对所有互联网用户</li><li>trusted: 信任所有连接</li></ul><p>4.恐慌模式：拒绝所有包</p><p>panic本意是恐慌，如果服务器遭受攻击时可以打开恐慌模式来决绝所有进包和出包，也称为“禁行模式”。但是已经建立的连接不会被强制断开，只是无法通信了而已。注意，如果你是ssh连接上去的话，一旦打开恐慌模式就失去和服务器的连接。</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 打开恐慌模式，拒绝所有包</span></span><br><span class="line">firewall-cmd --panic-on</span><br><span class="line"><span class="comment"># 关闭恐慌模式</span></span><br><span class="line">firewall-cmd --panic-off</span><br><span class="line"><span class="comment"># 查看恐慌模式状态</span></span><br><span class="line">firwalld-cmd --query-panic</span><br></pre></td></tr></table></figure><p>7.防火墙规则管理（记得重启防火墙）</p><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 允许http和https服务</span></span><br><span class="line">firewall-cmd --permanent --zone=external --add-service=http</span><br><span class="line">firewall-cmd --permanent --zone=external --add-service=https</span><br><span class="line"></span><br><span class="line"><span class="comment"># 移除smtp服务</span></span><br><span class="line">firewall-cmd --zone=public --remove-service=smtp</span><br><span class="line"></span><br><span class="line"><span class="comment"># 允许指定端口</span></span><br><span class="line">firewall-cmd --zone=public --add-port=8080/tcp --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开指定端口区域</span></span><br><span class="line">firewall-cmd --zone=public --add-port=5000-6000/tcp --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁封 IP</span></span><br><span class="line">firewall-cmd --permanent --add-rich-rule=<span class="string">"rule family='ipv4' source address='222.222.222.222' reject"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 禁封网段</span></span><br><span class="line">firewall-cmd --permanent --zone=public --new-ipset=blacklist --<span class="built_in">type</span>=<span class="built_in">hash</span>:net</span><br><span class="line">firewall-cmd --permanent --zone=public --ipset=blacklist --add-entry=222.222.222.0/24</span><br></pre></td></tr></table></figure><h5 id="过滤规则"><a href="#过滤规则" class="headerlink" title="过滤规则"></a>过滤规则</h5><ul><li>source: 根据源地址过滤</li><li>interface: 根据网卡过滤</li><li>service: 根据服务名过滤</li><li>port: 根据端口过滤</li><li>icmp-block: icmp 报文过滤，按照 icmp 类型配置</li><li>masquerade: ip 地址伪装</li><li>forward-port: 端口转发</li><li>rule: 自定义规则</li></ul><p>其中，过滤规则的优先级遵循如下顺序</p><ol><li>source</li><li>interface</li><li>firewalld.conf</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;CentOS 6 以前，内置的防火墙是iptables，升级到7以后就变成了 firwalld。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Tech" scheme="https://tobyqin.cn/categories/tech/"/>
+    
+    
+      <category term="linux" scheme="https://tobyqin.cn/tags/linux/"/>
+    
+      <category term="centos" scheme="https://tobyqin.cn/tags/centos/"/>
+    
+      <category term="firewall" scheme="https://tobyqin.cn/tags/firewall/"/>
+    
+  </entry>
+  
+</feed>

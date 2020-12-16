@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Docker作为当今最流行的容器技术，我们还是需要紧跟时代努力学习，避免被公司优化掉。本文以轻松愉快的方式介绍了我对容器的认识，需要深入的同学建议多多查阅官方文档。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker一篇通">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="Docker作为当今最流行的容器技术，我们还是需要紧跟时代努力学习，避免被公司优化掉。本文以轻松愉快的方式介绍了我对容器的认识，需要深入的同学建议多多查阅官方文档。">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420141039942.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420141741582.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420151830272.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-04/container-layers.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420155230888.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/strong.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420185522119.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190420231352125.png">
+<meta property="article:published_time" content="2019-04-20T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.468Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="devops">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="container">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/image-20190420141039942.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Docker一篇通 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker一篇通
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-04-20 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-20T00:00:00Z">2019-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Docker作为当今最流行的容器技术，我们还是需要紧跟时代努力学习，避免被公司优化掉。本文以轻松愉快的方式介绍了我对容器的认识，需要深入的同学建议多多查阅<a href="https://docs.docker.com/engine/docker-overview/" target="_blank" rel="noopener">官方文档</a>。</p>
+<a id="more"></a>
+
+<h2 id="为啥要-Docker"><a href="#为啥要-Docker" class="headerlink" title="为啥要 Docker"></a>为啥要 Docker</h2><p>千言万语不如一张图：</p>
+<p><img src="https://tobyqin.github.io/images/image-20190420141039942.png" alt="image-20190420141039942"></p>
+<p>来源： <a href="https://www.docker.com/why-docker" target="_blank" rel="noopener">https://www.docker.com/why-docker</a></p>
+<p><strong>简单总结：</strong></p>
+<ol>
+<li>更少的部署时间，更高的交付效率balabala，反正很厉害</li>
+<li>老板花更少的资源，做更多的事</li>
+<li>员工花更少的时间，做更多的事（加量不加价？）</li>
+</ol>
+<p>总之，Docker可以让你和你的企业变得很牛很潮，甚于内裤外穿。</p>
+<h2 id="啥是-Docker"><a href="#啥是-Docker" class="headerlink" title="啥是 Docker"></a>啥是 Docker</h2><p>再来一张图：</p>
+<p><img src="https://tobyqin.github.io/images/image-20190420141741582.png" alt="image-20190420141741582"></p>
+<p>来源： <a href="https://www.docker.com/resources/what-container" target="_blank" rel="noopener">https://www.docker.com/resources/what-container</a></p>
+<p>简单总结：</p>
+<ol>
+<li>Docker 是容器技术的一种实现，是当下最流行的（不代表以后还是它）</li>
+<li>容器相对于虚拟机更轻量，但是能实现和虚拟机几乎一样的功能</li>
+<li>虚拟机需要上G的磁盘空间外加和真实环境等效的CPU，内存</li>
+<li>容器只需要运行写入的磁盘空间（MB级），能使用宿主机全部CPU，内存</li>
+</ol>
+<p>打通俗一点的比分，独立的物理机是别墅，花园车库都是你的；虚拟机是楼盘卖的各种公寓，有独立的客厅卧室；容器是酒店里的房间，大部分资源都是公用的。</p>
+<p>那为啥我不住别墅而住酒店呢？别墅不仅贵还要养管家，高档的酒店不见得比别墅和公寓差，但成本和管理效率高多了。</p>
+<h2 id="怎么实现容器化"><a href="#怎么实现容器化" class="headerlink" title="怎么实现容器化"></a>怎么实现容器化</h2><p>我们可以把容器化流程一般化，例如作为软件发布方，流程大抵如此：</p>
+<p><img src="https://tobyqin.github.io/images/image-20190420151830272.png" alt="image-20190420151830272"></p>
+<p>所谓基础镜像，你可以简单理解成操作系统。发布方需要把自己的软件和基础镜像打包后推送到仓库，就算容器化了。</p>
+<p>注意，你要打包的不光是软件本身，还有各种配置过程，比如修改文件，修改权限，打开端口等等。</p>
+<p>关于Docker镜像，我们可以看作千层饼，基础镜像是最下面一层，每添加一个功能（命令）就往上叠一层，看官方这个图：</p>
+<p><img src="https://tobyqin.github.io/images/2019-04/container-layers.jpg" alt="Layers of a container based on the Ubuntu image"></p>
+<p>基础层是Ubuntu，上面的4层分别代表了加了4次功能，比如：</p>
+<ol>
+<li>Add file1</li>
+<li>Install app1</li>
+<li>Install app2</li>
+<li>Change permission</li>
+</ol>
+<p>每一次运行命令都会生成一个层（Layer），每个层都是可以复用的。比如在任意层打上标签后发布，或者在下次制作镜像时加以利用（缓存加速）：</p>
+<ol>
+<li>Add file1 （秒完成）</li>
+<li>Install app1 （秒完成）</li>
+<li>Install app3 （新的Layer）</li>
+<li>Change permission （新的Layer，上一步的Layer不一样）</li>
+</ol>
+<p>打包出来的镜像层是只读的，当镜像被运行后就会生成容器，每个容器都只是对镜像附加了一个可写层，所以资源利用率很高。</p>
+<p>了解完生产方的流程后，我们来看一下消费方的流程：</p>
+<p><img src="https://tobyqin.github.io/images/image-20190420155230888.png" alt="image-20190420155230888"></p>
+<p>作为消费方，可以用来去自如，为所欲为来描述容器化后的世界：</p>
+<ol>
+<li>我想要啥就去仓库Pull一下</li>
+<li>运行容器，不必担心配置繁琐，环境差异这种烦心事</li>
+<li>这镜像功能不错 - 那就让它跑着</li>
+<li>这镜像是个乐色 - 分分钟删了它</li>
+</ol>
+<p>有了容器，开发的锅更难甩掉了，因为你是容器的爹，也是容器的妈。测试运维找上门，你再也不敢说在我这明明是好的啊。</p>
+<h2 id="容器化的限制"><a href="#容器化的限制" class="headerlink" title="容器化的限制"></a>容器化的限制</h2><p>容器化的实现源于Linux系统本身的一种特性，叫<a href="https://en.wikipedia.org/wiki/OS-level_virtualisation" target="_blank" rel="noopener">系统级虚拟化</a>（OS-level virtualisation）。早在10多年前在Google已经广泛应用，对，Google那个糟老头坏的很，用了那么久都不跟我们说容器真香。等Docker火了以后它才说光Docker不够，你们还需要Kubernets。</p>
+<p>![docker fun](<a href="https://tobyqin.github.io/images/docker" target="_blank" rel="noopener">https://tobyqin.github.io/images/docker</a> fun.jpeg)</p>
+<p>这张图经常出现在我们视线，为啥鲸鱼和企鹅还有老鼠在一起啊？鲸鱼代表着Docker，企鹅代表着Linux，老鼠代表着Go语言。Docker运行的基础是Linux，它是由Go语言编写的，哦原来Docker和它爹它妈在聚餐呢。</p>
+<p>既然容器化原理离不开Linux特性，那么容器化的限制也显而易见：</p>
+<ol>
+<li>你的应用必须能跑在Linux上</li>
+<li>你的应用应该是无状态的 - 允许随起随停</li>
+</ol>
+<p>举例说明，适合容器化的应用：</p>
+<ul>
+<li>前端服务，微服务，无状态任务</li>
+</ul>
+<p>不合适容器化的应用：</p>
+<ul>
+<li>数据库，数据库，数据库</li>
+</ul>
+<p>为啥数据库不适合容器化啊？第一，数据库是有状态的；第二，数据库不是想起就起想停就停的，数据安全大过天；第三第四第五网上写了一堆展开可以另写一篇。</p>
+<h3 id="最佳实践"><a href="#最佳实践" class="headerlink" title="最佳实践"></a>最佳实践</h3><p>容器化还有一些最佳实践：</p>
+<ol>
+<li>一个容器只运行一个应用</li>
+<li>使用镜像来交付应用，不要直接部署</li>
+<li>分层构建容器，尽可能减少层的数量</li>
+<li>不要把本地运行的容器转成镜像</li>
+<li>不要将数据存储在容器中</li>
+</ol>
+<h3 id="Windows容器"><a href="#Windows容器" class="headerlink" title="Windows容器"></a>Windows容器</h3><p>你可能听过<a href="https://www.microsoft.com/zh-cn/cloud-platform/containers" target="_blank" rel="noopener">Windows容器</a>，是有那么一回事，但是当前还不是很成熟，勇敢你的可以尝试，但你的老板大概是不会让它跑在生产环境的。据说携程已经将Windows容器化应用到生产了，牛Pi（破音）！</p>
+<h2 id="容器的优缺点"><a href="#容器的优缺点" class="headerlink" title="容器的优缺点"></a>容器的优缺点</h2><p>优点显而易见，随便列几个：</p>
+<ol>
+<li>比VM小，比VM快，比VM便宜</li>
+<li>更容易发布和维护，有效避免DEV，QA，OPS的撕逼</li>
+<li>社区非常活跃，国外有谷歌微软亚马逊，国内有BAT做先驱</li>
+</ol>
+<p>那么缺点呢？并不是太多，不信你到网上找找看，大多是为赋新词强说愁，简单列举：</p>
+<ol>
+<li>平台限制，目前只支持Unix/Linux应用，只支持64位系统</li>
+<li>相对于直接部署应用，性能会差一些</li>
+<li>学习和迁移成本，取决于现有架构和资源</li>
+<li>Docker公司决策有点迷，很多言论说它要挂了</li>
+</ol>
+<p>理论讲完了，我们进入实操环节。</p>
+<h2 id="安装-Docker"><a href="#安装-Docker" class="headerlink" title="安装 Docker"></a>安装 Docker</h2><p>现在Docker的安装非常傻瓜，只要从<a href="https://download.docker.com/" target="_blank" rel="noopener">官网下载</a>对应平台的安装包点击几下就可以安装完成。你需要知道：</p>
+<ol>
+<li>Windows用户需要开启<a href="https://docs.docker.com/docker-for-windows/troubleshoot/#virtualization-must-be-enabled" target="_blank" rel="noopener">CPU虚拟化</a>，配置4G内存以上，Windows 10 / 64位系统</li>
+<li>早期版本的Windows可以考虑使用<a href="https://docs.docker.com/toolbox/overview/" target="_blank" rel="noopener">Docker Toolbox</a>或通过Linux虚拟机来安装</li>
+<li>MacOSX用户建议<a href="https://hub.docker.com/editions/community/docker-ce-desktop-mac" target="_blank" rel="noopener">下载Docker Desktop</a>后安装，用Brew会更麻烦</li>
+<li>Linux用户最简单最野生，用各种包管理器就可以装，例如：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">yum install docker     # centos / redhat</span><br><span class="line">apt-get install docker # ubuntu</span><br></pre></td></tr></table></figure>
+
+<p>坑：在Windows下，Docker和Genymotion是有冲突的，一个要开CPU虚拟化，一个要关CPU虚拟化，二者势不两立，目前没有好的解决办法。</p>
+<p>我们装的Docker都是CE（Community Edition）版，另外Docker还提供了企业版。</p>
+<table>
+<thead>
+<tr>
+<th align="left">Capabilities</th>
+<th align="center">Docker Engine - Community</th>
+<th align="center">Docker Engine - Enterprise</th>
+<th align="center">Docker Enterprise</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Container engine and built in orchestration, networking, security</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="left">Certified infrastructure, plugins and ISV containers</td>
+<td align="center"></td>
+<td align="center">Yes</td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="left">Image management</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="left">Container app management</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">Yes</td>
+</tr>
+<tr>
+<td align="left">Image security scanning</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">Yes</td>
+</tr>
+</tbody></table>
+<h2 id="启动-Docker"><a href="#启动-Docker" class="headerlink" title="启动 Docker"></a>启动 Docker</h2><p>在Windows / MacOSX中，双击小鲸鱼就可以启动Docker，启动成功后在通知区域就可以看到Docker的图标。</p>
+<p>坑：在Windows / MacOSX 中居然真的只能通过图形来重启或者停止Docker服务？！</p>
+<p>在Linux 中需要使用命令行来管理 Docker 服务，以CentOS 7为例。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl start docker</span><br><span class="line">systemctl stop docker</span><br><span class="line">systemctl enable docker # auto start when boot</span><br></pre></td></tr></table></figure>
+
+<p>我们平时说的Docker一般是指Docker Engine，前面提到的安装启动Docker指的都是Docker Engine，这个Engine提供了一系列功能：</p>
+<ol>
+<li>管理镜像比如：拉取镜像，打包镜像，推送镜像</li>
+<li>管理容器比如：运行容器，停止容器，诊断容器</li>
+</ol>
+<p>如果Docker Engine已经启动成功，在命令行（Windows建议PowerShell，MacOSX，Linux建议Bash）中就可以通过下面两个命令检查其运行状态。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker version</span><br><span class="line">docker info</span><br></pre></td></tr></table></figure>
+
+<p>反之，如果Docker Engine没启动，那么就会有类似的错误。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker info</span><br><span class="line">Cannot connect to the Docker daemon at unix:&#x2F;&#x2F;&#x2F;var&#x2F;run&#x2F;docker.sock. Is the docker daemon running?</span><br></pre></td></tr></table></figure>
+
+<h2 id="Docker-常用命令"><a href="#Docker-常用命令" class="headerlink" title="Docker 常用命令"></a>Docker 常用命令</h2><p>Docker 大部分操作都是通过命令行来完成的，对你还记得Windows和MacOSX的那个图像客户端，他们可以干什么？简单说他们除了用来启动和退出Docker外，还可以用来配置仓库源和网络代理地址，别的功能你就忘了吧。</p>
+<p>还有，在中华大地，使用Docker前最好还是先<a href="https://yeasy.gitbooks.io/docker_practice/install/mirror.html" target="_blank" rel="noopener">配置国内的源</a>，不然镜像会拉的很慢，便秘的感觉。</p>
+<p>万事俱备，我们来一个Docker Hello World：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run hello-world</span></span><br><span class="line">Unable to find image 'hello-world:latest' locally</span><br><span class="line">latest: Pulling from library/hello-world</span><br><span class="line">1b930d010525: Pull complete</span><br><span class="line">Digest: sha256:92695bc579f31df7a63da6922075d0666e565ceccad16b59c3374d2cf4e8e50e</span><br><span class="line">Status: Downloaded newer image for hello-world:latest</span><br><span class="line"></span><br><span class="line">Hello from Docker!</span><br></pre></td></tr></table></figure>
+
+<p>运行完这个命令，以后出去面试你就可以跟面试官说自己精通Docker和容器化技术了。</p>
+<p>面试官再追问，你就说 Docker 命令太多了，我一般都是通过<code>docker --help</code> 查阅的。当然啦，咱也不水的，Docker 命令我说起来也是一套一套的，不信你往下看。</p>
+<p>再说说这个Hello World，你发现没有，作为消费方，其实你只要一个<code>docker run &lt;image&gt;</code> 命令就够了，Docker足够聪明，如果这个<code>&lt;image&gt;</code> 不存在，那么它就会仓库里找，找到了就自动pull，然后运行起来。</p>
+<p>回到工作中，如果开发同学做完了一个需求，是不是告诉你这个<code>run</code>命令的具体参数就可以测试和发布了呢？（基本）是的！天啊，开发同学太厉害了，他变强了，也变秃了。</p>
+<p><img src="https://tobyqin.github.io/images/strong.jpg" alt=""></p>
+<p>聪明的你可能想到了，在社会人维护的Docker仓库里，其实包含了很多打包好的软件镜像，你只要<code>docker run</code>就行，比如jenkins，sonarqube，redis，kafka，你能想到的全都有。天啊，原来用Docker整一个玩耍的环境那么简单！</p>
+<h3 id="命令速记"><a href="#命令速记" class="headerlink" title="命令速记"></a>命令速记</h3><p>也许你知道一些Docker命令，比如：</p>
+<ul>
+<li>docker run</li>
+<li>docker images</li>
+<li>docker ps</li>
+<li>docker rename</li>
+<li>docker rm / rmi</li>
+</ul>
+<p>但是我真的建议你忘记它们，换一种方式去使用和记忆Docker命令。当你敲完<code>docker --help</code> 之后，出来的信息大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker --help</span><br><span class="line"></span><br><span class="line">Usage:	docker [OPTIONS] COMMAND</span><br><span class="line"></span><br><span class="line">A self-sufficient runtime for containers</span><br><span class="line"></span><br><span class="line">Options:</span><br><span class="line">      ...</span><br><span class="line"></span><br><span class="line">Management Commands:</span><br><span class="line">  builder     Manage builds</span><br><span class="line">  checkpoint  Manage checkpoints</span><br><span class="line">  config      Manage Docker configs</span><br><span class="line">  container   Manage containers</span><br><span class="line">  image       Manage images</span><br><span class="line">  network     Manage networks</span><br><span class="line">  node        Manage Swarm nodes</span><br><span class="line">  plugin      Manage plugins</span><br><span class="line">  secret      Manage Docker secrets</span><br><span class="line">  service     Manage services</span><br><span class="line">  stack       Manage Docker stacks</span><br><span class="line">  swarm       Manage Swarm</span><br><span class="line">  system      Manage Docker</span><br><span class="line">  trust       Manage trust on Docker images</span><br><span class="line">  volume      Manage volumes</span><br><span class="line"></span><br><span class="line">Commands:</span><br><span class="line">  ...</span><br></pre></td></tr></table></figure>
+
+<p>不重要的部分我都省略了，在当前和未来版本的Docker中，官方都极力推荐我们通过管理命令去执行Docker命令。比如说：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker image ls</span><br></pre></td></tr></table></figure>
+<p>而不是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<p>推荐使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker container ls</span><br></pre></td></tr></table></figure>
+<p>而不是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+
+<p>虽然<code>docker ps</code> / <code>docker exec</code> 等等命令更简洁，但是也更混乱，不便记忆。你有时候甚至不确定自己操作的是容器还是镜像或者是别的对象？</p>
+<p>让我们再仔细对比一下管理命令和简化版命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> via management <span class="built_in">command</span></span></span><br><span class="line">docker image ls</span><br><span class="line">docker image rm</span><br><span class="line">docker image history</span><br><span class="line"></span><br><span class="line">docker container ps</span><br><span class="line">docker container rename</span><br><span class="line">docker container rm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> via docker <span class="built_in">command</span></span></span><br><span class="line">docker images</span><br><span class="line">docker rmi</span><br><span class="line">docker history</span><br><span class="line"></span><br><span class="line">docker ps</span><br><span class="line">docker rename</span><br><span class="line">docker rm</span><br></pre></td></tr></table></figure>
+
+<p>所以在你理解Docker能做的事情后，再通过管理命令去实践你就会事半功倍。我做了一个思维导图，列出了常见的操作。</p>
+<p><img src="https://tobyqin.github.io/images/image-20190420185522119.png" alt="image-20190420185522119"></p>
+<p>在敲命令时你要时刻记住自己要做什么，不要迷路：</p>
+<ol>
+<li>需要配置网络，那就<code>docker network xxx</code></li>
+<li>需要配置存储，那就<code>docker volume xxx</code></li>
+<li>需要管理镜像，那就<code>docker image xxx</code></li>
+<li>需要管理容器，那就<code>docker container xxx</code></li>
+</ol>
+<p>是不是超级简单？</p>
+<h3 id="portainer"><a href="#portainer" class="headerlink" title="portainer"></a>portainer</h3><p><a href="https://www.portainer.io/" target="_blank" rel="noopener">portainer</a> 是一个浏览器界面的图形化Docker管理工具，它实现了几乎所有的Docker Engine操作，你只要两条命令就可以让它运行在你的机器上。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ docker volume create portainer_data</span><br><span class="line">$ docker run -d -p 9000:9000 -v &#x2F;var&#x2F;run&#x2F;docker.sock:&#x2F;var&#x2F;run&#x2F;docker.sock -v portainer_data:&#x2F;data portainer&#x2F;portainer</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tobyqin.github.io/images/image-20190420231352125.png" alt="image-20190420231352125"></p>
+<p>有了它，你就可以忘掉上面的命令，前提是你先通过面试。</p>
+<h2 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h2><p>要制作容器镜像，你需要一个详细的步骤，这个实施过程记录下来就是Dockerfile。我们来看一个例子：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">FROM ubuntu:18.04</span><br><span class="line">COPY . /app</span><br><span class="line">RUN make /app</span><br><span class="line">CMD python /app/app.py</span><br></pre></td></tr></table></figure>
+
+<p>其实Dockerfile很简单易懂，无非就是第一做什么第二做什么，自己写几遍就记住了。在Dockerfile中可以用的命令并不是特别多。</p>
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FROM</td>
+<td>选择基础镜像版本，例如：<code>FROM ubuntu:18.04</code></td>
+</tr>
+<tr>
+<td>LABEL</td>
+<td>给镜像添加标签，例如：<code>LABEL version=&quot;0.0.1-beta&quot;</code></td>
+</tr>
+<tr>
+<td>WORKDIR</td>
+<td>指定工作目录（会自动创建），例如：<code>WORKDIR /target</code></td>
+</tr>
+<tr>
+<td>ADD / COPY</td>
+<td>复制文件，ADD会自动解压，例如：<code>COPY . /target</code></td>
+</tr>
+<tr>
+<td>RUN</td>
+<td>运行命令，例如：<code>RUN apt-get update -y</code></td>
+</tr>
+<tr>
+<td>ENV</td>
+<td>设置环境变量，例如：<code>ENV PG_VERSION 9.3.4</code></td>
+</tr>
+<tr>
+<td>USER</td>
+<td>不使用root来运行容器，例如：<code>USER user1:group1</code></td>
+</tr>
+<tr>
+<td>VOLUME</td>
+<td>添加文件卷，例如：<code>VOLUME /myvol</code></td>
+</tr>
+<tr>
+<td>EXPOSE</td>
+<td>暴露指定端口，例如：<code>EXPOSE 80/tcp</code></td>
+</tr>
+<tr>
+<td>CMD</td>
+<td>容器的默认命令，例如：<code>CMD [“echo”, “hello”]</code></td>
+</tr>
+<tr>
+<td>ENTRYPOINT</td>
+<td>容器的入口命令，例如：<code>ENTRYPOINT [“top”, “-b”]</code></td>
+</tr>
+</tbody></table>
+<p>以上只是简单介绍，需要用到具体命令时建议还是参考<a href="https://docs.docker.com/engine/reference/builder/#usage" target="_blank" rel="noopener">Dockerfile官方文档</a>。</p>
+<p>这些命令里最难说清楚的就是<code>CMD</code>和<code>ENTRYPOINT</code>，如果我是面试官这是必考题。三言两语说不完，我们改日再聊这个话题吧。</p>
+<p>有了Dockerfile之后，只要运行<code>docker image build</code>就可以生成镜像了。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd /your-project-dir</span><br><span class="line">docker image build -t tobyqin/xmind2testlink:1.0.0 .</span><br></pre></td></tr></table></figure>
+
+<p>一般你需要用<code>-t</code>参数来给你的镜像取个名字和定个版本，别的参数不太重要。打包完之后发布也是手到擒来：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要提前在docker仓库注册账号</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker login</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 输入用户名密码</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker push tobyqin/xmind2testlink:1.0.0</span></span><br><span class="line">The push refers to repository [docker.io/tobyqin/xmind2testlink]</span><br><span class="line">a50ecd8a5d30: Layer already exists</span><br><span class="line">d306e6933e16: Layer already exists</span><br><span class="line">b48eea5f4f04: Layer already exists</span><br><span class="line">6e7c7e6d6e7f: Layer already exists</span><br><span class="line">2aebd096e0e2: Layer already exists</span><br><span class="line">latest: digest: sha256:c06bc4a35073319b8d7e7ef128a7daa8cdb4e766468ffc50f8a61afcf5ef3f46 size: 1367</span><br></pre></td></tr></table></figure>
+
+<p>发布成功后你也就成了一个Docker社会人了。</p>
+<h2 id="Docker-Compose"><a href="#Docker-Compose" class="headerlink" title="Docker Compose"></a>Docker Compose</h2><p>Dockerfile只是打包一个程序或者一种服务，实际上我们的应用会复杂的多，比如有web前端，有大后端，有缓存系统，有消息队列，有数据库等等。</p>
+<p>这时候你就需要使用<a href="https://docs.docker.com/compose/overview/" target="_blank" rel="noopener">Docker Compose</a>了，它是一个官方提供的用来定义和运行多个容器的工具，你只要写一个配置文件就可以对容器进行编排，看例子。</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># docker-compose.yml</span></span><br><span class="line"><span class="attr">version:</span> <span class="string">'3'</span></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">db:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres</span></span><br><span class="line">  <span class="attr">web:</span></span><br><span class="line">    <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">"5000:5000"</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">.:/code</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">logvolume01:/var/log</span></span><br><span class="line">    <span class="attr">links:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">redis</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">db</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">redis</span></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">logvolume01:</span> <span class="string">&#123;&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>有了这个配置文件，你只需要运行<code>docker-compose up</code>就可以轻松管理配置文件里的一系列容器。</p>
+<p>关于Docker Compose的介绍不做深入，也不推荐深入，因为这样的容器编排只能满足小企业或者个人开发者的需求，单台主机。真正在企业中我们会用 <a href="https://docs.docker.com/engine/swarm/" target="_blank" rel="noopener">Docker Swarm</a> 或者 <a href="https://kubernetes.io/" target="_blank" rel="noopener">Kubernets</a>。</p>
+<h2 id="Docker-Swarm-和-K8S"><a href="#Docker-Swarm-和-K8S" class="headerlink" title="Docker Swarm 和 K8S"></a>Docker Swarm 和 K8S</h2><p>Swarm是Docker官方提供的一款集群管理工具，其主要作用是把若干台Docker主机抽象为一个整体，并且通过一个入口统一管理这些Docker主机上的各种Docker资源。</p>
+<p>Kubernets也叫k8s，中间刚好是8个字母。类似的我们还把international缩写成i11l。Kubernets是Google开源的容器编排引擎，支持大规模容器集群管理，自动化部署，自动伸缩，负载均衡，资源监控等等功能。</p>
+<p>Swarm和Kubernetes其实是一类东西，但是Google家的东西更强大也更复杂，企业一般会二选一。</p>
+<p>关于容器编排是另外一个话题（很大的），本期内容完。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-02-06/stop-remove-all-docker-containers/" rel="bookmark">一行代码停止或删除所有Docker容器</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-02-26/priciple-to-deliver-software/" rel="bookmark">软件交付的原则</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-03-09/little-improvement/" rel="bookmark">微不足道的改进</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-11-23/jenkin-on-mac/" rel="bookmark">在Mac上部署Jenkins</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2020-01-01/thanks-we-are-busy/" rel="bookmark">谢谢，我们很忙</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/" title="Docker一篇通">https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/devops/" rel="tag"># devops</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/container/" rel="tag"># container</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-03-27/shift-test-to-left/" rel="prev" title="测试左移和开发赋能">
+      <i class="fa fa-chevron-left"></i> 测试左移和开发赋能
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-04-27/life-peom/" rel="next" title="山村咏怀">
+      山村咏怀 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为啥要-Docker"><span class="nav-number">1.</span> <span class="nav-text">为啥要 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#啥是-Docker"><span class="nav-number">2.</span> <span class="nav-text">啥是 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#怎么实现容器化"><span class="nav-number">3.</span> <span class="nav-text">怎么实现容器化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器化的限制"><span class="nav-number">4.</span> <span class="nav-text">容器化的限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#容器的优缺点"><span class="nav-number">5.</span> <span class="nav-text">容器的优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-Docker"><span class="nav-number">6.</span> <span class="nav-text">安装 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动-Docker"><span class="nav-number">7.</span> <span class="nav-text">启动 Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-常用命令"><span class="nav-number">8.</span> <span class="nav-text">Docker 常用命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dockerfile"><span class="nav-number">9.</span> <span class="nav-text">Dockerfile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Compose"><span class="nav-number">10.</span> <span class="nav-text">Docker Compose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Swarm-和-K8S"><span class="nav-number">11.</span> <span class="nav-text">Docker Swarm 和 K8S</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-04-20/docker-in-one-day/";
+    this.page.identifier = "posts/2019-04-20/docker-in-one-day/";
+    this.page.title = "Docker一篇通";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

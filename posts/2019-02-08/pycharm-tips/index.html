@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="PyCharm是笔者强烈推荐的Python IDE，如果你有EDU的邮箱可以直接申请专业版授权，或者就使用社区版，功能上并没有太多缩减，日常开发也完全够用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一些 PyCharm 的使用和设置建议">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-02-08/pycharm-tips/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="PyCharm是笔者强烈推荐的Python IDE，如果你有EDU的邮箱可以直接申请专业版授权，或者就使用社区版，功能上并没有太多缩减，日常开发也完全够用。">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208162340.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208163613.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208170026.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208164442.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208165147.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190208172622399.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190208173827240.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208174528.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208174959.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-02/20190208175713.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190208195643324.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20190208195752742.png">
+<meta property="article:published_time" content="2019-02-08T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.476Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="tips">
+<meta property="article:tag" content="pycharm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/2019-02/20190208162340.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-02-08/pycharm-tips/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>一些 PyCharm 的使用和设置建议 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-02-08/pycharm-tips/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          一些 PyCharm 的使用和设置建议
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-08 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-08T00:00:00Z">2019-02-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>PyCharm是笔者强烈推荐的Python IDE，如果你有EDU的邮箱可以直接<a href="https://tobyqin.github.io/posts/2016-09-27/get-jetbrains-student-licence/" target="_blank" rel="noopener">申请专业版授权</a>，或者就使用社区版，功能上并没有太多缩减，日常开发也完全够用。</p>
+<a id="more"></a>
+
+<p>如果是首次安装PyCharm，有一些设置项建议还是按照自己习惯修改掉，所谓磨刀不误砍柴工。</p>
+<h2 id="显示工具栏"><a href="#显示工具栏" class="headerlink" title="显示工具栏"></a>显示工具栏</h2><p>默认PyCharm并不显示工具栏（Toolbar），在大多数IDE工具栏都放了最常用的操作，你可以通过主菜单-显示-菜单栏来显示工具栏。工具栏显示出来后你还可以通过右键定制上面的按钮，我会把一些跟VCS相关的操作放到上面，比如Fetch，Push，默认它只加了Pull和Commit。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208162340.png" alt=""></p>
+<h2 id="智能提示匹配大小写"><a href="#智能提示匹配大小写" class="headerlink" title="智能提示匹配大小写"></a>智能提示匹配大小写</h2><p>可能是出于动态语言和性能的考虑，PyCharm的代码提示默认是大小写敏感的。例如你敲<code>b</code>会提示你<code>back</code>但不会提示你<code>BACK</code>，坦白讲挺不方便的，你可以改掉它。在设置里搜索<code>match case</code>就可以进行调整。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208163613.png" alt=""></p>
+<h2 id="鼠标滚轮调整字体大小"><a href="#鼠标滚轮调整字体大小" class="headerlink" title="鼠标滚轮调整字体大小"></a>鼠标滚轮调整字体大小</h2><p>有时候我们讨论或者分享代码时，已经设置好的字体大小可能不太合适，很多IDE或者软件都是支持使用鼠标滚轮实时调整字体大小的，PyCharm中你需要手动启用这个功能。在设置中搜索<code>zoom</code>就可以找到对应设置项。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208170026.png" alt=""></p>
+<p>##修改单元测试框架</p>
+<p>如果你也有写单元测试的习惯，想必一定知道pytest，PyCharm可以很好地和很多知名的测试框架，但是默认它配置的是unittest，在设置中搜索<code>test</code>就可以调整成你常用的框架。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208164442.png" alt=""></p>
+<p>比如调整成pytest之后，只要你的方法名前缀是<code>test_</code>，那么IDE就会提示你这是一个test，在前面会多出一个小三角形，让你很方便地运行或者调试。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208165147.png" alt=""></p>
+<p>PyCharm支持的测试框架很多，但我喜欢的还是pytest。</p>
+<p>顺带一提的是，PyCharm可以自定义的类似配置还有很多，比如terminal使用的shell，虚拟环境选用的工具，Flask模板语言等等。</p>
+<h2 id="提交代码前的选项"><a href="#提交代码前的选项" class="headerlink" title="提交代码前的选项"></a>提交代码前的选项</h2><p>假设你已经默认显示工具栏，那么以后你提交代码只需要点击工具栏里的Commit按钮即可，这时候会弹出一个对话框，你在这里可以很方便地看到你要提交的文件，可以随意diff，add, remove甚至直接edit。很多时候我们在diff时发现有些旮旯里总漏点东西，一般的流程时关掉diff，回到编辑器，找到那个地方改掉，在PyCharm这个提交对话框，你可以一气呵成，爽歪歪。</p>
+<p>更厉害的是，你还可以选择提交前格式化代码，优化import区等等。</p>
+<p><img src="https://tobyqin.github.io/images/image-20190208172622399.png" alt="image-20190208172622399"></p>
+<h2 id="其他可以调整的设置"><a href="#其他可以调整的设置" class="headerlink" title="其他可以调整的设置"></a>其他可以调整的设置</h2><ol>
+<li>外观和主题，包括编辑器字体，背景等等。</li>
+<li>快捷键，如果你记不住它默认的快捷键，那么就改成你能记住的。</li>
+<li>隐藏某些项目文件，治愈强迫症患者。（设置中搜索“ignore files”）</li>
+<li>安装自己顺手的插件。（设置中搜索“plugins”）</li>
+</ol>
+<h2 id="一些使用心得总结"><a href="#一些使用心得总结" class="headerlink" title="一些使用心得总结"></a>一些使用心得总结</h2><p><strong>内置的VCS很好用</strong></p>
+<p>内置的Version Control提供了日常操作需要的所有功能，而且触手可及，关键是非常直观，用过之后欲罢不能。它还提供了changlist和shelvset功能，让你在合并或者提交代码前暂存不想处理的修改，这是很多开发者都想要的功能。</p>
+<p><img src="https://tobyqin.github.io/images/image-20190208173827240.png" alt="image-20190208173827240"></p>
+<p><strong>内置的命令行工具很好用</strong></p>
+<p>IDE内置命令行工具其实是一个硬需求，你看现在，几乎你找不到一个不带命令行的IDE。PyCharm带的IDE最方便的地方在于，可以自动识别项目里的虚拟环境并启用它，这是外部命令行工具没法比拟的。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208174528.png" alt=""></p>
+<p><strong>内置的Python Console很好用</strong></p>
+<p>写Python肯定是离不开即时解释器的，在PyCharm里你随手就可以用Python Console测试代码片段，它不仅提供了智能提示，还可以查看运行中的变量，甚至还能绘图画表，集成iPython Notebook。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208174959.png" alt=""></p>
+<p><strong>修改运行时状态很爽</strong></p>
+<p>当你用PyCharm调试代码时，可以直接在Variables窗口看到运行变量，也可以直接修改这些变量的值，更厉害的是，你可以直接执行语句，点那个计算器一样的图标就行。</p>
+<p><img src="https://tobyqin.github.io/images/2019-02/20190208175713.png" alt=""></p>
+<p>这个功能Visual Studio里也有，叫ImmediateWindow，可以节约你大把的调试时间。然而PyCharm少了一个Visual Studio里我非常喜欢的功能，拖拽当前断点。假设当前断点停在第40行，VS里可以直接拖到前面几行，例如第30行，人为控制这块代码反复运行。</p>
+<p><strong>总是为新项目建立虚拟环境</strong></p>
+<p>千万不要只用默认的Python环境写多个项目，2个也不行，以后你会后悔的。如果你能真的确定这台机器的Python只跑一个项目，那你可以不用虚拟环境。在PyCharm建立一个新的虚拟环境只需要点几下，不麻烦的。</p>
+<p><img src="https://tobyqin.github.io/images/image-20190208195643324.png" alt="image-20190208195643324"></p>
+<p><strong>导入导出配置最靠谱</strong></p>
+<p>前面我们说了很多配置选择，如果你有N台机器都安装了PyCharm，每台都重新配置一遍多累啊，特别是快捷键如果不用默认的，换机器都想哭。</p>
+<p>PyCharm提供了一个同步配置的方案，你可以新建一个空的git repo，填到 Tools / Settings / Repository 里就可以自动上传配置。别的机器也同样配置一样，理论上配置就云同步了。但是我亲身体验告诉你，这个真不靠谱，Mac和Windows多倒腾几次就错乱了，想哭啊。还好我有方案B。</p>
+<p><img src="https://tobyqin.github.io/images/image-20190208195752742.png" alt="image-20190208195752742"></p>
+<p>方案B很简单，在某一台机器配置好后，选择主菜单 - 文件 - 导出配置。导出的配置是一个jar文件，随便扔到印象笔记或者坚果云里，新机器里用主菜单 - 文件 - 导入配置即可。</p>
+<p><strong>专业版和社区版的区别</strong></p>
+<p>刚好两个版本我都在用，大概说说专业版多出来可能会用到的东西。</p>
+<ol>
+<li>和Flask，Django深度集成，智能提示到你惊讶的级别。</li>
+<li>支持调试多线程，提供性能优化工具。</li>
+<li>快速获得和显示单元测试覆盖率。</li>
+<li>集成数据库工具，可以在IDE里直接连接任何数据库。</li>
+<li>支持Live Edit，让你在编辑代码同时，实时在浏览器中展示。</li>
+<li>支持一键部署docker。</li>
+</ol>
+<p>专业版还是很厉害的，不过也很贵。多出来的功能挺方便，但也不是必须的，大家可以酌情选择。</p>
+<p>最后，祝大家happy coding。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-10-11/underscore-in-python/" rel="bookmark">Python中的下划线和双下划线</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-02-08/pycharm-tips/" title="一些 PyCharm 的使用和设置建议">https://tobyqin.cn/posts/2019-02-08/pycharm-tips/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/tips/" rel="tag"># tips</a>
+              <a href="/tags/pycharm/" rel="tag"># pycharm</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2019-01-29/about-devops-we-may-not-be-talking-about-the-same-thing/" rel="prev" title="关于 DevOps ，咱们聊的可能不是一回事">
+      <i class="fa fa-chevron-left"></i> 关于 DevOps ，咱们聊的可能不是一回事
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-02-09/book-list-for-2019-jan/" rel="next" title="2019年1月书单">
+      2019年1月书单 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#显示工具栏"><span class="nav-number">1.</span> <span class="nav-text">显示工具栏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#智能提示匹配大小写"><span class="nav-number">2.</span> <span class="nav-text">智能提示匹配大小写</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#鼠标滚轮调整字体大小"><span class="nav-number">3.</span> <span class="nav-text">鼠标滚轮调整字体大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交代码前的选项"><span class="nav-number">4.</span> <span class="nav-text">提交代码前的选项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他可以调整的设置"><span class="nav-number">5.</span> <span class="nav-text">其他可以调整的设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一些使用心得总结"><span class="nav-number">6.</span> <span class="nav-text">一些使用心得总结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-02-08/pycharm-tips/";
+    this.page.identifier = "posts/2019-02-08/pycharm-tips/";
+    this.page.title = "一些 PyCharm 的使用和设置建议";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="今年已经参加了两次黑客马拉松。 黑马流程黑马(Hackathon)的一般流程就是主办方广告预热，然后组队报名，确认报名成功后及时了解大赛注意事项和黑马主题。 一般来说，正式比赛时间只会持续1~2天，这段时间是比较高强度的脑子和体力劳动，如果小组配合不默契的话，大概率只能出个PPT，demo也只能停留在搭环境或者Hello World上。 组建团队一个真正高效的团队不需要每个人都是MVP，而是相互之">
+<meta property="og:type" content="article">
+<meta property="og:title" content="黑客马拉松后记">
+<meta property="og:url" content="https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="今年已经参加了两次黑客马拉松。 黑马流程黑马(Hackathon)的一般流程就是主办方广告预热，然后组队报名，确认报名成功后及时了解大赛注意事项和黑马主题。 一般来说，正式比赛时间只会持续1~2天，这段时间是比较高强度的脑子和体力劳动，如果小组配合不默契的话，大概率只能出个PPT，demo也只能停留在搭环境或者Hello World上。 组建团队一个真正高效的团队不需要每个人都是MVP，而是相互之">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200920154539693.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200920153632201.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200920152904079.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200920153415416.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/image-20200920160639683.png">
+<meta property="article:published_time" content="2020-09-20T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.424Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="hackathon">
+<meta property="article:tag" content="tech">
+<meta property="article:tag" content="teamwork">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/image-20200920154539693.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>黑客马拉松后记 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          黑客马拉松后记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-20 00:00:00" itemprop="dateCreated datePublished" datetime="2020-09-20T00:00:00Z">2020-09-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>今年已经参加了两次黑客马拉松。</p>
+<h2 id="黑马流程"><a href="#黑马流程" class="headerlink" title="黑马流程"></a>黑马流程</h2><p>黑马(Hackathon)的一般流程就是主办方广告预热，然后组队报名，确认报名成功后及时了解大赛注意事项和黑马主题。</p>
+<p>一般来说，正式比赛时间只会持续1~2天，这段时间是比较高强度的脑子和体力劳动，如果小组配合不默契的话，大概率只能出个PPT，demo也只能停留在搭环境或者Hello World上。</p>
+<h2 id="组建团队"><a href="#组建团队" class="headerlink" title="组建团队"></a>组建团队</h2><p>一个真正高效的团队不需要每个人都是MVP，而是相互之间有足够的默契和信任，每个人能在比赛过程中都为同一个目标全力以赴。</p>
+<p>那么这里有两个问题需要明确，什么是同一个目标，怎么全力以赴。</p>
+<h3 id="共同目标"><a href="#共同目标" class="headerlink" title="共同目标"></a>共同目标</h3><p>在比赛开始前，我们的目标是想出一个点子，作为我们参赛的项目。团队里的每个人都应该尽可能的大开脑洞，去提供建议和意见。有新意并且有价值的点子并不是那么容易得到，但其实也是可以有一些套路的。</p>
+<ol>
+<li>头脑风暴：一群人一起提出各种想法，比如最优价值的产品，最优的解决方案，最大的痛点，最可能实现的创意，最想做的事情等等。</li>
+<li>奔驰思考：这是美国心理学家Robert Eberie提出一种激发创新的改进思路，用7个字母总结 - SCAMPER。<ol>
+<li>S - Substitued，是不是有替代的方法或者产品？</li>
+<li>C - Combined，是不是结合在一起产生新的东西？</li>
+<li>A - Adapt，能否调整或者改造，升级优化？</li>
+<li>M - Modify，能否修改设计，尺寸，外观等等？</li>
+<li>P - Put to other use，能否拓展其他用途？想象一下跨界。</li>
+<li>E - Eliminate，能否缩减，消除，简化？看看手机按键的消失。</li>
+<li>R - Rearrange，能否重组，逆向，反套路。</li>
+</ol>
+</li>
+<li>六顶帽子：从不同角度去激发创意，假设你有六顶帽子，每顶帽子颜色不一样，轮着戴到自己头上。<ol>
+<li>白色：中立而客观，关注客观事实和数据。</li>
+<li>绿色：创造和生命力，突破常规的可能和意见。</li>
+<li>黄色：价值和肯定，从正面考虑问题，表达乐观。</li>
+<li>黑色：否定和怀疑，精确批判和找出逻辑上的错误。</li>
+<li>红色：情绪和直觉，主观表达自己的感受和看法。</li>
+<li>蓝色：结构化思维，纵览全局，规划和管理整个思考过程，并作出结论。</li>
+</ol>
+</li>
+</ol>
+<p>纵然有很多思维方式的套路，在现实中我们更多的创意是来源于生活和工作，如果平时有思考和总结的习惯，发现不合理的设计，你的创意就不会少。</p>
+<h3 id="全力以赴"><a href="#全力以赴" class="headerlink" title="全力以赴"></a>全力以赴</h3><p>每个人都有自己擅长的领域，一旦目标定下来后就要主动去承担一些责任。比如分配任务时主动完成自己能够完成的部分，与此同时，还需要一个人来监控和推进任务的进度，确保项目能够顺利交付。</p>
+<p>上午完成什么，下午完成什么，晚上完成什么，设置几个里程碑，里程碑时间到达时，大家一起坐下来分享成果。如果有需要调整技术方案，就及时提出。</p>
+<p>一天时间想把项目做得很完美基本很难，切记不要调代码调的太入迷，忘记了最初的目的和最终的结果。</p>
+<p>最初的目的是，把我们伟大的项目表达出来。</p>
+<p>最终的结果是，我们伟大的项目完整地表达出来了，表达的方式可能是PPT，Demo或者其他形式。</p>
+<h2 id="享受过程"><a href="#享受过程" class="headerlink" title="享受过程"></a>享受过程</h2><p>过程能不能享受其实还跟主办方有很大关系，比如有没有舒适的场地，提供免费的餐饮，设备和设施是否完善和周全。</p>
+<p>如果一切都OK，小组成员各就各位，就可以开心码代码了。</p>
+<p>有一些小贴士可以罗列一下，也许对各位看官有帮助。</p>
+<ol>
+<li>网络一定要好，能正常访问Google和SO，不然写不出代码。</li>
+<li>开发环境也需要提前准备好，不然临时安装git，java，node，docker七七八八的环境，大半天就过去了。</li>
+<li>弄个无线投屏器也是非常方便的，组里任何一个人想共享屏幕都一键上屏，吃饭时还可以一起看个动画片。</li>
+<li>任务可以用看板跟踪，免费的看板可以用Github或者Teambition，还可以投到大屏上。</li>
+<li>尽量坐在一排，坐在对面有时讲不清楚，需要结合屏幕有效避免鸡同鸭讲。</li>
+<li>核心接口和约定要文档化，写到README里，不然来回问很费时间。</li>
+<li>手上的任务要尽可能早获得反馈，好的项目是逐渐调整和优化出来的，不是憋半天大招憋出来的。</li>
+<li>不要忘了做PPT或者演示文稿，至少安排2次以上彩排，避免伟大的创意因为糟糕的演讲而腹死胎中。</li>
+<li>最好有人能扮演程序员鼓励师，买（拿）吃的喝的。</li>
+</ol>
+<p><img src="https://tobyqin.github.io/images/image-20200920154539693.png" alt="image-20200920154539693"></p>
+<p>需要不要熬夜呢？看情况吧，其实这个事情在一开始就应该商量好，临时决定熬夜的话多少让人有些不愉快。如果大家觉得夜里效率更高，那么先浪起来，半夜一起debug。</p>
+<p>我个人觉得，半夜写代码大概率会翻车，你不想被打扰，但是都已经快交作业了，难道Deadline Driven Development的感觉真的很爽？</p>
+<h2 id="分享成果"><a href="#分享成果" class="headerlink" title="分享成果"></a>分享成果</h2><p>除了能和志同道合的伙伴码代码，当然我们还是希望能拿奖的。分享成果最重要的三件事是：</p>
+<ol>
+<li>不要翻车</li>
+<li>不要翻车</li>
+<li>不要翻车</li>
+</ol>
+<p><img src="https://tobyqin.github.io/images/image-20200920153632201.png" alt="image-20200920153632201"></p>
+<p>由此可见系统的健壮性有多么重要，QA的测试有多么重要，多测试，早联调，考虑Plan B。</p>
+<h2 id="我们做了什么项目？"><a href="#我们做了什么项目？" class="headerlink" title="我们做了什么项目？"></a>我们做了什么项目？</h2><p>两次比赛我们做了两个比较有意思的项目。</p>
+<h3 id="开发人员年度账单"><a href="#开发人员年度账单" class="headerlink" title="开发人员年度账单"></a>开发人员年度账单</h3><p>一年到头你写了多少bug？做了多少需求？有了年度账单，你就可以对自己的成就（发量）一目了然，还可以分享到朋友圈哦。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200920152904079.png" alt="image-20200920152904079"></p>
+<h3 id="自动修复代码鸭"><a href="#自动修复代码鸭" class="headerlink" title="自动修复代码鸭"></a>自动修复代码鸭</h3><p>有一些显而易见的问题代码，这只鸭子来自动帮你修复，比如依赖版本升级，不合理的语法等等。虽然已经有Sonar之类的工具可以检测出类似问题，我们希望能帮助团队往前走一小步，修复掉我们100%有信心修复的问题。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200920153415416.png" alt="image-20200920153415416"></p>
+<p>修复后自动提PR。</p>
+<p><img src="https://tobyqin.github.io/images/image-20200920160639683.png" alt="image-20200920160639683"></p>
+<p>本文到此，戛然而止。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/" title="黑客马拉松后记">https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hackathon/" rel="tag"># hackathon</a>
+              <a href="/tags/tech/" rel="tag"># tech</a>
+              <a href="/tags/teamwork/" rel="tag"># teamwork</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2020-05-10/on-site-interactive-solution/" rel="prev" title="现场互动方案">
+      <i class="fa fa-chevron-left"></i> 现场互动方案
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2020-11-08/upgrade-hard-drive-for-macbook-pro/" rel="next" title="给MacBook Pro升级硬盘">
+      给MacBook Pro升级硬盘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#黑马流程"><span class="nav-number">1.</span> <span class="nav-text">黑马流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组建团队"><span class="nav-number">2.</span> <span class="nav-text">组建团队</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#享受过程"><span class="nav-number">3.</span> <span class="nav-text">享受过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分享成果"><span class="nav-number">4.</span> <span class="nav-text">分享成果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#我们做了什么项目？"><span class="nav-number">5.</span> <span class="nav-text">我们做了什么项目？</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2020-09-20/hackathon-postscript/";
+    this.page.identifier = "posts/2020-09-20/hackathon-postscript/";
+    this.page.title = "黑客马拉松后记";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在各种系统和应用里，无论你的代码再完美也还是会抛异常，出错误。今天的主角是当今比较流行的异常记录框架 - Sentry，来了解一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sentry - 处理异常日志的正确姿势">
+<meta property="og:url" content="https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="在各种系统和应用里，无论你的代码再完美也还是会抛异常，出错误。今天的主角是当今比较流行的异常记录框架 - Sentry，来了解一下。">
+<meta property="og:image" content="https://tobyqin.github.io/images/sentry-supported-platform.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/sentry-email-alert.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/sentry-dashboard.png">
+<meta property="article:published_time" content="2018-05-11T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.452Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="logging">
+<meta property="article:tag" content="error">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/sentry-supported-platform.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Sentry - 处理异常日志的正确姿势 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sentry - 处理异常日志的正确姿势
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-11 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-11T00:00:00Z">2018-05-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在各种系统和应用里，无论你的代码再完美也还是会抛异常，出错误。今天的主角是当今比较流行的异常记录框架 - Sentry，来了解一下。</p>
+<a id="more"></a>
+
+<h2 id="关于日志管理"><a href="#关于日志管理" class="headerlink" title="关于日志管理"></a>关于日志管理</h2><p>应用越做越复杂，输出日志五花八门，有print的，有写stdout的，有写stderr的, 有写logging的，也有自定义xxx.log的。那么这将导致平台应用日志分布在各个地方，无法统一管理。而且可能用的还不止一种开发语言，想规范和统一日志不是一件容易的事。</p>
+<h2 id="为什么使用Sentry"><a href="#为什么使用Sentry" class="headerlink" title="为什么使用Sentry"></a>为什么使用Sentry</h2><p>Sentry是一个集中式日志管理系统。它具备以下优点：</p>
+<ul>
+<li>多项目，多用户</li>
+<li>界面友好</li>
+<li>可以配置异常出发规则，例如发送邮件</li>
+<li>支持主流语言接口</li>
+</ul>
+<p>从Sentry的文档首页截下来的一张图，可以看到它支持目前主流的编程语言。</p>
+<p><img src="https://tobyqin.github.io/images/sentry-supported-platform.png" alt="sentry-supported-platform"></p>
+<h2 id="安装和快速上手"><a href="#安装和快速上手" class="headerlink" title="安装和快速上手"></a>安装和快速上手</h2><p>Sentry支持部署到本地服务器，具体可以参考以下文档：</p>
+<ul>
+<li><a href="https://docs.sentry.io/server/installation/" target="_blank" rel="noopener">https://docs.sentry.io/server/installation/</a></li>
+</ul>
+<p>但作为大多数个人开发者和中小企业，我更建议使用Sentry官网（<a href="https://sentry.io/）提供的云服务，你只需要注册一个Sentry账号，就可以快速享受到集中处理异常日志的服务。" target="_blank" rel="noopener">https://sentry.io/）提供的云服务，你只需要注册一个Sentry账号，就可以快速享受到集中处理异常日志的服务。</a></p>
+<p>Sentry免费版可以：</p>
+<ul>
+<li>每月10k 错误日志上限</li>
+<li>支持所有平台和语言，功能无缩水</li>
+<li>无限项目数量，仅单用户访问，不提供团队功能</li>
+</ul>
+<p>具体的价格表可以看这里：</p>
+<ul>
+<li><a href="https://sentry.io/pricing/" target="_blank" rel="noopener">https://sentry.io/pricing/</a></li>
+</ul>
+<h2 id="开始配置DSN"><a href="#开始配置DSN" class="headerlink" title="开始配置DSN"></a>开始配置DSN</h2><p>你可以认为 DSN（Data Source Name）是Sentry 管理项目需要的<code>PROJECT_ID</code>，每个应用都需要对应一个 <code>PROJECT_ID</code>，以及用于身份认证的 <code>PUBLIC_KEY</code> 和 <code>SECRET_KEY</code>。由此组成一个这样的 DSN：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;PROTOCOL&#125;:&#x2F;&#x2F;&#123;PUBLIC_KEY&#125;:&#123;SECRET_KEY&#125;@&#123;HOST&#125;&#x2F;&#123;PATH&#125;&#123;PROJECT_ID&#125;</span><br></pre></td></tr></table></figure>
+
+<p>PROTOCOL 通常会是 <code>http</code> 或者 <code>https</code>，HOST 为 Sentry 服务的主机名和端口，PATH 通常为空。</p>
+<p>在你登入Sentry后台之后，你可以新建一个项目，之后就可以得到类似于下面这样一个DSN。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">https:&#x2F;&#x2F;e055040d5@sentry.io&#x2F;12345</span><br></pre></td></tr></table></figure>
+
+<p>有了DSN以后，你就可以在客户端中将错误日志上传到Sentry了。</p>
+<h2 id="配置客户端"><a href="#配置客户端" class="headerlink" title="配置客户端"></a>配置客户端</h2><p>这里我主要以Python为例，其他编程语言的客户端配置可以参考官网文档，步骤大同小异。</p>
+<ul>
+<li><a href="https://docs.sentry.io/quickstart/" target="_blank" rel="noopener">https://docs.sentry.io/quickstart/</a></li>
+</ul>
+<p>首先通过pip安装Sentry SDK。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install raven --upgrade</span><br></pre></td></tr></table></figure>
+
+<p>然后初始化客户端。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> raven <span class="keyword">import</span> Client</span><br><span class="line"></span><br><span class="line">DSN = <span class="string">'https://****@sentry.io/****'</span></span><br><span class="line">client = Client(DSN)</span><br></pre></td></tr></table></figure>
+
+<p>最后，在你需要记录异常的代码为止调用<code>client.captureException()</code>即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    <span class="number">1</span> / <span class="number">0</span></span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError:</span><br><span class="line">    client.captureException()</span><br></pre></td></tr></table></figure>
+
+<p>很多时候我们的异常信息应该包含更多的上下文信息，这样对于我们做后续分析会有更多帮助，那么你可以在Sentry捕获异常前加入这些上下文。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    processing(user, data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    client.user_context(&#123;</span><br><span class="line">        <span class="string">'user'</span>: user.email,</span><br><span class="line">        <span class="string">'data'</span>: json.dumps(data)</span><br><span class="line">    &#125;)</span><br><span class="line">    client.captureException()</span><br></pre></td></tr></table></figure>
+
+<h3 id="一些经验之谈"><a href="#一些经验之谈" class="headerlink" title="一些经验之谈"></a>一些经验之谈</h3><p>当然，我们不可能在每处可能发生异常的代码为止都调用Sentry，也不可能去修补过去的代码将Sentry一一植入，一个好的建议是，无论何时，你的程序都有统一的异常处理机制，最好是全局的。这样的话，你只要将Sentry写在全局的异常处理器即可。</p>
+<p>另外Sentry还对流行的开发框架提供了特别的支持，比如Flask，Django等等，在这些应用中你只要配置就行，不需要你去写什么全局的异常处理（虽然写起来也不难）。</p>
+<p>Flask的例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">sentry = Sentry(dsn=<span class="string">'http://public_key:secret_key@example.com/1'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_app</span><span class="params">()</span>:</span></span><br><span class="line">    app = Flask(__name__)</span><br><span class="line">    sentry.init_app(app)</span><br><span class="line">    <span class="keyword">return</span> app</span><br></pre></td></tr></table></figure>
+
+<p>Django的例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> raven</span><br><span class="line"></span><br><span class="line">INSTALLED_APPS = (</span><br><span class="line">    <span class="string">'raven.contrib.django.raven_compat'</span>,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">RAVEN_CONFIG = &#123;</span><br><span class="line">    <span class="string">'dsn'</span>: <span class="string">'http://public_key:secret_key@example.com/1'</span>,</span><br><span class="line">    <span class="comment"># If you are using git, you can also automatically </span></span><br><span class="line">    <span class="comment"># configure the release based on the git info.</span></span><br><span class="line">    <span class="string">'release'</span>: raven.fetch_git_sha(os.path.abspath(os.pardir)),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="异常报告和提醒"><a href="#异常报告和提醒" class="headerlink" title="异常报告和提醒"></a>异常报告和提醒</h2><p>一旦你完成上面的配置，以后系统发生的所有错误异常都会被自动记录到Sentry，查看报告就是一件轻松愉快的事情了。</p>
+<p>默认情况下，一旦异常发生，5分钟内就会有一封邮件送到你邮箱，包含了异常信息的大致描述。</p>
+<p><img src="https://tobyqin.github.io/images/sentry-email-alert.png" alt="sentry-email-alert"></p>
+<p>当然你还可以将异常报警集成到更多系统中，比如HICHAT，SLACK，IRC，WEBHOOKS，在Sentry后台提供了相应的入口。</p>
+<p>在Sentry的项目 Dashboard 你可以浏览到更详细的报告，比如按照异常信息的类别进行分类和过滤，也可以统计近期异常的状态和频率，非常方便。</p>
+<p><img src="https://tobyqin.github.io/images/sentry-dashboard.png" alt="sentry-dashboard"></p>
+<p>Sentry还提供了异常信息的聚合，同样的错误有可能在多处抛出，传统的日志统计起来就不是很方便，在Sentry一目了然。</p>
+<p>另外你还可以针对异常问题进行分配和跟踪，例如指派团队的某个成员去处理某一类问题，对于长时间没有再发生的问题自动标记为解决等等。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Sentry 还有有很多亮点，比如敏感信息过滤， release 版本跟踪，关键字查找，受影响用户统计，权限管理等。Sentry 的 plugin 模块还可以集成大量的第三方工具如： SLACK ， JIRA 。</p>
+<p>对我们来说最大的便利就是利用日志进行错误发现和排查的效率变高了。但是，我们能不能完全依赖Senry呢？有几点值得探讨：</p>
+<h3 id="不是日志的替代品"><a href="#不是日志的替代品" class="headerlink" title="不是日志的替代品"></a>不是日志的替代品</h3><p>Sentry 的目的是为了让我们专注于系统与程序的异常信息，目的是提高排查问题的效率，日志事件的量到达一个限制时甚至丢弃一些内容。官方也提倡正确设置 Sentry 接收的日志 level 的同时，用户也能继续旧的日志备份。</p>
+<h3 id="不是排查错误的万能工具"><a href="#不是排查错误的万能工具" class="headerlink" title="不是排查错误的万能工具"></a>不是排查错误的万能工具</h3><p>Sentry 是带有一定策略的问题分析工具，以样本的形式展示部分原始日志的信息。信息不全面的同时，使用过程中也可能出现 Sentry 聚合所带来的负面影响，特别是日志记录质量不够的情况下。</p>
+<h3 id="不是传统监控的替代品"><a href="#不是传统监控的替代品" class="headerlink" title="不是传统监控的替代品"></a>不是传统监控的替代品</h3><p>与传统的监控系统相比，Sentry 更依赖于发出的日志报告，而另外一些隐藏的逻辑问题或者业务问题很可能是不会得到反馈的。</p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><ul>
+<li><a href="https://docs.sentry.io/quickstart/" target="_blank" rel="noopener">https://docs.sentry.io/quickstart/</a></li>
+<li><a href="https://blog.csdn.net/bigsec/article/details/54091109" target="_blank" rel="noopener">https://blog.csdn.net/bigsec/article/details/54091109</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-10-08/use-logging-in-python/" rel="bookmark">Python中的logging模块</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/" title="Sentry - 处理异常日志的正确姿势">https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/logging/" rel="tag"># logging</a>
+              <a href="/tags/error/" rel="tag"># error</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2018-04-08/unit-test-with-python/" rel="prev" title="说说Python中的单元测试">
+      <i class="fa fa-chevron-left"></i> 说说Python中的单元测试
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2018-05-18/automation-tests-with-selenium-and-headless/" rel="next" title="使用浏览器的HEADLESS模式进行自动化测试">
+      使用浏览器的HEADLESS模式进行自动化测试 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于日志管理"><span class="nav-number">1.</span> <span class="nav-text">关于日志管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用Sentry"><span class="nav-number">2.</span> <span class="nav-text">为什么使用Sentry</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和快速上手"><span class="nav-number">3.</span> <span class="nav-text">安装和快速上手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开始配置DSN"><span class="nav-number">4.</span> <span class="nav-text">开始配置DSN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置客户端"><span class="nav-number">5.</span> <span class="nav-text">配置客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常报告和提醒"><span class="nav-number">6.</span> <span class="nav-text">异常报告和提醒</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文档"><span class="nav-number">8.</span> <span class="nav-text">参考文档</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2018-05-11/collect-error-events-via-sentry/";
+    this.page.identifier = "posts/2018-05-11/collect-error-events-via-sentry/";
+    this.page.title = "Sentry - 处理异常日志的正确姿势";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

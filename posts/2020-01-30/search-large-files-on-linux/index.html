@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在Mac OSX上尚且还有一些图形工具可以帮助查找和清理大文件，在Linux只能依靠命令行。其实也不难，这次总结一下，省的下次还去搜索。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在Linux或者Mac OSX上查找大文件">
+<meta property="og:url" content="https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="在Mac OSX上尚且还有一些图形工具可以帮助查找和清理大文件，在Linux只能依靠命令行。其实也不难，这次总结一下，省的下次还去搜索。">
+<meta property="article:published_time" content="2020-01-30T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.440Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="tips">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="du">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>在Linux或者Mac OSX上查找大文件 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          在Linux或者Mac OSX上查找大文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-01-30 00:00:00" itemprop="dateCreated datePublished" datetime="2020-01-30T00:00:00Z">2020-01-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在Mac OSX上尚且还有一些图形工具可以帮助查找和清理大文件，在Linux只能依靠命令行。其实也不难，这次总结一下，省的下次还去搜索。</p>
+<a id="more"></a>
+
+<h2 id="万能的du"><a href="#万能的du" class="headerlink" title="万能的du"></a>万能的du</h2><p><code>du</code> 是Linux和MacOSX都自带命令行工具，全称是 Disk Usage，这样就好记了。配合两个参数就可以搞定大多数问题。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">-s      Display an entry for each specified file.  (Equivalent to -d 0)</span><br><span class="line">-h      "Human-readable" output.</span><br></pre></td></tr></table></figure>
+
+<p><code>-s</code>的意思就是只统计第一层目录，<code>-h</code> 就是显示可读性的统计数据，看例子。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@2017127313 ~]# du -sh /*</span><br><span class="line">0       /bin</span><br><span class="line">89M     /boot</span><br><span class="line">0       /dev</span><br><span class="line">39M     /etc</span><br><span class="line">4.0K    /home</span><br><span class="line">16K     /lost+found</span><br><span class="line">4.0K    /media</span><br><span class="line">4.0K    /mnt</span><br><span class="line">4.0K    /opt</span><br><span class="line">0       /proc</span><br><span class="line">603M    /root</span><br><span class="line">13M     /run</span><br><span class="line">0       /sbin</span><br><span class="line">4.0K    /srv</span><br><span class="line">513M    /swapfile</span><br><span class="line">0       /sys</span><br><span class="line">616K    /tmp</span><br><span class="line">1.3G    /usr</span><br><span class="line">487M    /var</span><br></pre></td></tr></table></figure>
+
+<p>从根目录开始找最大的目录，然后一层一层递进就可以找到占用最大空间的目录或者文件。</p>
+<h3 id="限制数量和排序"><a href="#限制数量和排序" class="headerlink" title="限制数量和排序"></a>限制数量和排序</h3><p>当目录里文件比较多的时候，我们就要限制返回的条数和排序，比如我只想知道占用空间最大的5个目录，通过管道操作符就可以达到目的。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@2017127313 ~]# du -s /usr/* | sort -nr | head -5</span><br><span class="line">598904  /usr/lib</span><br><span class="line">303676  /usr/share</span><br><span class="line">185836  /usr/lib64</span><br><span class="line">124044  /usr/bin</span><br><span class="line">44772   /usr/sbin</span><br></pre></td></tr></table></figure>
+
+<h2 id="当前目录占用空间"><a href="#当前目录占用空间" class="headerlink" title="当前目录占用空间"></a>当前目录占用空间</h2><p><code>du</code> 还可以很方便检查当前目录占用空间。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">[root@2017127313 ~]<span class="comment"># du -sh</span></span><br><span class="line">603M    .</span><br></pre></td></tr></table></figure>
+
+<h2 id="比较难记的find"><a href="#比较难记的find" class="headerlink" title="比较难记的find"></a>比较难记的find</h2><p><code>find</code> 是非常强大的命令，可以按文件属性进行搜索，比如检索大于10M的文件。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">[root@50KVM-2017127313 ~]<span class="comment"># find . -size +10M</span></span><br><span class="line">./blog/.git/objects/pack/pack-fab187cef1cd08d186624f1e5e97e3131b20abc0.pack</span><br><span class="line">./docs/.git/objects/3f/3385a6b098631a8426a720dcd56a9ed7da4183</span><br><span class="line">./docs/PPT/Demo.pptx</span><br></pre></td></tr></table></figure>
+
+<p>如上命令是把文件名打印出来了，但文件的细节还是不清楚，这时候你需要加上更多参数。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">find / -size +500M -<span class="built_in">exec</span> du -h &#123;&#125; \; 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p>如果还要排序，再加个管道。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">find . -<span class="built_in">type</span> f -size +100M  -print0 | xargs -0 du -h | sort -nr</span><br></pre></td></tr></table></figure>
+
+<p><code>find</code> 权当是备忘吧，具体的参数我是记不住的，推荐还是用简单易懂的<code>du</code>。</p>
+<h2 id="额外的df"><a href="#额外的df" class="headerlink" title="额外的df"></a>额外的df</h2><p><code>df</code>也是磁盘管理常用的工具之一，全称不知道是什么，从文档上看好像是 Disk space available on file system? 需要记住的参数只有一个，就是<code>-h</code>，可读性显示。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@2017127313 ~]# df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">devtmpfs        107M     0  107M   0% /dev</span><br><span class="line">tmpfs           117M     0  117M   0% /dev/shm</span><br><span class="line">tmpfs           117M   13M  105M  11% /run</span><br><span class="line">tmpfs           117M     0  117M   0% /sys/fs/cgroup</span><br><span class="line">/dev/vda1       4.9G  3.0G  1.7G  65% /</span><br><span class="line">tmpfs            24M     0   24M   0% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p>这个命令就是用来看磁盘剩余空间的，当然有时候 <code>-ai</code>的参数也偶尔会被提到，用来检查<code>inode</code>的使用情况。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">[root@017127313 ~]# df -ai</span><br><span class="line">Filesystem     Inodes IUsed  IFree IUse% Mounted on</span><br><span class="line">devtmpfs        27317   393  26924    2% /dev</span><br><span class="line">tmpfs           29942     1  29941    1% /dev/shm</span><br><span class="line">tmpfs           29942   491  29451    2% /run</span><br><span class="line">tmpfs           29942    16  29926    1% /sys/fs/cgroup</span><br><span class="line">/dev/vda1      324480 50300 274180   16% /</span><br><span class="line">tmpfs           29942     2  29940    1% /run/user/0</span><br></pre></td></tr></table></figure>
+
+<p>如果<code>inode</code>占用到100%了，你的磁盘就是还有空间也写不进去了，<code>inode</code>可以理解为文件的索引区吧，用来存放文件的属性等等，具体的内容会写到 <code>block</code> 区，当文件很碎的时候，<code>block</code> 可能还没满，但是 <code>inode</code>已经满了。</p>
+<h2 id="免费赠送的-free"><a href="#免费赠送的-free" class="headerlink" title="免费赠送的 free"></a>免费赠送的 free</h2><p>文章的最后再送个 <code>free</code> 命令吧，这个跟文件系统有一丢丢关系，这个命令是用来显示内存的。</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">[root@2017127313 ~]<span class="comment"># free -h</span></span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           233M         58M         28M          9M        147M        142M</span><br><span class="line">Swap:          511M         21M        490M</span><br></pre></td></tr></table></figure>
+
+<p><code>free</code> 是用来显示内存占用情况的，<code>-h</code> 一样是人性化显示。注意，这个命令还是看到swap分区的使用情况。</p>
+<p>一般Linux都会配置虚拟内存，也就是用swap分区。很早以前内存还是很宝贵的，所以聪明的人类就划分了一部分硬盘来充当二级内存，纵然速度慢点，但是容量更大了能处理的东西就更多了。</p>
+<p><code>free</code> 里可以查看swap占用情况，但不能清理或者调整它的大小。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/programming-notes/" rel="bookmark">编程语录</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/get-jetbrains-student-licence/" rel="bookmark">使用教育邮箱激活JetBrains全家桶</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/" title="在Linux或者Mac OSX上查找大文件">https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/tips/" rel="tag"># tips</a>
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/du/" rel="tag"># du</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2020-01-26/the-flask-project-structure/" rel="prev" title="组织Flask项目结构">
+      <i class="fa fa-chevron-left"></i> 组织Flask项目结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2020-01-31/macosx-startup-items/" rel="next" title="管理MacOSX的开机启动项">
+      管理MacOSX的开机启动项 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#万能的du"><span class="nav-number">1.</span> <span class="nav-text">万能的du</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#当前目录占用空间"><span class="nav-number">2.</span> <span class="nav-text">当前目录占用空间</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#比较难记的find"><span class="nav-number">3.</span> <span class="nav-text">比较难记的find</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#额外的df"><span class="nav-number">4.</span> <span class="nav-text">额外的df</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#免费赠送的-free"><span class="nav-number">5.</span> <span class="nav-text">免费赠送的 free</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2020-01-30/search-large-files-on-linux/";
+    this.page.identifier = "posts/2020-01-30/search-large-files-on-linux/";
+    this.page.title = "在Linux或者Mac OSX上查找大文件";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

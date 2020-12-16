@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="原文： https:&#x2F;&#x2F;www.cnbeta.com&#x2F;articles&#x2F;tech&#x2F;808191.htm  我遇到过的最喜欢的面试问题是：”你键入’google. com’到一个浏览器的地址栏中, 并点击Enter, 之后会发生什么呢？”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="当你在浏览器中输入“google.com”并回车，会发生什么？">
+<meta property="og:url" content="https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="原文： https:&#x2F;&#x2F;www.cnbeta.com&#x2F;articles&#x2F;tech&#x2F;808191.htm  我遇到过的最喜欢的面试问题是：”你键入’google. com’到一个浏览器的地址栏中, 并点击Enter, 之后会发生什么呢？”">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-01/116c69b7fb0b665.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-01/d1eee285e02ff7b.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-01/db31097ca290ccc.jpg">
+<meta property="og:image" content="https://tobyqin.github.io/images/2019-01/6e53d8e5af24b27.jpg">
+<meta property="article:published_time" content="2019-01-25T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.448Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="Interview">
+<meta property="article:tag" content="Networking">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/2019-01/116c69b7fb0b665.jpg">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>当你在浏览器中输入“google.com”并回车，会发生什么？ | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          当你在浏览器中输入“google.com”并回车，会发生什么？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-01-25 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-25T00:00:00Z">2019-01-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/reprint/" itemprop="url" rel="index">
+                    <span itemprop="name">Reprint</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>原文： <a href="https://www.cnbeta.com/articles/tech/808191.htm" target="_blank" rel="noopener">https://www.cnbeta.com/articles/tech/808191.htm</a></p>
+</blockquote>
+<p>我遇到过的最喜欢的面试问题是：”你键入’google. com’到一个浏览器的地址栏中, 并点击<code>Enter</code>, 之后会发生什么呢？”</p>
+<a id="more"></a>
+
+<p>有人可以滔滔不绝几天, 试图以某种形式的完备性来回答此问题。他们会走多深？纯粹出于兴趣, 我要把我的答案罗列在此。当我在一次实际面试中被问到这个问题时, 在他们阻止我之前我漫谈了10分钟。之后即使在面试结束后，我一直记得当时我所遗漏的东西。</p>
+<p>我将把这个格式化为文本墙, 因为在谈话中回答这个问题就是这样的感觉.</p>
+<h2 id="那么发生了什么呢"><a href="#那么发生了什么呢" class="headerlink" title="那么发生了什么呢?"></a>那么发生了什么呢?</h2><p>浏览器将分析输入。通常情况下, 如果输入中有”. com”, 它不会认为你在输入搜索词。一旦它决定其必定是一个url时, 它会检查输入是否有协议头，如果没有, 它会在其开头添加”http://“。由于你没有指定一系列http协议功能, 因此它将假定使用默认值, 如端口80、GET方法和无基本身份认证。</p>
+<p>然后, 它将创建一个http请求并发送该请求。我对我的底层网络知识没有信心, 但如果我确实要说, 我会说一些关于MAC地址, TCP数据包传输, 丢包处理等。但无论如何, 一个对”google. com”DNS的查找将会发生, 如果它还没有对此的缓存，DNS服务将应答一系列IP地址列表, 因为”google. com”不只单IP的。我认为在默认情况下浏览器会选择第一个。不确定它们是区域性的以及它是如何工作的, 但我知道它就在那里。</p>
+<p>因此, http 请求从一个节点跳转到另一个节点, 直到它找到google. com负载均衡器的IP地址。这不会持续很久, 谷歌会回应说, 你需要使用https-假定是301永久重定向。因此, 它会原路返回到你的浏览器, 浏览器将协议更改为 https, 默认使用443端口并重新发送。这一次,TLS握手将在负载均衡器和浏览器客户端之间进行。我不是100%确定其工作原理, 但我知道该请求会告诉谷歌, 它支持什么协议 (TLS 1.0, 1.1, 1.2) ，然后谷歌将响应 “让我们使用1.2吧”。之后使用TLS加密发送请求。</p>
+<p>我认为谷歌接下来要做的是将其放到负载均衡器上的网络应用程序防火墙规则集上, 看看它是否是一个恶意请求。当这通过之后, 安全连接可能已被终止 (因为PCI-DSS规则规定你不需要加密内部流量), 请求将被分配到其CDN中的某个池上, 而google端缓存主页将在http响应中返回。可能是预先压缩的。</p>
+<p>谷歌的响应头将由浏览器读取，根据响应头的缓存策略进行缓存，然后正文将被解压缩。而且因为这是谷歌，它可能是超优化的：压缩，可能是许多预渲染内容、内联CSS、JavaScript和图像，以减少网络请求和首次渲染时间。但该请求将触发一系列其他请求，所有这些请求都是并发的，因为它应该运行HTTP/2。当这些请求正在进行时，JavaScript会被解析，可能没有阻塞，因为他们在标签上使用了defer属性 - 或者async，我从来没有单独阅读过这里他们做了些什么的资料。</p>
+<p>但浏览器可能已经渲染了搜索框并且正在顶部的工具栏上工作，这将需要一些额外的网络请求 - 我可能已经有一个cookie或可能是带有OAuth令牌的本地存储 - 或我可能是使用Chrome并且它已经知道我是谁，并且使用auth的请求会被发送到他们的Google+ API上，告诉Google搜索页面的应用程序我的身份。</p>
+<p>另一个请求将被发送, 以获取我的头像图像。在这一点上, 他们已经浏览器可嗅探的, 看看我是否未使用 chrome, 在这种情况下, 他们会有弹出一个工具栏提示, 告诉我：chrome 是真棒, 我应该使用它, 而不是其他任何浏览器。</p>
+<p>我想此时需要冷静下来。所有这些都发生在一秒的时间内。</p>
+<p>何为显著地不同?让我们看看对应的DNS:</p>
+<p><img src="https://tobyqin.github.io/images/2019-01/116c69b7fb0b665.jpg" alt=""></p>
+<p>我知道我以前见过google.com返回包中带有多个IP地址，但似乎不再是这种情况了。似乎他们之前常常使用轮巡策略，但现在不再使用了。 这个<a href="https://stackoverflow.com/questions/10257969/is-it-possible-that-one-domain-name-has-multiple-corresponding-ip-addresses" target="_blank" rel="noopener">StackOverflow</a>提问涉及了此情况。我已忘记了它被称为轮2。</p>
+<h2 id="网络层"><a href="#网络层" class="headerlink" title="网络层"></a>网络层</h2><p>在一个正式结构化回答中，你可能会参考我有所了解但并不精通的OSI模型。在查阅资料之后，我将它视为如下的网络分层映射：</p>
+<ol>
+<li>应用 - 触发请求的逻辑</li>
+<li>表示层 - HTTP</li>
+<li>会话 - TLS</li>
+<li>传输 - TCP</li>
+<li>网络 - 路由 (IP)</li>
+<li>数据链路 - 帧 (可看做数据包的容器)</li>
+<li>物理层 - 比特流</li>
+</ol>
+<p>我记得在TLS中他们会在协议协商时交换证书。网络并不是我的强项。在我的浏览器中打开google.com，并禁用缓存：</p>
+<p><img src="https://tobyqin.github.io/images/2019-01/d1eee285e02ff7b.jpg" alt=""></p>
+<p>我记得主机名规范化——这是一个301。</p>
+<p>从HTTP到HTTPS的校正是一个307内部重定向。</p>
+<p>然后它下载字体、商标图像和我的头像图像。如果没有API调用，这意味着他们会在页面中推送我的个人资料信息并将其与返回数据捆绑在一起 - 因此当你点击google.com而不仅仅是提供缓存资产时，他们会进行实际的数据检索。</p>
+<h2 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h2><p><img src="https://tobyqin.github.io/images/2019-01/db31097ca290ccc.jpg" alt=""></p>
+<p>以上是IE 11和Chrome响应数据的对比——所有都处于退出状态。</p>
+<ul>
+<li>IE11和Chrome之间没有太大的差别。但这意味着他们是用户代理嗅探服务器端而不是客户端。在我的答案中可能提到了这一点。</li>
+<li>出乎意料的是，Chrome的响应体大了22kB。我想知道它是否是由在IE 11中明显缺席的语音搜索功能引起的。IE11可能需要polyfill和Chrome的广告，但它都被混淆了，我不会再进一步折磨自己了。</li>
+<li>即使我在Chrome中清除了Cookie，它仍会在第一次请求时发送Cookie。它在IE 11中并没有这样做。</li>
+</ul>
+<h2 id="深入理解渲染"><a href="#深入理解渲染" class="headerlink" title="深入理解渲染!"></a>深入理解渲染!</h2><p><img src="https://tobyqin.github.io/images/2019-01/6e53d8e5af24b27.jpg" alt=""></p>
+<p>上图是Chrome将为你提供的第一个屏幕截图。</p>
+<ul>
+<li>脚本标签中没有任何async或defer属性，只有nonce属性。我目前正在学习有关nonce的知识，这似乎与安全性有关。我估计他们想要那些阻塞式脚本。我确信他们在某些方面尝试过有/无aync/defer的情况，并决定反对之。</li>
+<li>自我提示：完全响应是对JavaScript、CSS和HTML的乱七八糟的混合体。相比于其独立性，他们没有遵守任何控制其位置的规则。</li>
+</ul>
+<h2 id="问题本身是什么呢"><a href="#问题本身是什么呢" class="headerlink" title="问题本身是什么呢?"></a>问题本身是什么呢?</h2><p>你知道吗？ 对于人员而言，这可能不是一个很好的面试问题，因为答案涉及到如此多的网络知识。这是我喜欢的问题的格式，一些开放的事物，包括一些猜测。这使得面试官有机会跟进诸如“你认为TLS是如何建立的？”之类的问题，以查看候选人如何思考，看看他们有多少创意，看看他们的极限何在（有多耐心？）。</p>
+<p>你最喜欢的面试问题是什么？</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2019-01-29/about-devops-we-may-not-be-talking-about-the-same-thing/" rel="bookmark">关于 DevOps ，咱们聊的可能不是一回事</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/" title="当你在浏览器中输入“google.com”并回车，会发生什么？">https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/interview/" rel="tag"># Interview</a>
+              <a href="/tags/networking/" rel="tag"># Networking</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2018-12-24/goodbye-my-2018/" rel="prev" title="2018年，再见">
+      <i class="fa fa-chevron-left"></i> 2018年，再见
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2019-01-29/about-devops-we-may-not-be-talking-about-the-same-thing/" rel="next" title="关于 DevOps ，咱们聊的可能不是一回事">
+      关于 DevOps ，咱们聊的可能不是一回事 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#那么发生了什么呢"><span class="nav-number">1.</span> <span class="nav-text">那么发生了什么呢?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#网络层"><span class="nav-number">2.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#响应"><span class="nav-number">3.</span> <span class="nav-text">响应</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#深入理解渲染"><span class="nav-number">4.</span> <span class="nav-text">深入理解渲染!</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题本身是什么呢"><span class="nav-number">5.</span> <span class="nav-text">问题本身是什么呢?</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/";
+    this.page.identifier = "posts/2019-01-25/what-happens-when-you-type-googlecom-into-your-browser-and-return/";
+    this.page.title = "当你在浏览器中输入“google.com”并回车，会发生什么？";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

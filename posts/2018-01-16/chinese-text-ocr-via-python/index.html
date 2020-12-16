@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="当今时代人工智能都已经是烂大街的词了，OCR应该也很多人都知道。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="识别图片中的文字 - Tesseract 和 百度云OCR的对比">
+<meta property="og:url" content="https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="当今时代人工智能都已经是烂大街的词了，OCR应该也很多人都知道。">
+<meta property="og:image" content="https://tobyqin.github.io/images/tesseract-lang.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/orc-test1.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/orc-test2.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/baidu-ocr.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/orc-test1.png">
+<meta property="og:image" content="https://tobyqin.github.io/images/orc-test2.png">
+<meta property="article:published_time" content="2018-01-16T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.456Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="ocr">
+<meta property="article:tag" content="tesseract">
+<meta property="article:tag" content="baidu-ocr">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tobyqin.github.io/images/tesseract-lang.png">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>识别图片中的文字 - Tesseract 和 百度云OCR的对比 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          识别图片中的文字 - Tesseract 和 百度云OCR的对比
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-01-16 00:00:00" itemprop="dateCreated datePublished" datetime="2018-01-16T00:00:00Z">2018-01-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>当今时代人工智能都已经是烂大街的词了，OCR应该也很多人都知道。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>OCR （Optical Character Recognition，<a href="https://baike.baidu.com/item/%E5%85%89%E5%AD%A6%E5%AD%97%E7%AC%A6%E8%AF%86%E5%88%AB" target="_blank" rel="noopener">光学字符识别</a>）是指电子设备（例如扫描仪或数码相机）检查纸上打印的字符，通过检测暗、亮的模式确定其形状，然后用字符识别方法将形状翻译成计算机文字的过程。</p>
+</blockquote>
+<p>本文主要记录了通过Python使用OCR的两次尝试。</p>
+<h2 id="Tesseract"><a href="#Tesseract" class="headerlink" title="Tesseract"></a>Tesseract</h2><p><strong>Tesseract</strong>，一款由HP实验室开发由Google维护的开源OCR（Optical Character Recognition , 光学字符识别）引擎，特点是开源，免费，支持多语言，多平台。</p>
+<p>项目地址：<a href="https://github.com/tesseract-ocr/tesseract" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tesseract</a></p>
+<h3 id="安装使用"><a href="#安装使用" class="headerlink" title="安装使用"></a>安装使用</h3><p>Tesseract的安装比较简单，在mac可以通过brew安装。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">brew install --with-training-tools tesseract</span><br></pre></td></tr></table></figure>
+
+<p>在windows可以通过exe安装包安装，下载地址可以从GitHub项目中的wiki找到。安装完成后记得将Tesseract 执行文件的目录加入到PATH中，方便后续调用。</p>
+<p>另外，默认安装会包含英文语言训练包，如果需要支持简体中文或者繁体中文，需要在安装时勾选。</p>
+<p><img src="https://tobyqin.github.io/images/tesseract-lang.png" alt="tesseract-lang"></p>
+<p>或者安装结束后到项目地址下载：<a href="https://github.com/tesseract-ocr/tessdata" target="_blank" rel="noopener">https://github.com/tesseract-ocr/tessdata</a></p>
+<p>下载好的语言包放入到安装目录中的testdata下即可。在windows系统你还需要将testdata目录也加入环境变量。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">TESSDATA_PREFIX&#x3D;C:\Program Files (x86)\Tesseract-OCR\tessdata</span><br></pre></td></tr></table></figure>
+
+<p>如果一切就绪，你在命令行中就可以使用Tesseract命令。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># tesseract</span><br><span class="line">Usage:</span><br><span class="line">  tesseract --help | --help-psm | --help-oem | --version</span><br><span class="line">  tesseract --list-langs [--tessdata-dir PATH]</span><br><span class="line">  tesseract --print-parameters [options...] [configfile...]</span><br><span class="line">  tesseract imagename|stdin outputbase|stdout [options...] [configfile...]</span><br><span class="line"></span><br><span class="line">OCR options:</span><br><span class="line">  --tessdata-dir PATH   Specify the location of tessdata path.</span><br><span class="line">  --user-words PATH     Specify the location of user words file.</span><br><span class="line">  --user-patterns PATH  Specify the location of user patterns file.</span><br><span class="line">  -l LANG[+LANG]        Specify language(s) used for OCR.</span><br><span class="line">  -c VAR&#x3D;VALUE          Set value for config variables.</span><br><span class="line">                        Multiple -c arguments are allowed.</span><br><span class="line">  --psm NUM             Specify page segmentation mode.</span><br><span class="line">  --oem NUM             Specify OCR Engine mode.</span><br><span class="line">NOTE: These options must occur before any configfile.</span><br></pre></td></tr></table></figure>
+
+<p>通过命令行你就可以完成简单的图片文字识别任务。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">tesseract test.png outfile -l chi_sim</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过Python调用"><a href="#通过Python调用" class="headerlink" title="通过Python调用"></a>通过Python调用</h3><p>Tesseract安装完成后可以很方便的被Python调用，你需要安装两个包。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install pillow</span><br><span class="line">pip install pytesseract</span><br></pre></td></tr></table></figure>
+
+<p>一个简单的图片转文字的函数实现如下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> PIL <span class="keyword">import</span> Image</span><br><span class="line"><span class="keyword">import</span> pytesseract</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Languages</span>:</span></span><br><span class="line">    CHS = <span class="string">'chi_sim'</span></span><br><span class="line">    CHT = <span class="string">'chi_tra'</span></span><br><span class="line">    ENG = <span class="string">'eng'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img_to_str</span><span class="params">(image_path, lang=Languages.ENG)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> pytesseract.image_to_string(Image.open(image_path), lang)</span><br><span class="line">  </span><br><span class="line">print(img_to_str(<span class="string">'image/test1.png'</span>, lang=Languages.CHS))</span><br><span class="line">print(img_to_str(<span class="string">'image/test2.png'</span>, lang=Languages.CHS))</span><br></pre></td></tr></table></figure>
+
+<p>测试图片- <code>test1.png</code>：</p>
+<p><img src="https://tobyqin.github.io/images/orc-test1.png" alt="test1"></p>
+<p>识别结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">process image file &quot;image&#x2F;test1.png&quot; in 1.4782530478747697 seconds</span><br><span class="line"></span><br><span class="line">8 所 调 人 , 在 - 方 。</span><br><span class="line">深 从 久 , 定 中 央</span><br><span class="line">。 所 澈 伊 人 , 圭 水 淳</span><br><span class="line">。 淇 渡 从 之 , 定 圭 北 中 坂 。</span><br><span class="line">。 所 澈 伊人 , 圭 水 浩</span><br><span class="line">从 丿 , 定 圭 水 中 沥 。</span><br></pre></td></tr></table></figure>
+
+<p>测试图片 - <code>test2.png</code></p>
+<p><img src="https://tobyqin.github.io/images/orc-test2.png" alt="test1"></p>
+<p>识别结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">process image file &quot;image&#x2F;test2.png&quot; in 1.2131140296607923 seconds</span><br><span class="line"></span><br><span class="line">清 明 时 节 雨 纷 纷 , 路 上 行 人 欲 断 魂</span><br><span class="line">信 问 酒 家 何 处 有 , 牧 奕 通 指 枪 花 村 。</span><br></pre></td></tr></table></figure>
+
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>Tesseract在识别清晰的标准中文字体效果还行，稍微复杂的情况就很糟糕，而且花费的时间也很多，我个人觉得唯一的优点就是免费了。如果你不介意多花时间，可以考虑使用它提供的训练功能自定义你的语言库，那样在特定场景下识别率应该能上一个台阶。</p>
+<h2 id="百度云OCR"><a href="#百度云OCR" class="headerlink" title="百度云OCR"></a>百度云OCR</h2><p>这是偶然的发现，百度云提供了一定额度的免费的OCR API，目前是每日500次，做做研究或者小应用还勉强够用，本文主要为了测试其效果。</p>
+<p>文档地址：<a href="https://cloud.baidu.com/doc/OCR/OCR-Python-SDK.html" target="_blank" rel="noopener">https://cloud.baidu.com/doc/OCR/OCR-Python-SDK.html</a></p>
+<h3 id="安装使用-1"><a href="#安装使用-1" class="headerlink" title="安装使用"></a>安装使用</h3><p>首先你需要注册一个<a href="https://cloud.baidu.com/" target="_blank" rel="noopener">百度云BCE账号</a>，然后从控制面板新建一个文字识别应用。<img src="https://tobyqin.github.io/images/baidu-ocr.png" alt="baidu-ocr"></p>
+<p>之后你就可以获得调用API需要的 AppID，API Key 和 Secret Key。后面只要根据官方文档一步一步走就可以了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pip install baidu-aip</span><br></pre></td></tr></table></figure>
+
+<h3 id="封装和调用"><a href="#封装和调用" class="headerlink" title="封装和调用"></a>封装和调用</h3><p>参考文档： <a href="https://cloud.baidu.com/doc/OCR/OCR-Python-SDK.html#.E6.8E.A5.E5.8F.A3.E8.AF.B4.E6.98.8E" target="_blank" rel="noopener">https://cloud.baidu.com/doc/OCR/OCR-Python-SDK.html#.E6.8E.A5.E5.8F.A3.E8.AF.B4.E6.98.8E</a></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> aip <span class="keyword">import</span> AipOcr</span><br><span class="line"></span><br><span class="line">config = &#123;</span><br><span class="line">    <span class="string">'appId'</span>: <span class="string">'your-id'</span>,</span><br><span class="line">    <span class="string">'apiKey'</span>: <span class="string">'your-key'</span>,</span><br><span class="line">    <span class="string">'secretKey'</span>: <span class="string">'your-secret-key'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">client = AipOcr(**config)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_file_content</span><span class="params">(file)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> open(file, <span class="string">'rb'</span>) <span class="keyword">as</span> fp:</span><br><span class="line">        <span class="keyword">return</span> fp.read()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">img_to_str</span><span class="params">(image_path)</span>:</span></span><br><span class="line">    image = get_file_content(image_path)</span><br><span class="line">    result = client.basicGeneral(image)</span><br><span class="line">    <span class="keyword">if</span> <span class="string">'words_result'</span> <span class="keyword">in</span> result:</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'\n'</span>.join([w[<span class="string">'words'</span>] <span class="keyword">for</span> w <span class="keyword">in</span> result[<span class="string">'words_result'</span>]])</span><br></pre></td></tr></table></figure>
+
+<p>测试图片- <code>test1.png</code>：</p>
+<p><img src="https://tobyqin.github.io/images/orc-test1.png" alt="test1"></p>
+<p>识别结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">process image file &quot;image&#x2F;test1.png&quot; in 0.6331169034812572 seconds</span><br><span class="line"></span><br><span class="line">蒹葭</span><br><span class="line">先秦:佚名</span><br><span class="line">蒹葭苍苍,白露为霜。所谓伊人,在水一方。</span><br><span class="line">溯洄从之,道阻且长。溯游从之,宛在水中央。</span><br><span class="line">蒹葭萋萋,白露未晞。所谓伊人,在水之湄。</span><br><span class="line">溯洄从之,道阳且跻。溯游从之,宛在水中坻。</span><br><span class="line">蒹葭采采,白露未已。所谓伊人,在水之涘。</span><br><span class="line">溯洄从之,道阻且右。溯游从之,宛在水中沚。</span><br></pre></td></tr></table></figure>
+
+<p>测试图片 - <code>test2.png</code></p>
+<p><img src="https://tobyqin.github.io/images/orc-test2.png" alt="test1"></p>
+<p>识别结果：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">process image file &quot;image&#x2F;test2.png&quot; in 0.6621812639450142 seconds</span><br><span class="line"></span><br><span class="line">清明时节雨纷纷,路上行人欲断魂。</span><br><span class="line">借问酒家何处有,牧童遥指杏花村。</span><br></pre></td></tr></table></figure>
+<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>测试结果很明显，我只能说百度云这个OCR真是挺厉害的，一个错别字都没有，不服不行。论中文，还是百度比谷歌更懂一点。而且百度OCR提供了更多的参数让你更灵活的处理图片，比如自定义旋转，返回可信度，特定类型证件识别等等。</p>
+<h2 id="更多的OCR"><a href="#更多的OCR" class="headerlink" title="更多的OCR"></a>更多的OCR</h2><p>除了本文提到的OCR，其实还是有不少其他选择。有一些直接提供Demo页面，你直接上传一张图片就可以直接看到识别效果，比如：</p>
+<ul>
+<li>微软Azure 图像识别：<a href="https://azure.microsoft.com/zh-cn/services/cognitive-services/computer-vision/" target="_blank" rel="noopener">https://azure.microsoft.com/zh-cn/services/cognitive-services/computer-vision/</a></li>
+<li>有道智云文字识别：<a href="http://aidemo.youdao.com/ocrdemo" target="_blank" rel="noopener">http://aidemo.youdao.com/ocrdemo</a></li>
+<li>阿里云图文识别：<a href="https://www.aliyun.com/product/cdi/" target="_blank" rel="noopener">https://www.aliyun.com/product/cdi/</a></li>
+<li>腾讯OCR文字识别： <a href="https://cloud.tencent.com/product/ocr" target="_blank" rel="noopener">https://cloud.tencent.com/product/ocr</a></li>
+</ul>
+<p>你有没有发现所有的大公司都有这样的服务？以后我们买买买就行，花大力气去发明轮子就没多大意义了。</p>
+
+    </div>
+
+    
+    
+    
+      
+  <div class="popular-posts-header">相关文章</div>
+  <ul class="popular-posts">
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium-en/" rel="bookmark">Turn off logging in python selenium</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/Turn-off-logging-in-python-selenium/" rel="bookmark">设置 Python Selenium 中的Log显示信息</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-24/python-unpack-list-elements/" rel="bookmark">Python：将数组中的元素导出到变量中 (unpacking)</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-09-27/from-csharp-to-python-overview/" rel="bookmark">从C#到Python - 语言特性和概览</a></div>
+    </li>
+    <li class="popular-posts-item">
+      <div class="popular-posts-title"><a href="/posts/2016-10-08/use-logging-in-python/" rel="bookmark">Python中的logging模块</a></div>
+    </li>
+  </ul>
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/" title="识别图片中的文字 - Tesseract 和 百度云OCR的对比">https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># python</a>
+              <a href="/tags/ocr/" rel="tag"># ocr</a>
+              <a href="/tags/tesseract/" rel="tag"># tesseract</a>
+              <a href="/tags/baidu-ocr/" rel="tag"># baidu-ocr</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2018-01-15/filter-string-by-keyword/" rel="prev" title="【问题】使用Python将字符串过滤并保留关键字">
+      <i class="fa fa-chevron-left"></i> 【问题】使用Python将字符串过滤并保留关键字
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2018-01-20/python-default-dict-intro/" rel="next" title="认识 Python 中的 defaultdict">
+      认识 Python 中的 defaultdict <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Tesseract"><span class="nav-number">1.</span> <span class="nav-text">Tesseract</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#百度云OCR"><span class="nav-number">2.</span> <span class="nav-text">百度云OCR</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更多的OCR"><span class="nav-number">3.</span> <span class="nav-text">更多的OCR</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2018-01-16/chinese-text-ocr-via-python/";
+    this.page.identifier = "posts/2018-01-16/chinese-text-ocr-via-python/";
+    this.page.title = "识别图片中的文字 - Tesseract 和 百度云OCR的对比";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>

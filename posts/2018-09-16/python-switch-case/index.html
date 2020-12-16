@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/logo/logo.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/logo/logo.png">
+  <link rel="mask-icon" href="/logo/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"tobyqin.cn","root":"/","scheme":"Mist","version":"7.7.1","exturl":false,"sidebar":{"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false,"padding":18},"copycode":{"enable":false,"show_result":false,"style":"flat"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在Python中是没有Switch &#x2F; Case语句的，很多人认为这种语句不够优雅灵活，在Python中用字典来处理多条件匹配问题字典会更简单高效，对于有一定经验的Python玩家不得不承认，的确如此。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用 Python 实现简单的 switch&#x2F;case 语句">
+<meta property="og:url" content="https://tobyqin.cn/posts/2018-09-16/python-switch-case/index.html">
+<meta property="og:site_name" content="BetaCat 未上线的猫">
+<meta property="og:description" content="在Python中是没有Switch &#x2F; Case语句的，很多人认为这种语句不够优雅灵活，在Python中用字典来处理多条件匹配问题字典会更简单高效，对于有一定经验的Python玩家不得不承认，的确如此。">
+<meta property="article:published_time" content="2018-09-16T00:00:00.000Z">
+<meta property="article:modified_time" content="2020-12-16T15:36:46.432Z">
+<meta property="article:author" content="Toby Qin">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Quiz">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://tobyqin.cn/posts/2018-09-16/python-switch-case/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>用 Python 实现简单的 switch/case 语句 | BetaCat 未上线的猫</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?7fc537dfd82db5d382767b00660d77a4";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="BetaCat 未上线的猫" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta custom-logo">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">BetaCat 未上线的猫</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">未上线的猫</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-works">
+
+    <a href="/works/" rel="section"><i class="fa fa-fw fa-coffee"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://tobyqin.cn/posts/2018-09-16/python-switch-case/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://avatars1.githubusercontent.com/u/14037644">
+      <meta itemprop="name" content="Toby Qin">
+      <meta itemprop="description" content="BetaCat 测试喵">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BetaCat 未上线的猫">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          用 Python 实现简单的 switch/case 语句
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-16 00:00:00" itemprop="dateCreated datePublished" datetime="2018-09-16T00:00:00Z">2018-09-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-16 15:36:46" itemprop="dateModified" datetime="2020-12-16T15:36:46Z">2020-12-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tech/" itemprop="url" rel="index">
+                    <span itemprop="name">Tech</span>
+                  </a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在Python中是没有Switch / Case语句的，很多人认为这种语句不够优雅灵活，在Python中用字典来处理多条件匹配问题字典会更简单高效，对于有一定经验的Python玩家不得不承认，的确如此。</p>
+<a id="more"></a>
+
+<p>但今天我们还是来看看如果一定要用Python来Switch / Case，可以怎么玩。</p>
+<h2 id="语法约束"><a href="#语法约束" class="headerlink" title="语法约束"></a>语法约束</h2><p>我们先定义一下Switch/Case应该怎么表达，为了简单我们可以让它长成这样。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cn</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'cn'</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">us</span><span class="params">()</span>:</span></span><br><span class="line">    print(<span class="string">'us'</span>)</span><br><span class="line"></span><br><span class="line">switch(lang).case(<span class="string">'cn'</span>,cn)</span><br><span class="line">truetruetrue.case(<span class="string">'us'</span>,us)</span><br><span class="line">   			.default(us)</span><br></pre></td></tr></table></figure>
+
+<h2 id="类实现一"><a href="#类实现一" class="headerlink" title="类实现一"></a>类实现一</h2><p>通过以上约束，我们可以把switch当成一个类来实现，传入的参数在构造函数里处理，然后再分别实现case和default方法即可。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">switch</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, case_path)</span>:</span></span><br><span class="line">        self.switch_to = case_path</span><br><span class="line">        self._invoked = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">case</span><span class="params">(self, key, method)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self.switch_to == key <span class="keyword">and</span> <span class="keyword">not</span> self._invoked:</span><br><span class="line">            self._invoked = <span class="literal">True</span></span><br><span class="line">            method()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> self</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">default</span><span class="params">(self, method)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self._invoked:</span><br><span class="line">            self._invoked = <span class="literal">True</span></span><br><span class="line">            method()</span><br></pre></td></tr></table></figure>
+
+<p>在构造函数中我们记住了<code>case_path</code> 和执行状态<code>_invoked</code>，在<code>case()</code>里如果当前的<code>key</code>和<code>switch_to</code>匹配并且函数没有被执行过，那么就更新<code>_invoked</code>并执行对应的方法。在<code>default()</code>里检查一下<code>_invoked</code>，如果从没执行过，那么就调用<code>default</code>分支的函数。</p>
+<p>看上去还不错，我们来试用一下。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">switch(<span class="string">'cn'</span>).case(<span class="string">'cn'</span>,cn).case(<span class="string">'us'</span>,us).default(fail)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cn</span><br><span class="line">switch(<span class="string">'us'</span>).case(<span class="string">'cn'</span>,cn).case(<span class="string">'us'</span>,us).default(fail)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cn</span><br><span class="line">switch(<span class="string">'jp'</span>).case(<span class="string">'cn'</span>,cn).case(<span class="string">'us'</span>,us).default(fail)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>fail</span><br><span class="line">switch(<span class="string">'cn'</span>).case(<span class="string">'cn'</span>,cn).case(<span class="string">'us'</span>,us)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cn</span><br></pre></td></tr></table></figure>
+
+<p>让我们来看几个奇葩一点的case。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># duplicate case</span></span><br><span class="line">switch(<span class="string">'us'</span>).case(<span class="string">'us'</span>,cn).case(<span class="string">'us'</span>,us).default(fail)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cn</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cn</span><span class="params">()</span> <span class="title">return</span> '<span class="title">cn</span>'</span></span><br><span class="line"><span class="function"><span class="title">def</span> <span class="title">us</span><span class="params">()</span> <span class="title">return</span> '<span class="title">us</span>'</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"># <span class="title">return</span> <span class="title">value</span></span></span><br><span class="line">result = switch('cn').case('cn',cn).case('us',us)</span><br><span class="line">result</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>&lt;python_switch_case.switch object at <span class="number">0x11034fb70</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<p>发现了没有，上面的实现不会处理重复的case，当然你可以加强一下case方法，最好是抛出异常，其他编程语言通常都这样做。</p>
+<p>第二个问题，你希望从case里拿到返回值，像上面的写法是没希望了，因为扔掉了。我们可以考虑在switch类里加一个result的变量来保存执行结果。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">switch</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, case_path)</span>:</span></span><br><span class="line">        ...</span><br><span class="line">        self.result = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">case</span><span class="params">(self, key, method)</span>:</span></span><br><span class="line">        ...</span><br><span class="line">        self.result = method()</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+
+<p>在调用结束后，就可以通过<code>result</code>拿到结果了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">_ = switch(<span class="string">'cn'</span>).case(<span class="string">'cn'</span>,cn).case(<span class="string">'us'</span>,us)</span><br><span class="line">_.result</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>cn</span><br></pre></td></tr></table></figure>
+
+<h2 id="类实现二"><a href="#类实现二" class="headerlink" title="类实现二"></a>类实现二</h2><p>我大概在网上搜了一下，你还可以参考<a href="http://code.activestate.com/recipes/410692/" target="_blank" rel="noopener">Brian Beck</a>通过类来实现Swich/Case。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">switch</span><span class="params">(object)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, value)</span>:</span></span><br><span class="line">        self.value = value</span><br><span class="line">        self.fall = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__iter__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="string">"""Return the match method once, then stop"""</span></span><br><span class="line">        <span class="keyword">yield</span> self.match</span><br><span class="line">        <span class="keyword">raise</span> StopIteration</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">match</span><span class="params">(self, *args)</span>:</span></span><br><span class="line">        <span class="string">"""Indicate whether or not to enter a case suite"""</span></span><br><span class="line">        <span class="keyword">if</span> self.fall <span class="keyword">or</span> <span class="keyword">not</span> args:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">elif</span> self.value <span class="keyword">in</span> args:</span><br><span class="line">            self.fall = <span class="literal">True</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">c = <span class="string">'z'</span></span><br><span class="line"><span class="keyword">for</span> case <span class="keyword">in</span> switch(c):</span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'a'</span>): <span class="keyword">pass</span>  <span class="comment"># only necessary if the rest of the suite is empty</span></span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'c'</span>): <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'y'</span>): <span class="keyword">pass</span></span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'z'</span>):</span><br><span class="line">        print(<span class="string">"c is lowercase!"</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'A'</span>): <span class="keyword">pass</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    <span class="keyword">if</span> case(<span class="string">'Z'</span>):</span><br><span class="line">        print(<span class="string">"c is uppercase!"</span>)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">if</span> case():  <span class="comment"># default</span></span><br><span class="line">        print(<span class="string">"I dunno what c was!"</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这种实现相对复杂一点，而且用起来也不是很舒服，又需要for又需要if（还不如直接if/else痛快）。当然也有好处，就是可以把相同结果的case放一起，而且case里可以写更多东西，不仅仅是一个方法名。</p>
+<h2 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h2><p>最后我们还是回到Python推崇的方法来处理switch/case问题，一般我们可以通过字典来处理这种多分支的问题，举例说明。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">MAPPING = &#123;</span><br><span class="line">    <span class="string">'cn'</span>: cn,</span><br><span class="line">    <span class="string">'us'</span>: us</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">lang = <span class="string">'cn'</span></span><br><span class="line">result = MAPPING.get(lang, default=us)</span><br></pre></td></tr></table></figure>
+
+<p>是不是一目了然，不仅易于阅读也易于维护。在字典中key是唯一的，value可以是任意类型的数据，可以是类或者是方法，所以足够灵活。</p>
+
+    </div>
+
+    
+    
+    
+      
+
+        <div class="reward-container">
+  <div>欢迎到微信里去当吃瓜群众</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    吃瓜入口
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat-qrcode.jpg" alt="Toby Qin 老板请上面的码，真香！">
+        <p>老板请上面的码，真香！</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Toby Qin
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://tobyqin.cn/posts/2018-09-16/python-switch-case/" title="用 Python 实现简单的 switch&#x2F;case 语句">https://tobyqin.cn/posts/2018-09-16/python-switch-case/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/python/" rel="tag"># Python</a>
+              <a href="/tags/quiz/" rel="tag"># Quiz</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/2018-07-29/pypi-package-auto-update/" rel="prev" title="Auto Update Your Pypi Package">
+      <i class="fa fa-chevron-left"></i> Auto Update Your Pypi Package
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/2018-12-24/goodbye-my-2018/" rel="next" title="2018年，再见">
+      2018年，再见 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#语法约束"><span class="nav-number">1.</span> <span class="nav-text">语法约束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类实现一"><span class="nav-number">2.</span> <span class="nav-text">类实现一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类实现二"><span class="nav-number">3.</span> <span class="nav-text">类实现二</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#写在最后"><span class="nav-number">4.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Toby Qin"
+      src="https://avatars1.githubusercontent.com/u/14037644">
+  <p class="site-author-name" itemprop="name">Toby Qin</p>
+  <div class="site-description" itemprop="description">BetaCat 测试喵</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">153</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">173</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/tobyqin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;tobyqin" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://tobyqin.github.io/links" title="Links → https:&#x2F;&#x2F;tobyqin.github.io&#x2F;links" rel="noopener" target="_blank"><i class="fa fa-fw fa-link"></i>Links</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2015 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Toby Qin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> v4.2.1
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">Theme – <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> v7.7.1
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+  var disqus_config = function() {
+    this.page.url = "https://tobyqin.cn/posts/2018-09-16/python-switch-case/";
+    this.page.identifier = "posts/2018-09-16/python-switch-case/";
+    this.page.title = "用 Python 实现简单的 switch/case 语句";
+    };
+  NexT.utils.loadComments(document.querySelector('#disqus_thread'), () => {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://https-betacat-online.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  });
+</script>
+
+</body>
+</html>
